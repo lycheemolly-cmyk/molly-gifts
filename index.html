@@ -10,15 +10,15 @@
       --bg: #070709;
       --surface: #111116;
       --surface-elevated: #181820;
-      --surface-press: #21212c;
+      --surface-press: #22222e;
       --border: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.14);
+      --border-strong: rgba(255, 255, 255, 0.16);
       --text: #f5f5f7;
-      --text-muted: #8e8e98;
+      --text-muted: #93939e;
       --pink: #e4007c;
       --pink-bright: #ff2a85;
-      --pink-soft: rgba(228, 0, 124, 0.16);
-      --pink-glow: rgba(255, 42, 133, 0.35);
+      --pink-soft: rgba(255, 42, 133, 0.16);
+      --pink-glow: rgba(255, 42, 133, 0.36);
       --green: #30d158;
       --red: #ff3b30;
       --gold: #ffd60a;
@@ -52,8 +52,8 @@
       inset: 0;
       z-index: 100;
       background:
-        radial-gradient(circle at 50% 36%, rgba(255, 42, 133, 0.24) 0%, rgba(228, 0, 124, 0.08) 36%, transparent 68%),
-        var(--bg);
+        radial-gradient(circle at 50% 34%, rgba(255, 42, 133, 0.28) 0%, rgba(228, 0, 124, 0.1) 38%, transparent 72%),
+        linear-gradient(180deg, #0d0910 0%, var(--bg) 65%);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -69,51 +69,62 @@
       pointer-events: none;
     }
 
-    .splash-ring {
+    .splash-portal {
       position: relative;
-      width: 92px;
-      height: 92px;
-      border-radius: 28px;
-      background: linear-gradient(145deg, #1b1b24, #0f0f14);
-      border: 1px solid rgba(255, 42, 133, 0.4);
-      display: grid;
-      place-items: center;
-      box-shadow: 0 0 42px rgba(255, 42, 133, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-      animation: splashPulse 1.5s ease-in-out infinite;
+      width: 112px;
+      height: 132px;
+      border-radius: 56px 56px 24px 24px;
+      background: linear-gradient(180deg, rgba(255, 42, 133, 0.18), rgba(18, 18, 25, 0.96));
+      border: 1.5px solid rgba(255, 42, 133, 0.48);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 0 48px rgba(255, 42, 133, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      animation: splashFloat 1.8s ease-in-out infinite;
     }
 
-    .splash-ring::before {
+    .splash-portal::before {
       content: "";
       position: absolute;
-      inset: -7px;
-      border-radius: 34px;
-      border: 1.5px solid transparent;
-      border-top-color: var(--pink-bright);
-      border-right-color: rgba(255, 42, 133, 0.35);
-      animation: splashSpin 1.15s linear infinite;
+      inset: -8px;
+      border-radius: 62px 62px 30px 30px;
+      border: 1.5px dashed rgba(255, 42, 133, 0.45);
+      animation: splashPulseBorder 1.5s ease-in-out infinite;
     }
 
-    @keyframes splashPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    @keyframes splashFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
     }
 
-    @keyframes splashSpin {
-      to { transform: rotate(360deg); }
+    @keyframes splashPulseBorder {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+
+    .splash-pct {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      margin-top: 18px;
+      color: #fff;
     }
 
     .splash-brand {
-      margin-top: 20px;
-      font-size: 22px;
+      margin-top: 6px;
+      font-size: 19px;
       font-weight: 900;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       background: linear-gradient(90deg, #ffffff 0%, #ff85ba 55%, #ff2a85 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .splash-status {
-      margin-top: 6px;
+      margin-top: 4px;
       font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
@@ -121,12 +132,13 @@
     }
 
     .splash-progress-wrap {
-      margin-top: 18px;
-      width: 196px;
-      height: 5px;
+      margin-top: 16px;
+      width: 212px;
+      height: 6px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.09);
       overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .splash-progress-bar {
@@ -134,14 +146,14 @@
       height: 100%;
       border-radius: 999px;
       background: linear-gradient(90deg, var(--pink), var(--pink-bright));
-      box-shadow: 0 0 14px var(--pink-glow);
+      box-shadow: 0 0 16px var(--pink-glow);
       transition: width 0.22s ease;
     }
 
     .app {
       max-width: 480px;
       margin: 0 auto;
-      padding: calc(var(--safe-top) + 10px) 16px calc(var(--safe-bottom) + 92px);
+      padding: calc(var(--safe-top) + 10px) 16px calc(var(--safe-bottom) + 98px);
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -173,11 +185,11 @@
       width: 38px;
       height: 38px;
       border-radius: 13px;
-      background: linear-gradient(145deg, #1a1a22, #101015);
-      border: 1px solid var(--border-strong);
+      background: linear-gradient(145deg, #1b1b24, #0f0f15);
+      border: 1px solid rgba(255, 42, 133, 0.32);
       display: grid;
       place-items: center;
-      box-shadow: 0 6px 18px rgba(228, 0, 124, 0.18);
+      box-shadow: 0 6px 18px rgba(228, 0, 124, 0.2);
     }
 
     .brand-title {
@@ -275,8 +287,8 @@
 
     /* Hero Banner Card */
     .hero-card {
-      background: radial-gradient(120% 100% at 95% 0%, rgba(228, 0, 124, 0.24) 0%, rgba(17, 17, 22, 0.96) 58%), var(--surface);
-      border: 1px solid var(--border);
+      background: radial-gradient(120% 100% at 95% 0%, rgba(255, 42, 133, 0.26) 0%, rgba(17, 17, 22, 0.96) 58%), var(--surface);
+      border: 1px solid rgba(255, 42, 133, 0.24);
       border-radius: var(--radius-xl);
       padding: 20px;
       position: relative;
@@ -311,7 +323,7 @@
       font-size: 13px;
       line-height: 1.45;
       color: var(--text-muted);
-      max-width: 88%;
+      max-width: 90%;
     }
 
     .hero-cta {
@@ -377,8 +389,8 @@
     }
 
     .mode-card.featured {
-      border-color: rgba(255, 42, 133, 0.36);
-      background: linear-gradient(160deg, rgba(228, 0, 124, 0.15), rgba(17, 17, 22, 1) 62%);
+      border-color: rgba(255, 42, 133, 0.38);
+      background: linear-gradient(160deg, rgba(255, 42, 133, 0.16), rgba(17, 17, 22, 1) 62%);
     }
 
     .mode-top {
@@ -400,7 +412,7 @@
 
     .mode-card.featured .mode-icon {
       background: var(--pink-soft);
-      border-color: rgba(255, 42, 133, 0.32);
+      border-color: rgba(255, 42, 133, 0.34);
     }
 
     .mode-tag {
@@ -456,7 +468,7 @@
     .fast-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
       background: var(--surface-elevated);
       border: 1px solid var(--border);
       color: var(--text);
@@ -687,8 +699,8 @@
     }
 
     .mult-pill.active {
-      background: #fff;
-      color: #09090c;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
     }
 
     .open-case-btn {
@@ -1160,7 +1172,7 @@
     }
 
     .bet-input {
-      width: 104px;
+      width: 112px;
       background: transparent;
       border: none;
       color: var(--text);
@@ -1247,6 +1259,11 @@
       color: var(--green);
     }
 
+    .auto-btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+
     .action-btn {
       width: 100%;
       border: none;
@@ -1310,7 +1327,6 @@
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
-      transition: all 0.15s ease;
     }
 
     .mines-step-pill.passed {
@@ -1323,7 +1339,6 @@
       color: #fff;
       border-color: var(--pink-bright);
       background: var(--pink-soft);
-      box-shadow: 0 4px 14px rgba(255, 42, 133, 0.22);
     }
 
     .mines-board-wrap {
@@ -1356,11 +1371,9 @@
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: linear-gradient(155deg, #1f1f2b, #14141c);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 4px 10px rgba(0, 0, 0, 0.35);
       display: grid;
       place-items: center;
       cursor: pointer;
-      position: relative;
       transition: transform 0.14s ease, border-color 0.16s ease, background 0.18s ease, opacity 0.18s ease;
     }
 
@@ -1378,7 +1391,6 @@
     .mine-tile.safe {
       background: linear-gradient(155deg, rgba(48, 209, 88, 0.24), rgba(228, 0, 124, 0.18));
       border-color: rgba(48, 209, 88, 0.7);
-      box-shadow: 0 0 18px rgba(48, 209, 88, 0.22);
       font-size: 22px;
       color: var(--gold);
     }
@@ -1386,7 +1398,6 @@
     .mine-tile.bomb {
       background: linear-gradient(155deg, rgba(255, 59, 48, 0.34), rgba(45, 10, 14, 0.9));
       border-color: var(--red);
-      box-shadow: 0 0 22px rgba(255, 59, 48, 0.38);
       font-size: 22px;
     }
 
@@ -1455,13 +1466,191 @@
       padding: 6px 11px;
       cursor: pointer;
       flex-shrink: 0;
-      transition: all 0.14s ease;
     }
 
     .mine-cnt-btn.active {
       border-color: var(--pink-bright);
       background: var(--pink-soft);
       color: #fff;
+    }
+
+    /* ================= CASCADE GAME ================= */
+    .cascade-panel {
+      background: radial-gradient(circle at 50% 10%, rgba(255, 42, 133, 0.16), transparent 65%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cascade-top-stats {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 9px 12px;
+    }
+
+    .cascade-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      background: #0c0c11;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 8px;
+    }
+
+    .cascade-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: 11px;
+      background: var(--surface-elevated);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 16px;
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+
+    .cascade-cell.boosted {
+      border-color: rgba(255, 42, 133, 0.55);
+      background: rgba(255, 42, 133, 0.12);
+    }
+
+    .cascade-cell.win-hit {
+      border-color: var(--green);
+      background: rgba(48, 209, 88, 0.2);
+      transform: scale(1.05);
+    }
+
+    .cascade-cell-mult {
+      position: absolute;
+      bottom: 1px;
+      right: 2px;
+      font-size: 8px;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .cascade-bonus-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.16), rgba(24, 24, 32, 0.96));
+      border: 1px solid rgba(255, 42, 133, 0.34);
+      cursor: pointer;
+    }
+
+    .cascade-controls-bottom {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .cascade-side-toggles {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .cascade-mini-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      color: var(--text-muted);
+      border-radius: 12px;
+      padding: 8px 11px;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .cascade-mini-btn.active {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      color: var(--pink-bright);
+    }
+
+    /* ================= ARENA GAME ================= */
+    .arena-panel {
+      background: radial-gradient(circle at 50% 10%, rgba(255, 42, 133, 0.18), transparent 65%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .arena-stage-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      background: #0b0b10;
+    }
+
+    #arenaCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .arena-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 7, 9, 0.72);
+      backdrop-filter: blur(4px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 18px;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .arena-overlay.show {
+      display: flex;
+    }
+
+    .arena-meta-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .arena-stat-pill {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .arena-zone-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
     .players-card {
@@ -1608,10 +1797,6 @@
       cursor: pointer;
     }
 
-    .profile-topup-btn:active {
-      background: var(--surface-press);
-    }
-
     .withdraw-btn {
       border: none;
       background: linear-gradient(135deg, var(--pink), var(--pink-bright));
@@ -1677,7 +1862,7 @@
       font-size: 11px;
     }
 
-    /* Bottom iOS Tabbar */
+    /* Bottom iOS Floating Pill Tabbar */
     .tabbar {
       position: fixed;
       left: 50%;
@@ -1685,11 +1870,12 @@
       bottom: calc(var(--safe-bottom) + 8px);
       width: calc(100% - 32px);
       max-width: 448px;
-      background: rgba(17, 17, 22, 0.9);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--border-strong);
-      border-radius: 22px;
+      background: rgba(20, 20, 28, 0.78);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
       padding: 6px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -1701,32 +1887,38 @@
       border: none;
       background: transparent;
       color: var(--text-muted);
-      border-radius: 16px;
+      border-radius: 999px;
       padding: 8px 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
       font-size: 10px;
       font-weight: 700;
       cursor: pointer;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.12s ease;
+    }
+
+    .tab-btn:active {
+      transform: scale(0.95);
     }
 
     .tab-btn span.ico {
       font-size: 16px;
-      line-height: 1;
+      line-height: 1.05;
     }
 
     .tab-btn.active {
-      background: var(--pink-soft);
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.26), rgba(228, 0, 124, 0.16));
       color: var(--pink-bright);
+      box-shadow: inset 0 0 0 1px rgba(255, 42, 133, 0.35);
     }
 
     /* Rounded Modals */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.74);
+      background: rgba(0, 0, 0, 0.76);
       backdrop-filter: blur(10px);
       display: none;
       align-items: center;
@@ -1794,14 +1986,35 @@
       font-weight: 700;
     }
 
-    .dev-channel-link:active {
-      border-color: var(--pink-bright);
-      background: var(--pink-soft);
+    .topup-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      background: var(--surface-elevated);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .topup-tab-btn {
+      border: none;
+      border-radius: 11px;
+      padding: 9px 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .topup-tab-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
     }
 
     .topup-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 8px;
     }
 
@@ -1809,7 +2022,7 @@
       background: var(--surface-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 14px 8px;
+      padding: 12px 8px;
       text-align: center;
       color: var(--text);
       font-weight: 800;
@@ -1817,17 +2030,48 @@
       cursor: pointer;
     }
 
-    .topup-option:active {
+    .topup-option.active {
       border-color: var(--pink-bright);
       background: var(--pink-soft);
+    }
+
+    .gift-deposit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .gift-deposit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+    }
+
+    .mini-pink-btn {
+      border: none;
+      border-radius: 11px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
   <!-- Splash Loader -->
   <div class="splash-screen" id="splashScreen" aria-hidden="true">
-    <div class="splash-ring">
-      <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
+    <div class="splash-portal">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
         <path d="M12 2L14.9 8.2L21.7 9.1L16.7 13.8L17.9 20.6L12 17.3L6.1 20.6L7.3 13.8L2.3 9.1L9.1 8.2L12 2Z" fill="url(#mgSplash)"/>
         <defs>
           <linearGradient id="mgSplash" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
@@ -1836,7 +2080,9 @@
           </linearGradient>
         </defs>
       </svg>
+      <span style="font-size:11px;font-weight:800;color:#ff85ba;letter-spacing:0.06em;">GIFTS</span>
     </div>
+    <div class="splash-pct" id="splashPct">0%</div>
     <div class="splash-brand">MOLLY GIFTS</div>
     <div class="splash-status" id="splashStatus">Вход в приложение...</div>
     <div class="splash-progress-wrap">
@@ -1902,7 +2148,7 @@
         <div class="mode-card" data-nav="mines">
           <div class="mode-top">
             <div class="mode-icon">💣</div>
-            <span class="mode-tag pink">New</span>
+            <span class="mode-tag pink">Mines</span>
           </div>
           <div>
             <div class="mode-name">Мины</div>
@@ -1931,8 +2177,62 @@
             <div class="mode-hint">Шанс задаёт заполненность колеса</div>
           </div>
         </div>
+
+        <div class="mode-card" data-nav="cascade">
+          <div class="mode-top">
+            <div class="mode-icon">✨</div>
+            <span class="mode-tag pink">New</span>
+          </div>
+          <div>
+            <div class="mode-name">Каскад</div>
+            <div class="mode-hint">Кластеры от 5 символов, каскады и бонус x10</div>
+          </div>
+        </div>
+
+        <div class="mode-card" data-nav="arena">
+          <div class="mode-top">
+            <div class="mode-icon">🎯</div>
+            <span class="mode-tag pink">Arena</span>
+          </div>
+          <div>
+            <div class="mode-name">Арена</div>
+            <div class="mode-hint">Доли поля по ставкам и полёт шарика</div>
+          </div>
+        </div>
       </section>
     </main>
+
+    <!-- TASKS -->
+    <section class="view" id="view-tasks">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <span class="section-title" style="font-size:16px;">Задания</span>
+      </div>
+
+      <div class="info-card">
+        <div class="section-head">
+          <span class="section-title">Активные задания</span>
+          <span class="section-meta" id="tasksDoneCount">0 / 3</span>
+        </div>
+        <div id="tasksList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </section>
+
+    <!-- TOP -->
+    <section class="view" id="view-top">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <span class="section-title" style="font-size:16px;">Топ игроков</span>
+      </div>
+
+      <div class="info-card">
+        <div class="section-head">
+          <span class="section-title">Рейтинг по звёздам ★</span>
+          <span class="section-meta">Demo</span>
+        </div>
+        <div id="leaderboardList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </section>
 
     <!-- CRASH -->
     <section class="view" id="view-crash">
@@ -1978,11 +2278,11 @@
         </div>
 
         <div class="autocash-row">
-          <span class="autocash-label">Авто</span>
+          <span class="autocash-label" id="autoCashLabel">Авто</span>
           <div class="autocash-pills" id="autoCashPills">
-            <button class="auto-btn" data-auto="2">x2</button>
-            <button class="auto-btn" data-auto="5">x5</button>
-            <button class="auto-btn" data-auto="10">x10</button>
+            <button type="button" class="auto-btn" data-auto="2">x2</button>
+            <button type="button" class="auto-btn" data-auto="5">x5</button>
+            <button type="button" class="auto-btn" data-auto="10">x10</button>
           </div>
         </div>
 
@@ -2050,6 +2350,101 @@
         </div>
 
         <button class="action-btn" id="minesActionBtn">Начать игру</button>
+      </div>
+    </section>
+
+    <!-- CASCADE -->
+    <section class="view" id="view-cascade">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <span class="section-title" style="font-size:16px;">Каскад</span>
+        <button type="button" class="back-btn" id="cascadeRulesBtn">? Правила</button>
+      </div>
+
+      <div class="cascade-panel">
+        <div class="cascade-top-stats">
+          <div>
+            <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Выигрыш</div>
+            <div style="font-size:16px;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;" id="cascadeWinText">0 ★</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Фриспины</div>
+            <div style="font-size:14px;font-weight:800;color:var(--pink-bright);" id="cascadeSpinsInfo">Обычный раунд</div>
+          </div>
+        </div>
+
+        <div class="cascade-grid" id="cascadeGrid"></div>
+
+        <div class="section-meta" id="cascadeStatusText" style="text-align:center;color:var(--text);min-height:18px;">
+          Собери 5+ одинаковых символов по сторонам • Каскады усиливают клетки
+        </div>
+
+        <div class="cascade-bonus-banner" id="cascadeBuyBonusBtn">
+          <div>
+            <div style="font-size:13px;font-weight:800;">КУПИТЬ БОНУС <span class="mode-tag pink">x10</span></div>
+            <div style="font-size:11px;color:var(--text-muted);">Раунд со скаттерами и фриспинами (подтверждение перед покупкой)</div>
+          </div>
+          <div style="font-size:14px;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;" id="cascadeBonusPriceText">100 ★</div>
+        </div>
+
+        <div class="bet-row">
+          <button type="button" class="back-btn" id="cascadeBetMinus">−</button>
+          <div style="text-align:center;">
+            <div class="bet-label">Ставка</div>
+            <div style="font-size:16px;font-weight:900;font-variant-numeric:tabular-nums;"><span id="cascadeBetVal">10</span> <span class="star-icon">★</span></div>
+          </div>
+          <button type="button" class="back-btn" id="cascadeBetPlus">+</button>
+        </div>
+
+        <div class="cascade-controls-bottom">
+          <div class="cascade-side-toggles">
+            <button type="button" class="cascade-mini-btn" id="cascadeTurboBtn">⚡ ТУРБО</button>
+            <button type="button" class="cascade-mini-btn" id="cascadeAutoBtn">↻ АВТО</button>
+          </div>
+          <button type="button" class="action-btn" id="cascadeSpinBtn">КРУТИТЬ</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARENA -->
+    <section class="view" id="view-arena">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <span class="section-title" style="font-size:16px;">Арена</span>
+        <span class="section-meta" id="arenaPhaseTag">Сбор ставок</span>
+      </div>
+
+      <div class="arena-panel">
+        <div class="arena-stage-wrap">
+          <canvas id="arenaCanvas"></canvas>
+          <div class="arena-overlay show" id="arenaOverlay">
+            <div style="font-size:15px;font-weight:900;" id="arenaOverlayTitle">Ожидание игроков...</div>
+            <div style="font-size:12px;color:var(--text-muted);" id="arenaOverlaySub">Сделайте ставку, чтобы войти в бой</div>
+          </div>
+        </div>
+
+        <div class="arena-meta-strip">
+          <div class="arena-stat-pill">👥 <span id="arenaPlayersCount">0</span></div>
+          <div class="arena-stat-pill">★ <span id="arenaBankVal">0</span></div>
+          <div class="arena-stat-pill" id="arenaTimerPill">Ставки: 12с</div>
+        </div>
+
+        <button type="button" class="action-btn" id="arenaEnterBtn">Войти на арену</button>
+
+        <div class="preset-scroll" id="arenaQuickPresets">
+          <button type="button" class="preset-btn active" data-ab="10">10 ★</button>
+          <button type="button" class="preset-btn" data-ab="50">50 ★</button>
+          <button type="button" class="preset-btn" data-ab="100">100 ★</button>
+          <button type="button" class="preset-btn" data-ab="250">250 ★</button>
+        </div>
+      </div>
+
+      <div class="players-card">
+        <div class="section-head">
+          <span class="section-title" style="font-size:13px;">⚔️ Игроки на арене</span>
+          <span class="section-meta" id="arenaListCount">0</span>
+        </div>
+        <div id="arenaPlayersList" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
     </section>
 
@@ -2226,6 +2621,14 @@
 
       <div class="info-card">
         <div class="section-head">
+          <span class="section-title">Банк подарков</span>
+          <span class="section-meta" id="bankGiftsCount">0</span>
+        </div>
+        <div id="bankGiftsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+
+      <div class="info-card">
+        <div class="section-head">
           <span class="section-title">История ставок</span>
           <span class="section-meta" id="betHistoryCount">0</span>
         </div>
@@ -2250,18 +2653,19 @@
     </section>
   </div>
 
-  <nav class="tabbar">
+  <!-- iOS-style Floating Pill Tabbar -->
+  <nav class="tabbar" aria-label="Навигация">
     <button class="tab-btn active" data-nav="hub">
       <span class="ico">◈</span>
       <span>Хаб</span>
     </button>
-    <button class="tab-btn" data-nav="crash">
-      <span class="ico">🚀</span>
-      <span>Crash</span>
+    <button class="tab-btn" data-nav="tasks">
+      <span class="ico">✦</span>
+      <span>Задания</span>
     </button>
-    <button class="tab-btn" data-nav="cases">
-      <span class="ico">🎁</span>
-      <span>Кейсы</span>
+    <button class="tab-btn" data-nav="top">
+      <span class="ico">🏆</span>
+      <span>Топ</span>
     </button>
     <button class="tab-btn" data-nav="profile">
       <span class="ico">◉</span>
@@ -2291,7 +2695,7 @@
       <div class="demo-pill">Демо-режим • В разработке</div>
       <h2 class="modal-title">Приём своих подарков</h2>
       <p class="modal-text">
-        Сейчас функция работает в <b>демо-режиме</b>. Прямое внесение реальных Telegram-подарков на баланс пока недоступно — модуль находится в активной разработке.
+        Сейчас функция работает в <b>демо-режиме</b>. Прямое внесение реальных Telegram-подарков пока недоступно — модуль находится в активной разработке.
       </p>
       <a class="dev-channel-link" href="https://t.me/devMikhail" target="_blank" rel="noopener noreferrer">
         <span>📢 Канал разработки MOLLY GIFTS</span>
@@ -2301,19 +2705,81 @@
     </div>
   </div>
 
-  <!-- Topup Modal -->
+  <!-- Topup Modal: Stars (from 50 ★, quick 50/100/500/1000) & Gift Deposit to Bank -->
   <div class="modal-backdrop" id="topupModal">
     <div class="modal-rounded">
       <div class="section-head">
-        <span class="section-title">Пополнить демо-баланс ★</span>
+        <span class="section-title">Пополнение баланса ★</span>
         <button class="back-btn" id="closeTopupBtn">Закрыть</button>
       </div>
-      <div class="topup-grid">
-        <button class="topup-option" data-add="1000">+1000 ★</button>
-        <button class="topup-option" data-add="5000">+5000 ★</button>
-        <button class="topup-option" data-add="10000">+10000 ★</button>
+
+      <div class="topup-tabs">
+        <button type="button" class="topup-tab-btn active" id="tabTopupStars">★ Звёзды</button>
+        <button type="button" class="topup-tab-btn" id="tabTopupGift">🎁 Подарком</button>
       </div>
-      <div class="section-meta">Тестовое пополнение без списания реальных Telegram Stars.</div>
+
+      <div id="topupStarsPanel" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="topup-grid" id="starsQuickGrid">
+          <button type="button" class="topup-option active" data-sval="50">50 ★</button>
+          <button type="button" class="topup-option" data-sval="100">100 ★</button>
+          <button type="button" class="topup-option" data-sval="500">500 ★</button>
+          <button type="button" class="topup-option" data-sval="1000">1000 ★</button>
+        </div>
+
+        <div class="bet-row">
+          <div class="bet-label">Своя сумма (от 50 ★)</div>
+          <div class="bet-input-wrap">
+            <input type="number" id="customTopupInput" class="bet-input" value="50" min="50" step="1" />
+            <span class="star-icon">★</span>
+          </div>
+        </div>
+
+        <button type="button" class="action-btn" id="confirmStarsTopupBtn">Пополнить на 50 ★</button>
+        <div class="section-meta">Минимум 50 ★. В демо-режиме без списания реальных Telegram Stars.</div>
+      </div>
+
+      <div id="topupGiftPanel" style="display:none;flex-direction:column;gap:10px;">
+        <div class="modal-text">
+          Отправь подарок на банк-профиль: стоимость подарка конвертируется в <b>звёзды ★</b> на баланс, а сам подарок остаётся в банке.
+        </div>
+        <div class="gift-deposit-list" id="giftDepositList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arena Bet Modal -->
+  <div class="modal-backdrop" id="arenaBetModal">
+    <div class="modal-rounded">
+      <div class="section-head">
+        <span class="section-title">Вход на арену</span>
+        <button class="back-btn" id="closeArenaModalBtn">Закрыть</button>
+      </div>
+      <div class="bet-row">
+        <div class="bet-label">Ставка на арену</div>
+        <div class="bet-input-wrap">
+          <input type="number" id="arenaModalBetInput" class="bet-input" value="50" min="1" />
+          <span class="star-icon">★</span>
+        </div>
+      </div>
+      <div class="topup-grid">
+        <button type="button" class="topup-option" data-amb="10">10 ★</button>
+        <button type="button" class="topup-option" data-amb="50">50 ★</button>
+        <button type="button" class="topup-option" data-amb="100">100 ★</button>
+        <button type="button" class="topup-option" data-amb="250">250 ★</button>
+      </div>
+      <button type="button" class="action-btn" id="confirmArenaBetBtn">Сделать ставку</button>
+    </div>
+  </div>
+
+  <!-- Cascade Bonus / Rules Modal -->
+  <div class="modal-backdrop" id="cascadeModal">
+    <div class="modal-rounded">
+      <div class="section-head">
+        <span class="section-title" id="cascadeModalTitle">Правила Каскада</span>
+        <button class="back-btn" id="closeCascadeModalBtn">Закрыть</button>
+      </div>
+      <p class="modal-text" id="cascadeModalBody"></p>
+      <button type="button" class="action-btn" id="cascadeModalConfirmBtn">Понятно</button>
     </div>
   </div>
 
@@ -2394,6 +2860,12 @@
       { id: "elite", title: "Elite", price: 1500, artKind: "elite", prizes: TG_GIFTS.slice(0, 36) }
     ];
 
+    const DEMO_TASKS = [
+      { id: "t1", title: "Сделать пополнение в демо-режиме", reward: 100, done: false },
+      { id: "t2", title: "Открыть кейс или сыграть в Каскад", reward: 150, done: false },
+      { id: "t3", title: "Сделать ставку на Арене или в Crash", reward: 200, done: false }
+    ];
+
     function renderGiftSvg(item, size = 44) {
       const c = item.accent || "#ff2a85";
       return `
@@ -2440,7 +2912,7 @@
       `;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v15";
+    const STORAGE_KEY = "molly_gifts_demo_v20";
     const defaultState = {
       balance: 5000,
       lastFreeCaseAt: 0,
@@ -2449,15 +2921,17 @@
         { uid: "demo_2", giftId: "pet-snake" },
         { uid: "demo_3", giftId: "swag-bag" }
       ],
+      bankGifts: [],
       crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
       betHistory: [],
+      tasksDone: [],
       logs: ["Стартовый демо-баланс: +5000 ★"]
     };
 
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { ...defaultState, inventory: [...defaultState.inventory], crashHistory: [...defaultState.crashHistory], betHistory: [], logs: [...defaultState.logs] };
+        if (!raw) return { ...defaultState, inventory: [...defaultState.inventory], bankGifts: [], crashHistory: [...defaultState.crashHistory], betHistory: [], tasksDone: [], logs: [...defaultState.logs] };
         const parsed = JSON.parse(raw);
         return {
           balance: cleanNumber(parsed.balance, 5000),
@@ -2465,14 +2939,18 @@
           inventory: Array.isArray(parsed.inventory)
             ? parsed.inventory.filter(it => it && TG_GIFTS.some(g => g.id === it.giftId)).slice(0, 60)
             : [...defaultState.inventory],
+          bankGifts: Array.isArray(parsed.bankGifts)
+            ? parsed.bankGifts.filter(it => it && TG_GIFTS.some(g => g.id === it.giftId)).slice(0, 60)
+            : [],
           crashHistory: Array.isArray(parsed.crashHistory) && parsed.crashHistory.length
             ? parsed.crashHistory.map(x => Number(x) || 1.0).slice(0, 12)
             : [...defaultState.crashHistory],
           betHistory: Array.isArray(parsed.betHistory) ? parsed.betHistory.slice(0, 30) : [],
+          tasksDone: Array.isArray(parsed.tasksDone) ? parsed.tasksDone : [],
           logs: Array.isArray(parsed.logs) && parsed.logs.length ? parsed.logs.slice(0, 20) : [...defaultState.logs]
         };
       } catch (_) {
-        return { ...defaultState, inventory: [...defaultState.inventory], crashHistory: [...defaultState.crashHistory], betHistory: [], logs: [...defaultState.logs] };
+        return { ...defaultState, inventory: [...defaultState.inventory], bankGifts: [], crashHistory: [...defaultState.crashHistory], betHistory: [], tasksDone: [], logs: [...defaultState.logs] };
       }
     }
 
@@ -2492,6 +2970,8 @@
     const profileBalanceText = document.getElementById("profileBalanceText");
     const profileInventoryCountEl = document.getElementById("profileInventoryCount");
     const profileInventoryListEl = document.getElementById("profileInventoryList");
+    const bankGiftsCountEl = document.getElementById("bankGiftsCount");
+    const bankGiftsListEl = document.getElementById("bankGiftsList");
     const betHistoryListEl = document.getElementById("betHistoryList");
     const betHistoryCountEl = document.getElementById("betHistoryCount");
     const activityLog = document.getElementById("activityLog");
@@ -2513,8 +2993,6 @@
     function recordBetHistory({ mode, amount, status, mult = null, payout = 0, note = "" }) {
       const safeAmount = cleanNumber(amount, 0);
       const safePayout = cleanNumber(payout, 0);
-      const profit = status === "cashed" ? (safePayout - safeAmount) : -safeAmount;
-
       state.betHistory.unshift({
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
         time: formatTimeNow(),
@@ -2522,7 +3000,6 @@
         amount: safeAmount,
         mult: typeof mult === "number" && Number.isFinite(mult) ? +mult.toFixed(2) : null,
         payout: safePayout,
-        profit,
         note,
         status
       });
@@ -2568,6 +3045,26 @@
       }).join("");
     }
 
+    function renderBankGifts() {
+      bankGiftsCountEl.textContent = String(state.bankGifts.length);
+      if (!state.bankGifts.length) {
+        bankGiftsListEl.innerHTML = `<div class="section-meta">В банке пока нет внесённых подарков</div>`;
+        return;
+      }
+      bankGiftsListEl.innerHTML = state.bankGifts.map(entry => {
+        const g = getGiftById(entry.giftId);
+        return `
+          <div class="list-item">
+            <div style="display:flex;align-items:center;gap:10px;">
+              ${renderGiftSvg(g, 34)}
+              <span>${g.name}</span>
+            </div>
+            <span style="color:var(--pink-bright);font-weight:800;">В банке • ${g.value} ★</span>
+          </div>
+        `;
+      }).join("");
+    }
+
     function renderProfileInventory() {
       profileInventoryCountEl.textContent = String(state.inventory.length);
       if (!state.inventory.length) {
@@ -2588,7 +3085,6 @@
       }).join("");
     }
 
-    // Telegram Profile Identity & Avatar
     const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
     const myName = tgUser
       ? ([tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || (tgUser.username ? `@${tgUser.username}` : "Telegram User"))
@@ -2623,6 +3119,61 @@
       }
     }
 
+    // Tasks & Top views
+    const tasksListEl = document.getElementById("tasksList");
+    const tasksDoneCountEl = document.getElementById("tasksDoneCount");
+    const leaderboardListEl = document.getElementById("leaderboardList");
+
+    function renderTasksView() {
+      const doneCount = state.tasksDone.length;
+      tasksDoneCountEl.textContent = `${doneCount} / ${DEMO_TASKS.length}`;
+      tasksListEl.innerHTML = DEMO_TASKS.map(t => {
+        const isDone = state.tasksDone.includes(t.id);
+        return `
+          <div class="list-item">
+            <div>
+              <div style="font-weight:700;">${t.title}</div>
+              <div style="font-size:11px;color:var(--gold);font-weight:800;">+${t.reward} ★</div>
+            </div>
+            <button type="button" class="mini-pink-btn" data-claim-task="${t.id}" ${isDone ? "disabled style='opacity:0.45;'" : ""}>
+              ${isDone ? "Получено" : "Забрать"}
+            </button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    tasksListEl.addEventListener("click", e => {
+      const btn = e.target.closest("[data-claim-task]");
+      if (!btn) return;
+      const tid = btn.dataset.claimTask;
+      const task = DEMO_TASKS.find(x => x.id === tid);
+      if (!task || state.tasksDone.includes(tid)) return;
+      state.tasksDone.push(tid);
+      state.balance = cleanNumber(state.balance, 5000) + task.reward;
+      saveState();
+      renderBalance();
+      renderTasksView();
+      addLog(`Задание выполнено: +${task.reward} ★`);
+      haptic("success");
+    });
+
+    function renderTopView() {
+      const rows = [
+        { name: myName, score: state.balance, me: true },
+        { name: "Mira", score: 8420 },
+        { name: "Leo", score: 6150 },
+        { name: "Neko", score: 3980 }
+      ].sort((a, b) => b.score - a.score);
+
+      leaderboardListEl.innerHTML = rows.map((r, idx) => `
+        <div class="list-item" style="${r.me ? "border-color:rgba(255,42,133,0.4);" : ""}">
+          <span><b>#${idx + 1}</b> ${r.name}</span>
+          <span style="color:var(--gold);font-weight:800;">${cleanNumber(r.score, 0).toLocaleString("ru-RU")} ★</span>
+        </div>
+      `).join("");
+    }
+
     const views = document.querySelectorAll(".view");
     const tabBtns = document.querySelectorAll(".tab-btn");
 
@@ -2634,9 +3185,17 @@
       if (name === "mines") renderMinesUI();
       if (name === "cases") renderCasesUI();
       if (name === "upgrade") renderUpgradeUI();
+      if (name === "cascade") renderCascadeGrid();
+      if (name === "arena") {
+        resizeArenaCanvas();
+        renderArenaUI();
+      }
+      if (name === "tasks") renderTasksView();
+      if (name === "top") renderTopView();
       if (name === "profile") {
         renderTelegramProfileHeader();
         renderBalance();
+        renderBankGifts();
         renderProfileInventory();
         renderBetHistory();
         renderLogs();
@@ -2672,29 +3231,116 @@
       if (e.target === addGiftDemoModal) addGiftDemoModal.classList.remove("open");
     });
 
+    // Topup Modal: Stars (>= 50 ★) & Gift Deposit to Bank
     const topupModal = document.getElementById("topupModal");
+    const tabTopupStars = document.getElementById("tabTopupStars");
+    const tabTopupGift = document.getElementById("tabTopupGift");
+    const topupStarsPanel = document.getElementById("topupStarsPanel");
+    const topupGiftPanel = document.getElementById("topupGiftPanel");
+    const customTopupInput = document.getElementById("customTopupInput");
+    const confirmStarsTopupBtn = document.getElementById("confirmStarsTopupBtn");
+    const giftDepositListEl = document.getElementById("giftDepositList");
+
+    let selectedTopupStars = 50;
+
+    function getValidTopupStars() {
+      const raw = Math.floor(Number(customTopupInput.value));
+      return Number.isFinite(raw) && raw >= 50 ? raw : 50;
+    }
+
+    function syncStarsTopupBtn() {
+      const val = getValidTopupStars();
+      confirmStarsTopupBtn.textContent = `Пополнить на ${val.toLocaleString("ru-RU")} ★`;
+    }
+
+    function renderGiftDepositPanel() {
+      const sampleGifts = TG_GIFTS.slice(0, 6);
+      giftDepositListEl.innerHTML = sampleGifts.map(g => `
+        <div class="gift-deposit-row">
+          <div style="display:flex;align-items:center;gap:9px;">
+            ${renderGiftSvg(g, 34)}
+            <div>
+              <div style="font-size:13px;font-weight:700;">${g.name}</div>
+              <div style="font-size:11px;color:var(--gold);font-weight:800;">Конвертация: +${g.value} ★</div>
+            </div>
+          </div>
+          <button type="button" class="mini-pink-btn" data-deposit-gift="${g.id}">Внести</button>
+        </div>
+      `).join("");
+    }
+
+    function setTopupTab(mode) {
+      const isStars = mode === "stars";
+      tabTopupStars.classList.toggle("active", isStars);
+      tabTopupGift.classList.toggle("active", !isStars);
+      topupStarsPanel.style.display = isStars ? "flex" : "none";
+      topupGiftPanel.style.display = isStars ? "none" : "flex";
+      if (!isStars) renderGiftDepositPanel();
+    }
+
     function openTopupModal() {
+      setTopupTab("stars");
+      syncStarsTopupBtn();
       topupModal.classList.add("open");
       haptic("light");
     }
-    document.getElementById("openTopupBtn").addEventListener("click", openTopupModal);
-    document.getElementById("profileTopupBtn").addEventListener("click", openTopupModal);
-    document.getElementById("closeTopupBtn").addEventListener("click", () => {
+
+    tabTopupStars.addEventListener("click", () => setTopupTab("stars"));
+    tabTopupGift.addEventListener("click", () => setTopupTab("gift"));
+
+    document.querySelectorAll("#starsQuickGrid .topup-option").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const val = Math.max(50, Number(btn.dataset.sval) || 50);
+        selectedTopupStars = val;
+        customTopupInput.value = String(val);
+        document.querySelectorAll("#starsQuickGrid .topup-option").forEach(b => b.classList.toggle("active", b === btn));
+        syncStarsTopupBtn();
+        haptic("light");
+      });
+    });
+
+    customTopupInput.addEventListener("input", () => {
+      const n = Number(customTopupInput.value);
+      document.querySelectorAll("#starsQuickGrid .topup-option").forEach(b => {
+        b.classList.toggle("active", Number(b.dataset.sval) === n);
+      });
+      syncStarsTopupBtn();
+    });
+
+    confirmStarsTopupBtn.addEventListener("click", () => {
+      const val = getValidTopupStars();
+      customTopupInput.value = String(val);
+      state.balance = cleanNumber(state.balance, 5000) + val;
+      saveState();
+      renderBalance();
+      addLog(`Пополнение звёздами: +${val.toLocaleString("ru-RU")} ★`);
+      haptic("success");
       topupModal.classList.remove("open");
     });
+
+    giftDepositListEl.addEventListener("click", e => {
+      const btn = e.target.closest("[data-deposit-gift]");
+      if (!btn) return;
+      const g = getGiftById(btn.dataset.depositGift);
+      state.bankGifts.unshift({
+        uid: `${Date.now()}_bank_${Math.random().toString(36).slice(2, 6)}`,
+        giftId: g.id
+      });
+      state.bankGifts = state.bankGifts.slice(0, 60);
+      state.balance = cleanNumber(state.balance, 5000) + g.value;
+      saveState();
+      renderBalance();
+      renderBankGifts();
+      addLog(`Подарок ${g.name} внесён в банк → +${g.value} ★ на баланс`);
+      haptic("success");
+      topupModal.classList.remove("open");
+    });
+
+    document.getElementById("openTopupBtn").addEventListener("click", openTopupModal);
+    document.getElementById("profileTopupBtn").addEventListener("click", openTopupModal);
+    document.getElementById("closeTopupBtn").addEventListener("click", () => topupModal.classList.remove("open"));
     topupModal.addEventListener("click", e => {
       if (e.target === topupModal) topupModal.classList.remove("open");
-    });
-    document.querySelectorAll("[data-add]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const add = cleanNumber(btn.dataset.add, 1000);
-        state.balance = cleanNumber(state.balance, 5000) + add;
-        saveState();
-        renderBalance();
-        addLog(`Демо-пополнение: +${add} ★`);
-        haptic("success");
-        topupModal.classList.remove("open");
-      });
     });
 
     document.getElementById("resetDemoBtn").addEventListener("click", () => {
@@ -2702,22 +3348,27 @@
         balance: 5000,
         lastFreeCaseAt: 0,
         inventory: [...defaultState.inventory],
+        bankGifts: [],
         crashHistory: [...defaultState.crashHistory],
         betHistory: [],
+        tasksDone: [],
         logs: [`[${formatTimeNow()}] Демо-данные сброшены`]
       };
       saveState();
       renderBalance();
       renderCrashHistory();
+      renderBankGifts();
       renderProfileInventory();
       renderBetHistory();
       renderLogs();
       renderUpgradeUI();
       renderCasesUI();
+      renderTasksView();
+      renderTopView();
       haptic("medium");
     });
 
-    // ================= UPGRADE (CHANCE -> WHEEL FILL & PAYOUT) =================
+    // ================= UPGRADE =================
     const upgradeChanceArc = document.getElementById("upgradeChanceArc");
     const upgradeNeedle = document.getElementById("upgradeNeedle");
     const upgradeChanceText = document.getElementById("upgradeChanceText");
@@ -2903,7 +3554,7 @@
       requestAnimationFrame(step);
     });
 
-    // ================= CASES & FREE 24H CASE =================
+    // ================= CASES =================
     const casesCatalogView = document.getElementById("casesCatalogView");
     const caseDetailView = document.getElementById("caseDetailView");
     const casesBackBtn = document.getElementById("casesBackBtn");
@@ -3450,6 +4101,597 @@
       }
     });
 
+    // ================= CASCADE GAME =================
+    const CASCADE_COLS = 7;
+    const CASCADE_ROWS = 7;
+    const CASCADE_SYMBOLS = [
+      { id: "drop", glyph: "💧", pay: 0.25 },
+      { id: "orb", glyph: "🟣", pay: 0.3 },
+      { id: "hex", glyph: "⬡", pay: 0.35 },
+      { id: "sq", glyph: "🟦", pay: 0.4 },
+      { id: "gem", glyph: "💎", pay: 0.55 },
+      { id: "heart", glyph: "🩷", pay: 0.7 },
+      { id: "star", glyph: "⭐", pay: 1.0 }
+    ];
+    const SCATTER_SYMBOL = { id: "medal", glyph: "🏅", isScatter: true };
+
+    const cascadeGridEl = document.getElementById("cascadeGrid");
+    const cascadeWinText = document.getElementById("cascadeWinText");
+    const cascadeSpinsInfo = document.getElementById("cascadeSpinsInfo");
+    const cascadeStatusText = document.getElementById("cascadeStatusText");
+    const cascadeBonusPriceText = document.getElementById("cascadeBonusPriceText");
+    const cascadeBetVal = document.getElementById("cascadeBetVal");
+    const cascadeSpinBtn = document.getElementById("cascadeSpinBtn");
+    const cascadeTurboBtn = document.getElementById("cascadeTurboBtn");
+    const cascadeAutoBtn = document.getElementById("cascadeAutoBtn");
+    const cascadeModal = document.getElementById("cascadeModal");
+    const cascadeModalTitle = document.getElementById("cascadeModalTitle");
+    const cascadeModalBody = document.getElementById("cascadeModalBody");
+    const cascadeModalConfirmBtn = document.getElementById("cascadeModalConfirmBtn");
+
+    let cascadeBet = 10;
+    let cascadeTurbo = false;
+    let cascadeAuto = false;
+    let cascadeSpinning = false;
+    let cascadeFreeSpinsLeft = 0;
+    let cascadeCellBoosts = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => 1);
+    let cascadeBoard = [];
+    let pendingCascadeBonusConfirm = false;
+
+    function randomCascadeCell(allowScatter = true) {
+      if (allowScatter && Math.random() < 0.06) return { ...SCATTER_SYMBOL };
+      const sym = CASCADE_SYMBOLS[Math.floor(Math.random() * CASCADE_SYMBOLS.length)];
+      return { ...sym, isScatter: false };
+    }
+
+    function initCascadeBoard() {
+      cascadeBoard = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => randomCascadeCell(true));
+    }
+
+    function renderCascadeGrid(winSet = new Set()) {
+      cascadeBonusPriceText.textContent = `${(cascadeBet * 10).toLocaleString("ru-RU")} ★`;
+      cascadeBetVal.textContent = String(cascadeBet);
+      cascadeTurboBtn.classList.toggle("active", cascadeTurbo);
+      cascadeAutoBtn.classList.toggle("active", cascadeAuto);
+      cascadeSpinsInfo.textContent = cascadeFreeSpinsLeft > 0
+        ? `Фриспинов: ${cascadeFreeSpinsLeft}`
+        : "Обычный раунд";
+
+      cascadeGridEl.innerHTML = cascadeBoard.map((cell, idx) => {
+        const boost = cascadeCellBoosts[idx] || 1;
+        const isHit = winSet.has(idx);
+        return `
+          <div class="cascade-cell ${boost > 1 ? "boosted" : ""} ${isHit ? "win-hit" : ""}">
+            <span>${cell.glyph}</span>
+            ${boost > 1 ? `<span class="cascade-cell-mult">x${boost}</span>` : ""}
+          </div>
+        `;
+      }).join("");
+    }
+
+    function findClusters5Plus() {
+      const visited = new Set();
+      const clusters = [];
+      const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+
+      for (let r = 0; r < CASCADE_ROWS; r++) {
+        for (let c = 0; c < CASCADE_COLS; c++) {
+          const startIdx = r * CASCADE_COLS + c;
+          const sym = cascadeBoard[startIdx];
+          if (!sym || sym.isScatter || visited.has(startIdx)) continue;
+
+          const queue = [[r, c]];
+          const group = [startIdx];
+          visited.add(startIdx);
+
+          while (queue.length) {
+            const [cr, cc] = queue.shift();
+            for (const [dr, dc] of dirs) {
+              const nr = cr + dr;
+              const nc = cc + dc;
+              if (nr < 0 || nr >= CASCADE_ROWS || nc < 0 || nc >= CASCADE_COLS) continue;
+              const nIdx = nr * CASCADE_COLS + nc;
+              if (visited.has(nIdx)) continue;
+              if (cascadeBoard[nIdx].id === sym.id) {
+                visited.add(nIdx);
+                group.push(nIdx);
+                queue.push([nr, nc]);
+              }
+            }
+          }
+
+          if (group.length >= 5) {
+            clusters.push({ sym, cells: group });
+          }
+        }
+      }
+      return clusters;
+    }
+
+    function applyGravityToBoard() {
+      for (let c = 0; c < CASCADE_COLS; c++) {
+        const colItems = [];
+        for (let r = CASCADE_ROWS - 1; r >= 0; r--) {
+          const idx = r * CASCADE_COLS + c;
+          if (cascadeBoard[idx]) colItems.push(cascadeBoard[idx]);
+        }
+        for (let r = CASCADE_ROWS - 1; r >= 0; r--) {
+          const idx = r * CASCADE_COLS + c;
+          if (colItems.length) {
+            cascadeBoard[idx] = colItems.shift();
+          } else {
+            cascadeBoard[idx] = randomCascadeCell(true);
+          }
+        }
+      }
+    }
+
+    function openCascadeModal(title, body, isBonusConfirm = false) {
+      pendingCascadeBonusConfirm = isBonusConfirm;
+      cascadeModalTitle.textContent = title;
+      cascadeModalBody.textContent = body;
+      cascadeModalConfirmBtn.textContent = isBonusConfirm
+        ? `Купить бонус за ${(cascadeBet * 10).toLocaleString("ru-RU")} ★`
+        : "Понятно";
+      cascadeModal.classList.add("open");
+    }
+
+    document.getElementById("cascadeRulesBtn").addEventListener("click", () => {
+      openCascadeModal(
+        "Правила Каскада",
+        "5+ одинаковых символов рядом (без диагоналей) дают выигрыш. Символы исчезают, верхние падают вниз, а клетки выигрыша усиливаются (x2 → x4 → до x128). 3+ медальона со звездой дают 3+ фриспинов."
+      );
+    });
+
+    document.getElementById("closeCascadeModalBtn").addEventListener("click", () => {
+      pendingCascadeBonusConfirm = false;
+      cascadeModal.classList.remove("open");
+    });
+
+    cascadeModalConfirmBtn.addEventListener("click", () => {
+      const wasConfirm = pendingCascadeBonusConfirm;
+      pendingCascadeBonusConfirm = false;
+      cascadeModal.classList.remove("open");
+      if (wasConfirm) executeCascadeSpin(true);
+    });
+
+    document.getElementById("cascadeBuyBonusBtn").addEventListener("click", () => {
+      if (cascadeSpinning) return;
+      const cost = cascadeBet * 10;
+      if (state.balance < cost) {
+        cascadeStatusText.textContent = `Недостаточно ★ для бонуса (${cost} ★)`;
+        haptic("error");
+        return;
+      }
+      openCascadeModal(
+        "Сразу к бонусу",
+        `Покупка раунда со скаттерами за x10 от ставки (${cost.toLocaleString("ru-RU")} ★). Подтверждаешь списание?`,
+        true
+      );
+    });
+
+    document.getElementById("cascadeBetMinus").addEventListener("click", () => {
+      if (cascadeSpinning) return;
+      cascadeBet = Math.max(5, cascadeBet - 5);
+      renderCascadeGrid();
+    });
+
+    document.getElementById("cascadeBetPlus").addEventListener("click", () => {
+      if (cascadeSpinning) return;
+      cascadeBet = Math.min(5000, cascadeBet + 5);
+      renderCascadeGrid();
+    });
+
+    cascadeTurboBtn.addEventListener("click", () => {
+      cascadeTurbo = !cascadeTurbo;
+      renderCascadeGrid();
+    });
+
+    cascadeAutoBtn.addEventListener("click", () => {
+      cascadeAuto = !cascadeAuto;
+      renderCascadeGrid();
+      if (cascadeAuto && !cascadeSpinning) executeCascadeSpin(false);
+    });
+
+    function sleepMs(ms) {
+      return new Promise(res => setTimeout(res, ms));
+    }
+
+    async function executeCascadeSpin(forceScatters = false) {
+      if (cascadeSpinning) return;
+      const isFree = cascadeFreeSpinsLeft > 0;
+      const cost = forceScatters ? cascadeBet * 10 : (isFree ? 0 : cascadeBet);
+
+      if (state.balance < cost) {
+        cascadeAuto = false;
+        cascadeStatusText.textContent = "Недостаточно ★ — пополни через + сверху";
+        haptic("error");
+        renderCascadeGrid();
+        return;
+      }
+
+      if (cost > 0) {
+        state.balance -= cost;
+        saveState();
+        renderBalance();
+      }
+      if (isFree && !forceScatters) {
+        cascadeFreeSpinsLeft -= 1;
+        if (cascadeFreeSpinsLeft === 0) {
+          cascadeCellBoosts = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => 1);
+        }
+      } else if (!isFree) {
+        cascadeCellBoosts = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => 1);
+      }
+
+      cascadeSpinning = true;
+      cascadeSpinBtn.disabled = true;
+      let totalSpinWin = 0;
+      cascadeWinText.textContent = "0 ★";
+      cascadeStatusText.textContent = "Вращение...";
+
+      initCascadeBoard();
+      if (forceScatters) {
+        [2, 18, 34].forEach(pos => { cascadeBoard[pos] = { ...SCATTER_SYMBOL }; });
+      }
+      renderCascadeGrid();
+      await sleepMs(cascadeTurbo ? 120 : 280);
+
+      let cascadeStep = 0;
+      while (true) {
+        const clusters = findClusters5Plus();
+        if (!clusters.length) break;
+        cascadeStep += 1;
+
+        const hitIndices = new Set();
+        let stepWin = 0;
+
+        clusters.forEach(cl => {
+          let maxBoost = 1;
+          cl.cells.forEach(idx => {
+            hitIndices.add(idx);
+            const cur = cascadeCellBoosts[idx] || 1;
+            if (cur > maxBoost) maxBoost = cur;
+          });
+          const sizeBonus = 1 + (cl.cells.length - 5) * 0.15;
+          stepWin += Math.round(cascadeBet * cl.sym.pay * sizeBonus * maxBoost);
+        });
+
+        totalSpinWin += stepWin;
+        cascadeWinText.textContent = `${totalSpinWin.toLocaleString("ru-RU")} ★`;
+        cascadeStatusText.textContent = `Каскад #${cascadeStep}: +${stepWin} ★`;
+        renderCascadeGrid(hitIndices);
+        await sleepMs(cascadeTurbo ? 140 : 340);
+
+        hitIndices.forEach(idx => {
+          const cur = cascadeCellBoosts[idx] || 1;
+          cascadeCellBoosts[idx] = cur === 1 ? 2 : Math.min(128, cur * 2);
+          cascadeBoard[idx] = null;
+        });
+        applyGravityToBoard();
+        renderCascadeGrid();
+        await sleepMs(cascadeTurbo ? 120 : 280);
+      }
+
+      const scatterCount = cascadeBoard.filter(c => c && c.isScatter).length;
+      if (scatterCount >= 3) {
+        const addedSpins = Math.min(30, 3 + (scatterCount - 3));
+        cascadeFreeSpinsLeft = Math.min(30, cascadeFreeSpinsLeft + addedSpins);
+        cascadeStatusText.textContent = `Бонусные звёзды (${scatterCount}): +${addedSpins} фриспинов!`;
+      } else if (totalSpinWin > 0) {
+        cascadeStatusText.textContent = `Итог вращения: +${totalSpinWin.toLocaleString("ru-RU")} ★`;
+      } else {
+        cascadeStatusText.textContent = "Нет кластеров от 5 символов";
+      }
+
+      if (totalSpinWin > 0) {
+        state.balance = cleanNumber(state.balance, 5000) + totalSpinWin;
+        saveState();
+        renderBalance();
+        recordBetHistory({
+          mode: "Каскад",
+          amount: cost,
+          status: "cashed",
+          mult: +(totalSpinWin / Math.max(1, cost || cascadeBet)).toFixed(2),
+          payout: totalSpinWin,
+          note: cascadeStep ? `${cascadeStep} каскад(ов)` : "Бонус"
+        });
+        addLog(`Каскад: выигрыш +${totalSpinWin.toLocaleString("ru-RU")} ★`);
+        haptic("success");
+      } else if (cost > 0) {
+        recordBetHistory({
+          mode: "Каскад",
+          amount: cost,
+          status: "lost",
+          mult: null,
+          payout: 0,
+          note: "Без выигрышных кластеров"
+        });
+      }
+
+      cascadeSpinning = false;
+      cascadeSpinBtn.disabled = false;
+      renderCascadeGrid();
+
+      if (cascadeAuto || cascadeFreeSpinsLeft > 0) {
+        await sleepMs(cascadeTurbo ? 220 : 500);
+        if ((cascadeAuto || cascadeFreeSpinsLeft > 0) && !cascadeSpinning) {
+          executeCascadeSpin(false);
+        }
+      }
+    }
+
+    cascadeSpinBtn.addEventListener("click", () => executeCascadeSpin(false));
+
+    // ================= ARENA GAME =================
+    const arenaCanvas = document.getElementById("arenaCanvas");
+    const arenaCtx = arenaCanvas.getContext("2d");
+    const arenaOverlay = document.getElementById("arenaOverlay");
+    const arenaOverlayTitle = document.getElementById("arenaOverlayTitle");
+    const arenaOverlaySub = document.getElementById("arenaOverlaySub");
+    const arenaPhaseTag = document.getElementById("arenaPhaseTag");
+    const arenaPlayersCount = document.getElementById("arenaPlayersCount");
+    const arenaBankVal = document.getElementById("arenaBankVal");
+    const arenaTimerPill = document.getElementById("arenaTimerPill");
+    const arenaEnterBtn = document.getElementById("arenaEnterBtn");
+    const arenaPlayersList = document.getElementById("arenaPlayersList");
+    const arenaListCount = document.getElementById("arenaListCount");
+    const arenaBetModal = document.getElementById("arenaBetModal");
+    const arenaModalBetInput = document.getElementById("arenaModalBetInput");
+
+    const ARENA_COLORS = ["#30d158", "#3a86ff", "#ffd60a", "#ff2a85", "#bf5af2"];
+    let arenaEntries = [
+      { id: "bot_mira", name: "Mira", bet: 40, color: ARENA_COLORS[0], isUser: false },
+      { id: "bot_leo", name: "Leo", bet: 20, color: ARENA_COLORS[1], isUser: false }
+    ];
+    let arenaPhase = "betting"; // waiting | betting | spinning | finished
+    let arenaTimerSec = 10;
+    let arenaLastTick = performance.now();
+    let puckPos = { x: 0.5, y: 0.5, vx: 0.008, vy: 0.006 };
+    let arenaWinner = null;
+
+    function resizeArenaCanvas() {
+      const wrap = arenaCanvas.parentElement;
+      if (!wrap || !wrap.clientWidth) return;
+      const dpr = window.devicePixelRatio || 1;
+      arenaCanvas.width = wrap.clientWidth * dpr;
+      arenaCanvas.height = wrap.clientHeight * dpr;
+      arenaCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function getArenaBank() {
+      return arenaEntries.reduce((s, p) => s + p.bet, 0);
+    }
+
+    function renderArenaUI() {
+      const bank = getArenaBank();
+      arenaPlayersCount.textContent = String(arenaEntries.length);
+      arenaListCount.textContent = String(arenaEntries.length);
+      arenaBankVal.textContent = bank.toLocaleString("ru-RU");
+
+      if (arenaEntries.length < 2 && arenaPhase !== "finished") {
+        arenaPhase = "waiting";
+        arenaPhaseTag.textContent = "Ожидание";
+        arenaTimerPill.textContent = "Ждём игроков";
+        arenaOverlay.classList.add("show");
+        arenaOverlayTitle.textContent = "Ожидание игроков...";
+        arenaOverlaySub.textContent = "Сделайте ставку, чтобы войти в бой";
+      } else if (arenaPhase === "betting") {
+        arenaPhaseTag.textContent = "Сбор ставок";
+        arenaTimerPill.textContent = `Ставки: ${arenaTimerSec}с`;
+        arenaOverlay.classList.remove("show");
+      } else if (arenaPhase === "spinning") {
+        arenaPhaseTag.textContent = "Шайба на поле";
+        arenaTimerPill.textContent = "Розыгрыш...";
+        arenaOverlay.classList.remove("show");
+      } else if (arenaPhase === "finished" && arenaWinner) {
+        arenaPhaseTag.textContent = "Победитель";
+        arenaTimerPill.textContent = `Банк ${bank} ★`;
+        arenaOverlay.classList.add("show");
+        arenaOverlayTitle.textContent = `🏆 Победитель: ${arenaWinner.name}`;
+        arenaOverlaySub.textContent = `Забрал ${bank.toLocaleString("ru-RU")} ★`;
+      }
+
+      arenaPlayersList.innerHTML = arenaEntries.map(p => {
+        const pct = bank > 0 ? ((p.bet / bank) * 100).toFixed(2) : "0.00";
+        const isWin = arenaWinner && arenaWinner.id === p.id;
+        return `
+          <div class="player-row" style="${isWin ? "border:1px solid var(--green);" : ""}">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="arena-zone-dot" style="background:${p.color};"></span>
+              <div>
+                <div style="font-weight:700;">${p.name} ${isWin ? "🏆" : ""}</div>
+                <div style="font-size:11px;color:var(--text-muted);">${pct}% поля</div>
+              </div>
+            </div>
+            <span style="color:var(--gold);font-weight:800;">${p.bet.toLocaleString("ru-RU")} ★</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function drawArenaScene() {
+      const wrap = arenaCanvas.parentElement;
+      const w = wrap ? wrap.clientWidth : 320;
+      const h = wrap ? wrap.clientHeight : 320;
+      if (!w || !h) return;
+      arenaCtx.clearRect(0, 0, w, h);
+
+      const bank = getArenaBank();
+      if (!arenaEntries.length || bank <= 0) {
+        arenaCtx.fillStyle = "#12121a";
+        arenaCtx.fillRect(0, 0, w, h);
+        return;
+      }
+
+      // Vertical proportional territory bands across arena
+      let cursorX = 0;
+      arenaEntries.forEach(p => {
+        const ratio = p.bet / bank;
+        const bandW = w * ratio;
+        arenaCtx.fillStyle = p.color;
+        arenaCtx.globalAlpha = 0.34;
+        arenaCtx.fillRect(cursorX, 0, bandW, h);
+        arenaCtx.globalAlpha = 1;
+
+        arenaCtx.fillStyle = "rgba(255,255,255,0.16)";
+        arenaCtx.fillRect(cursorX, 0, 1.5, h);
+
+        if (bandW >= 34) {
+          arenaCtx.fillStyle = "#fff";
+          arenaCtx.font = "800 11px sans-serif";
+          arenaCtx.textAlign = "center";
+          arenaCtx.fillText(p.name.slice(0, 8), cursorX + bandW / 2, h / 2 - 4);
+          arenaCtx.fillStyle = "#ffd60a";
+          arenaCtx.fillText(`${(ratio * 100).toFixed(1)}%`, cursorX + bandW / 2, h / 2 + 12);
+        }
+        cursorX += bandW;
+      });
+
+      // Puck
+      const px = puckPos.x * w;
+      const py = puckPos.y * h;
+      arenaCtx.beginPath();
+      arenaCtx.arc(px, py, 12, 0, Math.PI * 2);
+      arenaCtx.fillStyle = "#ffffff";
+      arenaCtx.fill();
+      arenaCtx.lineWidth = 3;
+      arenaCtx.strokeStyle = "#ff2a85";
+      arenaCtx.stroke();
+    }
+
+    function pickArenaWinnerByPuck() {
+      const bank = getArenaBank();
+      if (!arenaEntries.length || bank <= 0) return null;
+      let acc = 0;
+      for (const p of arenaEntries) {
+        acc += p.bet / bank;
+        if (puckPos.x <= acc + 0.0001) return p;
+      }
+      return arenaEntries[arenaEntries.length - 1];
+    }
+
+    function startArenaSpin() {
+      arenaPhase = "spinning";
+      arenaWinner = null;
+      puckPos = {
+        x: Math.random(),
+        y: 0.2 + Math.random() * 0.6,
+        vx: (Math.random() > 0.5 ? 1 : -1) * (0.018 + Math.random() * 0.012),
+        vy: (Math.random() > 0.5 ? 1 : -1) * (0.014 + Math.random() * 0.01)
+      };
+      renderArenaUI();
+      haptic("medium");
+    }
+
+    function finishArenaRound() {
+      arenaPhase = "finished";
+      arenaWinner = pickArenaWinnerByPuck();
+      const bank = getArenaBank();
+      if (arenaWinner && arenaWinner.isUser) {
+        state.balance = cleanNumber(state.balance, 5000) + bank;
+        saveState();
+        renderBalance();
+        recordBetHistory({
+          mode: "Арена",
+          amount: arenaWinner.bet,
+          status: "cashed",
+          mult: +(bank / Math.max(1, arenaWinner.bet)).toFixed(2),
+          payout: bank,
+          note: "Победа на арене"
+        });
+        addLog(`Арена: победа! Забран банк +${bank.toLocaleString("ru-RU")} ★`);
+        haptic("success");
+      } else {
+        const myEntry = arenaEntries.find(x => x.isUser);
+        if (myEntry) {
+          recordBetHistory({
+            mode: "Арена",
+            amount: myEntry.bet,
+            status: "lost",
+            mult: null,
+            payout: 0,
+            note: `Победил ${arenaWinner ? arenaWinner.name : "соперник"}`
+          });
+          addLog(`Арена: победил ${arenaWinner ? arenaWinner.name : "игрок"} (-${myEntry.bet} ★)`);
+          haptic("error");
+        }
+      }
+      renderArenaUI();
+
+      setTimeout(() => {
+        arenaEntries = [
+          { id: "bot_mira", name: "Mira", bet: 30 + Math.floor(Math.random() * 40), color: ARENA_COLORS[0], isUser: false },
+          { id: "bot_leo", name: "Leo", bet: 20 + Math.floor(Math.random() * 35), color: ARENA_COLORS[1], isUser: false }
+        ];
+        arenaPhase = "betting";
+        arenaTimerSec = 10;
+        arenaWinner = null;
+        renderArenaUI();
+      }, 2800);
+    }
+
+    function placeArenaBet(amount) {
+      const safe = Math.max(1, Math.floor(Number(amount) || 50));
+      if (state.balance < safe) {
+        haptic("error");
+        return;
+      }
+      state.balance -= safe;
+      saveState();
+      renderBalance();
+
+      const existing = arenaEntries.find(x => x.isUser);
+      if (existing) {
+        existing.bet += safe;
+      } else {
+        arenaEntries.push({
+          id: "user_me",
+          name: myName,
+          bet: safe,
+          color: ARENA_COLORS[arenaEntries.length % ARENA_COLORS.length],
+          isUser: true
+        });
+      }
+      if (arenaPhase === "waiting" && arenaEntries.length >= 2) {
+        arenaPhase = "betting";
+        arenaTimerSec = 8;
+      }
+      addLog(`Арена: ставка ${safe} ★`);
+      haptic("medium");
+      renderArenaUI();
+    }
+
+    document.querySelectorAll("#arenaQuickPresets .preset-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#arenaQuickPresets .preset-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const val = Number(btn.dataset.ab) || 50;
+        arenaModalBetInput.value = String(val);
+        haptic("light");
+      });
+    });
+
+    arenaEnterBtn.addEventListener("click", () => {
+      arenaBetModal.classList.add("open");
+      haptic("light");
+    });
+
+    document.getElementById("closeArenaModalBtn").addEventListener("click", () => {
+      arenaBetModal.classList.remove("open");
+    });
+
+    document.querySelectorAll("[data-amb]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        arenaModalBetInput.value = btn.dataset.amb;
+      });
+    });
+
+    document.getElementById("confirmArenaBetBtn").addEventListener("click", () => {
+      placeArenaBet(arenaModalBetInput.value);
+      arenaBetModal.classList.remove("open");
+    });
+
     // ================= CRASH GAME =================
     const ROUND_BREAK_MS = 30000;
     const PRE_LAUNCH_MS = 3000;
@@ -3465,6 +4707,7 @@
     const crashActionBtn = document.getElementById("crashActionBtn");
     const playersListEl = document.getElementById("playersList");
     const playersCountEl = document.getElementById("playersCount");
+    const autoCashLabelEl = document.getElementById("autoCashLabel");
     const canvas = document.getElementById("crashCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -3499,6 +4742,14 @@
       return Math.max(cleanNumber(amount, 0), Math.round(cleanNumber(amount, 0) * (Number.isFinite(mult) && mult > 0 ? mult : 1)));
     }
 
+    function syncAutoCashoutControls() {
+      const lockedDuringLaunch = phase === "launch";
+      document.querySelectorAll(".auto-btn").forEach(btn => {
+        btn.disabled = lockedDuringLaunch;
+      });
+      autoCashLabelEl.textContent = lockedDuringLaunch ? "Авто (зафиксировано)" : "Авто";
+    }
+
     betInput.addEventListener("input", () => {
       document.querySelectorAll("#presetScroll .preset-btn").forEach(b => b.classList.remove("active"));
       updateActionButton();
@@ -3516,6 +4767,7 @@
 
     document.querySelectorAll(".auto-btn").forEach(btn => {
       btn.addEventListener("click", () => {
+        if (phase === "launch") return;
         const val = Number(btn.dataset.auto);
         if (autoCashoutTarget === val) {
           autoCashoutTarget = null;
@@ -3596,7 +4848,10 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      resizeArenaCanvas();
+    });
 
     function spawnExplosion(x, y) {
       explosionPos = { x, y };
@@ -3708,6 +4963,7 @@
       crashSubnote.textContent = currentRoundBet ? `Ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ зафиксирована` : "Поставь ставку — ракета взлетит по таймеру";
       countdownBox.classList.add("visible");
       cdBarFill.style.width = "100%";
+      syncAutoCashoutControls();
       drawScene(0.08, null);
       renderPlayers();
       updateActionButton();
@@ -3721,6 +4977,7 @@
       crashStatus.textContent = "Отсчёт до старта";
       crashMult.textContent = "3";
       countdownBox.classList.add("visible");
+      syncAutoCashoutControls();
       updateActionButton();
     }
 
@@ -3738,6 +4995,7 @@
       crashStage.className = "crash-stage flying";
       crashStatus.textContent = "Полёт • Успей нажать Стоп";
       crashMult.textContent = "x0.00";
+      syncAutoCashoutControls();
       renderPlayers();
       updateActionButton();
     }
@@ -3768,6 +5026,7 @@
       crashStage.className = "crash-stage crashed";
       crashStatus.textContent = "КРАШ! Ракета взорвалась";
       crashMult.textContent = `${crashPoint.toFixed(2)}x`;
+      syncAutoCashoutControls();
       renderPlayers();
       updateActionButton();
     }
@@ -3798,6 +5057,32 @@
         else if (rem > 0) caseSpinBtn.innerHTML = `<span>Доступен через ${formatHms(rem)}</span>`;
       }
 
+      // Arena loop
+      if (arenaPhase === "betting" && arenaEntries.length >= 2) {
+        if (now - arenaLastTick >= 1000) {
+          arenaLastTick = now;
+          arenaTimerSec = Math.max(0, arenaTimerSec - 1);
+          renderArenaUI();
+          if (arenaTimerSec <= 0) startArenaSpin();
+        }
+      } else if (arenaPhase === "spinning") {
+        puckPos.x += puckPos.vx;
+        puckPos.y += puckPos.vy;
+        if (puckPos.x < 0.06) { puckPos.x = 0.06; puckPos.vx = Math.abs(puckPos.vx); }
+        if (puckPos.x > 0.94) { puckPos.x = 0.94; puckPos.vx = -Math.abs(puckPos.vx); }
+        if (puckPos.y < 0.08) { puckPos.y = 0.08; puckPos.vy = Math.abs(puckPos.vy); }
+        if (puckPos.y > 0.92) { puckPos.y = 0.92; puckPos.vy = -Math.abs(puckPos.vy); }
+        puckPos.vx *= 0.988;
+        puckPos.vy *= 0.988;
+        if (Math.hypot(puckPos.vx, puckPos.vy) < 0.0018) {
+          finishArenaRound();
+        }
+      }
+      if (document.getElementById("view-arena").classList.contains("active")) {
+        drawArenaScene();
+      }
+
+      // Crash loop
       if (phase === "countdown") {
         const remMs = Math.max(0, ROUND_BREAK_MS - (now - phaseStart));
         countdownText.textContent = `До следующего раунда: ${Math.ceil(remMs / 1000)} сек`;
@@ -3873,16 +5158,18 @@
 
     function runSplashSequence() {
       const splashScreen = document.getElementById("splashScreen");
+      const splashPct = document.getElementById("splashPct");
       const splashStatus = document.getElementById("splashStatus");
       const splashProgressBar = document.getElementById("splashProgressBar");
       const mainApp = document.getElementById("mainApp");
 
       [
-        { pct: 30, text: "Загрузка MOLLY GIFTS...", delay: 80 },
-        { pct: 70, text: "Подключение режимов и баланса ★...", delay: 400 },
-        { pct: 100, text: "Готово", delay: 800 }
+        { pct: 32, text: "Загрузка MOLLY GIFTS...", delay: 80 },
+        { pct: 74, text: "Подключение режимов и баланса ★...", delay: 420 },
+        { pct: 100, text: "Готово", delay: 820 }
       ].forEach(s => {
         setTimeout(() => {
+          splashPct.textContent = `${s.pct}%`;
           splashProgressBar.style.width = `${s.pct}%`;
           splashStatus.textContent = s.text;
         }, s.delay);
@@ -3892,19 +5179,27 @@
         splashScreen.classList.add("hide");
         mainApp.classList.add("ready");
         resizeCanvas();
-      }, 1200);
+        resizeArenaCanvas();
+      }, 1220);
     }
 
     renderTelegramProfileHeader();
     renderBalance();
     renderCrashHistory();
+    renderBankGifts();
     renderProfileInventory();
     renderBetHistory();
     renderLogs();
     renderMinesUI();
     renderCasesUI();
     renderUpgradeUI();
+    initCascadeBoard();
+    renderCascadeGrid();
+    renderArenaUI();
+    renderTasksView();
+    renderTopView();
     resizeCanvas();
+    resizeArenaCanvas();
     startCountdownPhase();
     requestAnimationFrame(loop);
     runSplashSequence();
