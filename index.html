@@ -807,7 +807,7 @@
       <div class="balance-pill">
         <div class="balance-val">
           <span class="star-icon">★</span>
-          <span id="balanceText">500</span>
+          <span id="balanceText">10 000</span>
         </div>
         <button class="plus-btn" id="openTopupBtn" aria-label="Пополнить">+</button>
       </div>
@@ -900,19 +900,19 @@
         <div class="bet-row">
           <div class="bet-label">Сумма ставки</div>
           <div class="bet-input-wrap">
-            <input type="number" id="betInput" class="bet-input" value="25" min="1" max="1000000" />
+            <input type="number" id="betInput" class="bet-input" value="10000" min="1" max="1000000" />
             <span class="star-icon">★</span>
           </div>
         </div>
 
         <div class="preset-row">
-          <button class="preset-btn active" data-bet="25">25 ★</button>
+          <button class="preset-btn" data-bet="25">25 ★</button>
           <button class="preset-btn" data-bet="500">500 ★</button>
           <button class="preset-btn" data-bet="1000">1000 ★</button>
-          <button class="preset-btn" data-bet="4500">4500 ★</button>
+          <button class="preset-btn active" data-bet="10000">10000 ★</button>
         </div>
 
-        <button class="action-btn" id="crashActionBtn">Поставить ставку • 25 ★</button>
+        <button class="action-btn" id="crashActionBtn">Поставить ставку • 10000 ★</button>
       </div>
 
       <div class="players-card">
@@ -981,7 +981,7 @@
           <span id="tgUserLabel">Guest Demo</span>
         </div>
         <div class="list-item">
-          <span>Сбросить демо-баланс до 5000 ★</span>
+          <span>Сбросить демо-баланс до 10 000 ★</span>
           <button class="back-btn" id="resetDemoBtn">Сброс</button>
         </div>
       </div>
@@ -1021,7 +1021,7 @@
       <div class="topup-grid">
         <button class="topup-option" data-add="100">+100 ★</button>
         <button class="topup-option" data-add="1000">+1000 ★</button>
-        <button class="topup-option" data-add="5000">+5000 ★</button>
+        <button class="topup-option" data-add="10000">+10000 ★</button>
       </div>
       <div class="section-meta">Тестовое пополнение без списания реальных Telegram Stars / TON.</div>
     </div>
@@ -1047,16 +1047,16 @@
       } catch (_) {}
     }
 
-    function cleanNumber(val, fallback = 5000) {
+    function cleanNumber(val, fallback = 10000) {
       const n = Number(val);
       return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v8";
+    const STORAGE_KEY = "molly_gifts_demo_v10";
     const defaultState = {
-      balance: 5000,
+      balance: 10000,
       crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
-      logs: ["Стартовый демо-баланс: +5000 ★"]
+      logs: ["Стартовый демо-баланс: +10 000 ★"]
     };
 
     function loadState() {
@@ -1065,7 +1065,7 @@
         if (!raw) return { ...defaultState };
         const parsed = JSON.parse(raw);
         return {
-          balance: cleanNumber(parsed.balance, 5000),
+          balance: cleanNumber(parsed.balance, 10000),
           crashHistory: Array.isArray(parsed.crashHistory) && parsed.crashHistory.length
             ? parsed.crashHistory.map(x => Number(x) || 1.0).slice(0, 10)
             : [...defaultState.crashHistory],
@@ -1081,7 +1081,7 @@
     let state = loadState();
 
     function saveState() {
-      state.balance = cleanNumber(state.balance, 5000);
+      state.balance = cleanNumber(state.balance, 10000);
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       } catch (_) {}
@@ -1092,7 +1092,7 @@
     const crashHistoryEl = document.getElementById("crashHistory");
 
     function renderBalance() {
-      state.balance = cleanNumber(state.balance, 5000);
+      state.balance = cleanNumber(state.balance, 10000);
       balanceText.textContent = state.balance.toLocaleString("ru-RU");
     }
 
@@ -1151,7 +1151,7 @@
     document.querySelectorAll("[data-add]").forEach(btn => {
       btn.addEventListener("click", () => {
         const add = cleanNumber(btn.dataset.add, 100);
-        state.balance = cleanNumber(state.balance, 5000) + add;
+        state.balance = cleanNumber(state.balance, 10000) + add;
         saveState();
         renderBalance();
         addLog(`Демо-пополнение: +${add} ★`);
@@ -1161,7 +1161,7 @@
     });
 
     document.getElementById("resetDemoBtn").addEventListener("click", () => {
-      state = { ...defaultState, logs: ["Баланс сброшен до 5000 ★"] };
+      state = { ...defaultState, logs: ["Баланс сброшен до 10 000 ★"] };
       saveState();
       renderBalance();
       renderCrashHistory();
@@ -1229,14 +1229,14 @@
 
     function getBetAmount() {
       const n = Math.floor(Number(betInput.value));
-      return Number.isFinite(n) && n >= 1 ? n : 25;
+      return Number.isFinite(n) && n >= 1 ? n : 10000;
     }
 
-    // Полный возврат на баланс при нажатии "Стоп": сама ставка + множитель по ней
-    function calcTotalPayout(amount, mult) {
-      const safeAmount = cleanNumber(amount, 0);
-      const safeMult = Number.isFinite(mult) && mult > 0 ? mult : 1;
-      return Math.max(safeAmount, Math.round(safeAmount * safeMult));
+    // Единый расчёт выплаты: ставка * текущий множитель
+    function calcPayout(amount, mult) {
+      const a = cleanNumber(amount, 0);
+      const m = Number.isFinite(mult) && mult > 0 ? mult : 0;
+      return Math.round(a * m);
     }
 
     betInput.addEventListener("input", () => {
@@ -1259,9 +1259,9 @@
       const amount = getBetAmount();
 
       if (phase === "flying" && currentRoundBet && currentRoundBet.status === "active") {
-        const retNow = calcTotalPayout(currentRoundBet.amount, currentMult);
+        const payoutNow = calcPayout(currentRoundBet.amount, currentMult);
         crashActionBtn.classList.add("stop");
-        crashActionBtn.textContent = `Стоп • Забрать ${retNow} ★`;
+        crashActionBtn.textContent = `Стоп • Забрать ${payoutNow} ★`;
         return;
       }
 
@@ -1291,7 +1291,7 @@
         ? { text: `${nextRoundBet.amount} ★ (след. раунд)`, cls: "" }
         : currentRoundBet
           ? (currentRoundBet.status === "cashed"
-            ? { text: `Вернулось ${currentRoundBet.payout} ★ (${currentRoundBet.winMult.toFixed(2)}x)`, cls: "win" }
+            ? { text: `+${currentRoundBet.payout} ★ (${currentRoundBet.winMult.toFixed(2)}x)`, cls: "win" }
             : currentRoundBet.status === "lost"
               ? { text: `Сгорела (-${currentRoundBet.amount} ★)`, cls: "lose" }
               : { text: `${currentRoundBet.amount} ★`, cls: "" })
@@ -1330,10 +1330,10 @@
 
     function pickCrashPoint() {
       const r = Math.random();
-      if (r < 0.14) return +(0.15 + Math.random() * 0.65).toFixed(2);
-      if (r < 0.68) return +(0.85 + Math.random() * 1.55).toFixed(2);
-      if (r < 0.92) return +(2.40 + Math.random() * 2.80).toFixed(2);
-      return +(5.20 + Math.random() * 6.00).toFixed(2);
+      if (r < 0.12) return +(0.55 + Math.random() * 0.45).toFixed(2);
+      if (r < 0.65) return +(1.15 + Math.random() * 1.65).toFixed(2);
+      if (r < 0.90) return +(2.80 + Math.random() * 2.70).toFixed(2);
+      return +(5.50 + Math.random() * 6.00).toFixed(2);
     }
 
     function resizeCanvas() {
@@ -1686,7 +1686,7 @@
         }
       } else if (phase === "flying") {
         const sec = (now - phaseStart) / 1000;
-        currentMult = +(sec * 0.55 + Math.pow(sec, 1.55) * 0.15).toFixed(2);
+        currentMult = +(sec * 0.95 + Math.pow(sec, 1.65) * 0.25).toFixed(2);
 
         demoBots.forEach(b => {
           if (b.status === "active" && currentMult >= b.target && currentMult < crashPoint) {
@@ -1701,8 +1701,8 @@
         } else {
           crashMult.textContent = `${currentMult.toFixed(2)}x`;
           if (currentRoundBet && currentRoundBet.status === "active") {
-            const retNow = calcTotalPayout(currentRoundBet.amount, currentMult);
-            crashSubnote.textContent = `Вернётся на баланс: ${retNow} ★`;
+            const payoutNow = calcPayout(currentRoundBet.amount, currentMult);
+            crashSubnote.textContent = `К выплате: ${currentRoundBet.amount} ★ × ${currentMult.toFixed(2)} = ${payoutNow} ★`;
           }
           drawScene(Math.min(1, currentMult / 4.2), null);
           renderPlayers();
@@ -1724,21 +1724,20 @@
     function handleCashout() {
       if (phase !== "flying" || !currentRoundBet || currentRoundBet.status !== "active") return;
       const mult = Math.max(0.01, currentMult);
-      const payout = calcTotalPayout(currentRoundBet.amount, mult);
-      const bonus = Math.max(0, payout - currentRoundBet.amount);
+      const payout = calcPayout(currentRoundBet.amount, mult);
 
       currentRoundBet.status = "cashed";
       currentRoundBet.winMult = mult;
       currentRoundBet.payout = payout;
 
-      state.balance = cleanNumber(state.balance, 5000) + payout;
+      state.balance = cleanNumber(state.balance, 10000) + payout;
       saveState();
       renderBalance();
 
       crashStage.className = "crash-stage cashed";
-      crashStatus.textContent = "Победа • Ставка и выигрыш возвращены";
-      crashSubnote.textContent = `На баланс зачислено ${payout} ★ (ставка ${currentRoundBet.amount} ★ + ${bonus} ★)`;
-      addLog(`Crash: стоп на ${mult.toFixed(2)}x → зачислено ${payout} ★ (ставка ${currentRoundBet.amount} ★)`);
+      crashStatus.textContent = "Стоп нажат • Выплата зачислена";
+      crashSubnote.textContent = `Пришло ${payout} ★ (${currentRoundBet.amount} ★ × ${mult.toFixed(2)})`;
+      addLog(`Crash: стоп на ${mult.toFixed(2)}x (${currentRoundBet.amount} ★) → +${payout} ★`);
 
       haptic("success");
       renderPlayers();
