@@ -415,6 +415,10 @@
       box-shadow: inset 0 0 40px rgba(48, 209, 88, 0.16);
     }
 
+    .crash-stage.countdown {
+      border-color: rgba(255, 42, 133, 0.28);
+    }
+
     #crashCanvas {
       position: absolute;
       inset: 0;
@@ -445,6 +449,10 @@
 
     .crash-stage.cashed .crash-status {
       color: var(--green);
+    }
+
+    .crash-stage.countdown .crash-status {
+      color: var(--pink-bright);
     }
 
     .crash-mult {
@@ -480,38 +488,45 @@
       color: #ff8a80;
     }
 
-    .generating-box {
+    .countdown-box {
       position: relative;
       z-index: 3;
       margin-top: 10px;
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      background: rgba(17, 17, 22, 0.88);
-      border: 1px solid var(--border-strong);
+      gap: 7px;
+      background: rgba(17, 17, 22, 0.9);
+      border: 1px solid rgba(255, 42, 133, 0.35);
       border-radius: 16px;
-      padding: 12px 18px;
+      padding: 11px 18px;
       backdrop-filter: blur(8px);
     }
 
-    .generating-box.visible {
+    .countdown-box.visible {
       display: flex;
     }
 
-    .gen-bar-track {
-      width: 150px;
+    .cd-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cd-bar-track {
+      width: 170px;
       height: 5px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.1);
       overflow: hidden;
     }
 
-    .gen-bar-fill {
-      width: 0%;
+    .cd-bar-fill {
+      width: 100%;
       height: 100%;
       background: linear-gradient(90deg, var(--pink), var(--pink-bright));
-      transition: width 0.08s linear;
+      transition: width 0.12s linear;
     }
 
     /* Controls Card */
@@ -865,17 +880,17 @@
         <div class="history-strip" id="crashHistory"></div>
       </div>
 
-      <div class="crash-stage" id="crashStage">
+      <div class="crash-stage countdown" id="crashStage">
         <canvas id="crashCanvas"></canvas>
         <div class="crash-readout">
-          <div class="crash-status" id="crashStatus">Ожидание запуска</div>
+          <div class="crash-status" id="crashStatus">Приём ставок</div>
           <div class="crash-mult" id="crashMult">x0.00</div>
-          <div class="crash-subnote" id="crashSubnote">Поставь звёзды — ракета взлетит сама</div>
+          <div class="crash-subnote" id="crashSubnote">Поставь на следующий раунд</div>
         </div>
-        <div class="generating-box" id="generatingBox">
-          <div style="font-size:12px;font-weight:700;color:#fff;">🎰 Генерируем честный раунд</div>
-          <div class="gen-bar-track">
-            <div class="gen-bar-fill" id="genBarFill"></div>
+        <div class="countdown-box visible" id="countdownBox">
+          <div class="cd-title" id="countdownText">До взлёта: 30 сек</div>
+          <div class="cd-bar-track">
+            <div class="cd-bar-fill" id="cdBarFill"></div>
           </div>
         </div>
       </div>
@@ -901,7 +916,7 @@
 
       <div class="players-card">
         <div class="section-head">
-          <span class="section-title" style="font-size:13px;">Ставки игроков</span>
+          <span class="section-title" style="font-size:13px;">Ставки на раунд</span>
           <span class="section-meta" id="playersCount">0</span>
         </div>
         <div id="playersList" style="display:flex;flex-direction:column;gap:6px;"></div>
@@ -1036,7 +1051,7 @@
       return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v4";
+    const STORAGE_KEY = "molly_gifts_demo_v5";
     const defaultState = {
       balance: 500,
       crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
@@ -1171,12 +1186,15 @@
     };
 
     // ================= CRASH GAME =================
+    const ROUND_BREAK_MS = 30000; // 30 секунд между раундами
+
     const crashStage = document.getElementById("crashStage");
     const crashStatus = document.getElementById("crashStatus");
     const crashMult = document.getElementById("crashMult");
     const crashSubnote = document.getElementById("crashSubnote");
-    const generatingBox = document.getElementById("generatingBox");
-    const genBarFill = document.getElementById("genBarFill");
+    const countdownBox = document.getElementById("countdownBox");
+    const countdownText = document.getElementById("countdownText");
+    const cdBarFill = document.getElementById("cdBarFill");
     const betInput = document.getElementById("betInput");
     const crashActionBtn = document.getElementById("crashActionBtn");
     const playersListEl = document.getElementById("playersList");
@@ -1184,8 +1202,8 @@
     const canvas = document.getElementById("crashCanvas");
     const ctx = canvas.getContext("2d");
 
-    // phases: 'betting' | 'flying' | 'exploding' | 'generating'
-    let phase = "betting";
+    // phases: 'countdown' | 'flying' | 'exploding'
+    let phase = "countdown";
     let currentMult = 0.0;
     let crashPoint = 1.6;
     let phaseStart = performance.now();
@@ -1193,14 +1211,14 @@
     let sparks = [];
     let rafId = null;
 
-    // Player bet state: null | { amount, status: 'active' | 'cashed' | 'lost', winMult, payout }
-    let currentBet = null;
-    // Queued bet for next round: null | { amount }
-    let queuedBet = null;
+    // Active round bet: null | { amount, status: 'active' | 'cashed' | 'lost', winMult, payout }
+    let activeBet = null;
+    // Bet placed for the upcoming round: null | { amount }
+    let upcomingBet = null;
 
     const demoBots = [
-      { name: "Mira", bet: 30, target: 1.45, cashedAt: null, status: "active" },
-      { name: "Leo", bet: 75, target: 2.20, cashedAt: null, status: "active" }
+      { name: "Mira", bet: 30, target: 1.45, cashedAt: null, status: "waiting" },
+      { name: "Leo", bet: 75, target: 2.20, cashedAt: null, status: "waiting" }
     ];
 
     const starsBg = Array.from({ length: 28 }, (_, i) => ({
@@ -1234,40 +1252,48 @@
       crashActionBtn.classList.remove("stop", "queued");
       const amount = getBetAmount();
 
-      if (phase === "flying" && currentBet && currentBet.status === "active") {
-        const winNow = Math.floor(currentBet.amount * currentMult);
+      if (phase === "flying" && activeBet && activeBet.status === "active") {
+        const winNow = Math.floor(activeBet.amount * currentMult);
         crashActionBtn.classList.add("stop");
         crashActionBtn.textContent = `Стоп • Забрать ${winNow} ★`;
         return;
       }
 
-      if (queuedBet) {
+      if (upcomingBet) {
         crashActionBtn.classList.add("queued");
-        crashActionBtn.textContent = `Ставка ${queuedBet.amount} ★ на след. раунд`;
+        crashActionBtn.textContent = `В раунде: ${upcomingBet.amount} ★`;
         return;
       }
 
-      if (phase === "flying" || phase === "exploding" || phase === "generating") {
-        crashActionBtn.textContent = `На следующий раунд (${amount} ★)`;
-      } else {
+      if (phase === "countdown") {
         crashActionBtn.textContent = `Поставить ${amount} ★`;
+      } else {
+        crashActionBtn.textContent = `На след. раунд (${amount} ★)`;
       }
     }
 
     function renderPlayers() {
       const rows = [];
-      if (currentBet) {
-        let badge = `${currentBet.amount} ★`;
+
+      if (upcomingBet) {
+        rows.push(`
+          <div class="player-row" style="border:1px solid rgba(255,42,133,0.35);">
+            <span>🚀 ${myName}</span>
+            <span class="player-badge" style="color:var(--pink-bright);">${upcomingBet.amount} ★ (ждёт старт)</span>
+          </div>
+        `);
+      } else if (activeBet) {
+        let badge = `${activeBet.amount} ★`;
         let cls = "";
-        if (currentBet.status === "cashed") {
-          badge = `+${currentBet.payout} ★ (${currentBet.winMult.toFixed(2)}x)`;
+        if (activeBet.status === "cashed") {
+          badge = `+${activeBet.payout} ★ (${activeBet.winMult.toFixed(2)}x)`;
           cls = "win";
-        } else if (currentBet.status === "lost") {
-          badge = `Сгорела (-${currentBet.amount} ★)`;
+        } else if (activeBet.status === "lost") {
+          badge = `Сгорела (-${activeBet.amount} ★)`;
           cls = "lose";
         }
         rows.push(`
-          <div class="player-row" style="border:1px solid rgba(255,42,133,0.3);">
+          <div class="player-row" style="border:1px solid rgba(255,42,133,0.35);">
             <span>🚀 ${myName}</span>
             <span class="player-badge ${cls}">${badge}</span>
           </div>
@@ -1358,7 +1384,6 @@
 
       ctx.save();
 
-      // Flash glow
       const flashRadius = 18 + t * 56;
       const radGrad = ctx.createRadialGradient(x, y, 2, x, y, flashRadius);
       radGrad.addColorStop(0, `rgba(255, 220, 120, ${0.85 * inv})`);
@@ -1369,14 +1394,12 @@
       ctx.fillStyle = radGrad;
       ctx.fill();
 
-      // Shockwave ring
       ctx.beginPath();
       ctx.arc(x, y, 10 + t * 52, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(255, 59, 48, ${0.9 * inv})`;
       ctx.lineWidth = Math.max(1, 4 * inv);
       ctx.stroke();
 
-      // Flying sparks & fragments
       sparks.forEach(sp => {
         const px = x + sp.vx * t;
         const py = y + sp.vy * t + 35 * t * t;
@@ -1401,7 +1424,6 @@
       ctx.translate(x, y);
       ctx.rotate(angleRad);
 
-      // Flame trail
       const flicker = 12 + Math.sin(performance.now() * 0.03) * 4;
       ctx.beginPath();
       ctx.moveTo(-14, -5);
@@ -1411,7 +1433,6 @@
       ctx.fillStyle = "#ff2a85";
       ctx.fill();
 
-      // Rocket body
       ctx.beginPath();
       ctx.moveTo(18, 0);
       ctx.quadraticCurveTo(4, -10, -14, -8);
@@ -1421,7 +1442,6 @@
       ctx.fillStyle = "#f5f5f7";
       ctx.fill();
 
-      // Pink nose/accent stripe
       ctx.beginPath();
       ctx.moveTo(18, 0);
       ctx.quadraticCurveTo(10, -5, 4, -7.5);
@@ -1431,7 +1451,6 @@
       ctx.fillStyle = "#ff2a85";
       ctx.fill();
 
-      // Fins
       ctx.fillStyle = "#e4007c";
       ctx.beginPath();
       ctx.moveTo(-6, -8);
@@ -1447,7 +1466,6 @@
       ctx.closePath();
       ctx.fill();
 
-      // Window
       ctx.beginPath();
       ctx.arc(2, 0, 4, 0, Math.PI * 2);
       ctx.fillStyle = "#111116";
@@ -1476,7 +1494,6 @@
       if (!w || !h) return;
       ctx.clearRect(0, 0, w, h);
 
-      // Stars
       starsBg.forEach(s => {
         ctx.beginPath();
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
@@ -1484,7 +1501,6 @@
         ctx.fill();
       });
 
-      // Decorative planet & TON emblem
       ctx.beginPath();
       ctx.arc(w * 0.84, h * 0.34, 14, 0, Math.PI * 2);
       ctx.fillStyle = "rgba(228, 0, 124, 0.14)";
@@ -1514,23 +1530,49 @@
       }
     }
 
+    function startCountdownPhase() {
+      phase = "countdown";
+      phaseStart = performance.now();
+      currentMult = 0.0;
+
+      demoBots.forEach(b => {
+        b.status = "waiting";
+        b.cashedAt = null;
+      });
+
+      crashStage.className = "crash-stage countdown";
+      crashStatus.textContent = "Приём ставок";
+      crashMult.textContent = "x0.00";
+      crashSubnote.textContent = upcomingBet
+        ? `Ставка ${upcomingBet.amount} ★ готова к старту`
+        : "Успей поставить до запуска ракеты";
+
+      countdownBox.classList.add("visible");
+      cdBarFill.style.width = "100%";
+      countdownText.textContent = "До следующего раунда: 30 сек";
+
+      drawScene(0.08, null);
+      renderPlayers();
+      updateActionButton();
+    }
+
     function beginFlight() {
       phase = "flying";
       currentMult = 0.0;
       crashPoint = pickCrashPoint();
       phaseStart = performance.now();
-      generatingBox.classList.remove("visible");
+      countdownBox.classList.remove("visible");
 
-      if (queuedBet) {
-        currentBet = {
-          amount: queuedBet.amount,
+      if (upcomingBet) {
+        activeBet = {
+          amount: upcomingBet.amount,
           status: "active",
           winMult: 0,
           payout: 0
         };
-        queuedBet = null;
+        upcomingBet = null;
       } else {
-        currentBet = null;
+        activeBet = null;
       }
 
       demoBots.forEach(b => {
@@ -1540,9 +1582,9 @@
 
       crashStage.className = "crash-stage flying";
       crashStatus.textContent = "Полёт • Успей нажать Стоп";
-      crashSubnote.textContent = currentBet
-        ? `Твоя ставка: ${currentBet.amount} ★`
-        : "Раунд идёт — можно поставить на следующий";
+      crashSubnote.textContent = activeBet
+        ? `Твоя ставка: ${activeBet.amount} ★`
+        : "Раунд идёт — можно забронировать на следующий";
 
       renderPlayers();
       updateActionButton();
@@ -1562,9 +1604,9 @@
       saveState();
       renderCrashHistory();
 
-      if (currentBet && currentBet.status === "active") {
-        currentBet.status = "lost";
-        addLog(`Crash: взрыв на ${crashPoint.toFixed(2)}x (-${currentBet.amount} ★)`);
+      if (activeBet && activeBet.status === "active") {
+        activeBet.status = "lost";
+        addLog(`Crash: взрыв на ${crashPoint.toFixed(2)}x (-${activeBet.amount} ★)`);
         haptic("error");
       } else {
         haptic("warning");
@@ -1577,8 +1619,8 @@
       crashStage.className = "crash-stage crashed";
       crashStatus.textContent = "КРАШ! Ракета взорвалась";
       crashMult.textContent = `${crashPoint.toFixed(2)}x`;
-      crashSubnote.textContent = currentBet && currentBet.status === "lost"
-        ? `Не успел нажать Стоп — ставка ${currentBet.amount} ★ сгорела`
+      crashSubnote.textContent = activeBet && activeBet.status === "lost"
+        ? `Не успел нажать Стоп — ставка ${activeBet.amount} ★ сгорела`
         : `Ракета взорвалась на ${crashPoint.toFixed(2)}x`;
 
       renderPlayers();
@@ -1586,7 +1628,20 @@
     }
 
     function loop(now) {
-      if (phase === "flying") {
+      if (phase === "countdown") {
+        const elapsed = now - phaseStart;
+        const remMs = Math.max(0, ROUND_BREAK_MS - elapsed);
+        const remSec = Math.ceil(remMs / 1000);
+        const pct = Math.max(0, Math.min(100, (remMs / ROUND_BREAK_MS) * 100));
+
+        countdownText.textContent = `До следующего раунда: ${remSec} сек`;
+        cdBarFill.style.width = `${pct}%`;
+        drawScene(0.08, null);
+
+        if (remMs <= 0) {
+          beginFlight();
+        }
+      } else if (phase === "flying") {
         const sec = (now - phaseStart) / 1000;
         currentMult = +(sec * 0.55 + Math.pow(sec, 1.55) * 0.15).toFixed(2);
 
@@ -1602,8 +1657,8 @@
           startCrashExplosion();
         } else {
           crashMult.textContent = `${currentMult.toFixed(2)}x`;
-          if (currentBet && currentBet.status === "active") {
-            const winNow = Math.floor(currentBet.amount * currentMult);
+          if (activeBet && activeBet.status === "active") {
+            const winNow = Math.floor(activeBet.amount * currentMult);
             crashSubnote.textContent = `Текущий выигрыш: ${winNow} ★`;
           }
           drawScene(Math.min(1, currentMult / 4.2), null);
@@ -1611,23 +1666,12 @@
           updateActionButton();
         }
       } else if (phase === "exploding") {
-        const explDuration = 1150;
+        const explDuration = 1200;
         const p = Math.min(1, (now - phaseStart) / explDuration);
         drawScene(Math.min(1, crashPoint / 4.2), p);
 
         if (p >= 1) {
-          phase = "generating";
-          phaseStart = performance.now();
-          generatingBox.classList.add("visible");
-          genBarFill.style.width = "0%";
-        }
-      } else if (phase === "generating") {
-        const genDuration = 2200;
-        const p = Math.min(1, (now - phaseStart) / genDuration);
-        genBarFill.style.width = `${Math.round(p * 100)}%`;
-
-        if (p >= 1) {
-          beginFlight();
+          startCountdownPhase();
         }
       }
 
@@ -1635,13 +1679,13 @@
     }
 
     function handleCashout() {
-      if (phase !== "flying" || !currentBet || currentBet.status !== "active") return;
+      if (phase !== "flying" || !activeBet || activeBet.status !== "active") return;
       const mult = Math.max(0.01, currentMult);
-      const payout = Math.floor(currentBet.amount * mult);
+      const payout = Math.floor(activeBet.amount * mult);
 
-      currentBet.status = "cashed";
-      currentBet.winMult = mult;
-      currentBet.payout = payout;
+      activeBet.status = "cashed";
+      activeBet.winMult = mult;
+      activeBet.payout = payout;
 
       state.balance = cleanNumber(state.balance, 500) + payout;
       saveState();
@@ -1658,7 +1702,7 @@
     }
 
     function placeBetAction() {
-      if (queuedBet) return;
+      if (upcomingBet) return;
       const amount = getBetAmount();
       if (state.balance < amount) {
         crashSubnote.textContent = "Недостаточно ★ — нажми + сверху";
@@ -1670,19 +1714,20 @@
       saveState();
       renderBalance();
 
-      queuedBet = { amount };
+      upcomingBet = { amount };
       haptic("medium");
+      renderPlayers();
       updateActionButton();
 
-      if (phase === "betting") {
-        beginFlight();
+      if (phase === "countdown") {
+        crashSubnote.textContent = `Ставка ${amount} ★ принята — ждём взлёт`;
       } else {
-        crashSubnote.textContent = `Ставка ${amount} ★ забронирована на следующий полёт`;
+        crashSubnote.textContent = `Ставка ${amount} ★ забронирована на следующий раунд`;
       }
     }
 
     crashActionBtn.addEventListener("click", () => {
-      if (phase === "flying" && currentBet && currentBet.status === "active") {
+      if (phase === "flying" && activeBet && activeBet.status === "active") {
         handleCashout();
       } else {
         placeBetAction();
@@ -1693,10 +1738,8 @@
     renderBalance();
     renderCrashHistory();
     renderLogs();
-    renderPlayers();
-    updateActionButton();
     resizeCanvas();
-    drawScene(0.12, null);
+    startCountdownPhase();
     rafId = requestAnimationFrame(loop);
   </script>
 </body>
