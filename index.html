@@ -46,6 +46,98 @@
       overflow-x: hidden;
     }
 
+    /* Splash / Entry Loader */
+    .splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background:
+        radial-gradient(circle at 50% 36%, rgba(255, 42, 133, 0.24) 0%, rgba(228, 0, 124, 0.08) 36%, transparent 68%),
+        var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1), transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.42s ease;
+    }
+
+    .splash-screen.hide {
+      opacity: 0;
+      transform: scale(1.04);
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-ring {
+      position: relative;
+      width: 92px;
+      height: 92px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, #1b1b24, #0f0f14);
+      border: 1px solid rgba(255, 42, 133, 0.4);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 42px rgba(255, 42, 133, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      animation: splashPulse 1.5s ease-in-out infinite;
+    }
+
+    .splash-ring::before {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border-radius: 34px;
+      border: 1.5px solid transparent;
+      border-top-color: var(--pink-bright);
+      border-right-color: rgba(255, 42, 133, 0.35);
+      animation: splashSpin 1.15s linear infinite;
+    }
+
+    @keyframes splashPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes splashSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .splash-brand {
+      margin-top: 20px;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      background: linear-gradient(90deg, #ffffff 0%, #ff85ba 55%, #ff2a85 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .splash-status {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      min-height: 16px;
+    }
+
+    .splash-progress-wrap {
+      margin-top: 18px;
+      width: 196px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+      overflow: hidden;
+    }
+
+    .splash-progress-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--pink), var(--pink-bright));
+      box-shadow: 0 0 14px var(--pink-glow);
+      transition: width 0.22s ease;
+    }
+
     .app {
       max-width: 480px;
       margin: 0 auto;
@@ -53,6 +145,14 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+    }
+
+    .app.ready {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     /* Header */
@@ -563,7 +663,7 @@
     }
 
     .bet-input {
-      width: 96px;
+      width: 104px;
       background: transparent;
       border: none;
       color: var(--text);
@@ -678,11 +778,39 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       padding: 12px 14px;
       background: var(--surface-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
       font-size: 13px;
+    }
+
+    .history-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 11px 13px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 12px;
+    }
+
+    .history-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .history-sub {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 11px;
     }
 
     /* Bottom iOS Tabbar */
@@ -784,7 +912,27 @@
   </style>
 </head>
 <body>
-  <div class="app">
+  <!-- Splash Loader -->
+  <div class="splash-screen" id="splashScreen" aria-hidden="true">
+    <div class="splash-ring">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L14.9 8.2L21.7 9.1L16.7 13.8L17.9 20.6L12 17.3L6.1 20.6L7.3 13.8L2.3 9.1L9.1 8.2L12 2Z" fill="url(#mgSplash)"/>
+        <defs>
+          <linearGradient id="mgSplash" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#FF2A85"/>
+            <stop offset="1" stop-color="#E4007C"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="splash-brand">MOLLY GIFTS</div>
+    <div class="splash-status" id="splashStatus">Вход в приложение...</div>
+    <div class="splash-progress-wrap">
+      <div class="splash-progress-bar" id="splashProgressBar"></div>
+    </div>
+  </div>
+
+  <div class="app" id="mainApp">
     <header class="topbar">
       <div class="brand">
         <div class="brand-badge">
@@ -807,7 +955,7 @@
       <div class="balance-pill">
         <div class="balance-val">
           <span class="star-icon">★</span>
-          <span id="balanceText">10 000</span>
+          <span id="balanceText">5000</span>
         </div>
         <button class="plus-btn" id="openTopupBtn" aria-label="Пополнить">+</button>
       </div>
@@ -900,19 +1048,19 @@
         <div class="bet-row">
           <div class="bet-label">Сумма ставки</div>
           <div class="bet-input-wrap">
-            <input type="number" id="betInput" class="bet-input" value="10000" min="1" max="1000000" />
+            <input type="number" id="betInput" class="bet-input" value="25" min="1" max="10000000" />
             <span class="star-icon">★</span>
           </div>
         </div>
 
         <div class="preset-row">
-          <button class="preset-btn" data-bet="25">25 ★</button>
-          <button class="preset-btn" data-bet="500">500 ★</button>
+          <button class="preset-btn active" data-bet="25">25 ★</button>
           <button class="preset-btn" data-bet="1000">1000 ★</button>
-          <button class="preset-btn active" data-bet="10000">10000 ★</button>
+          <button class="preset-btn" data-bet="4500">4500 ★</button>
+          <button class="preset-btn" data-bet="10000">10000 ★</button>
         </div>
 
-        <button class="action-btn" id="crashActionBtn">Поставить ставку • 10000 ★</button>
+        <button class="action-btn" id="crashActionBtn">Поставить ставку • 25 ★</button>
       </div>
 
       <div class="players-card">
@@ -975,15 +1123,23 @@
     <!-- PROFILE -->
     <section class="view" id="view-profile">
       <div class="info-card">
-        <div class="section-title">Профиль и демо-история</div>
+        <div class="section-title">Профиль и сохранение</div>
         <div class="list-item">
           <span>Пользователь</span>
           <span id="tgUserLabel">Guest Demo</span>
         </div>
         <div class="list-item">
-          <span>Сбросить демо-баланс до 10 000 ★</span>
+          <span>Сбросить демо-баланс до 5000 ★</span>
           <button class="back-btn" id="resetDemoBtn">Сброс</button>
         </div>
+      </div>
+
+      <div class="info-card">
+        <div class="section-head">
+          <span class="section-title">История ставок</span>
+          <span class="section-meta" id="betHistoryCount">0</span>
+        </div>
+        <div id="betHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
 
       <div class="info-card">
@@ -1019,8 +1175,8 @@
         <button class="back-btn" id="closeTopupBtn">Закрыть</button>
       </div>
       <div class="topup-grid">
-        <button class="topup-option" data-add="100">+100 ★</button>
         <button class="topup-option" data-add="1000">+1000 ★</button>
+        <button class="topup-option" data-add="5000">+5000 ★</button>
         <button class="topup-option" data-add="10000">+10000 ★</button>
       </div>
       <div class="section-meta">Тестовое пополнение без списания реальных Telegram Stars / TON.</div>
@@ -1047,60 +1203,167 @@
       } catch (_) {}
     }
 
-    function cleanNumber(val, fallback = 10000) {
+    function cleanNumber(val, fallback = 5000) {
       const n = Number(val);
       return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback;
     }
 
+    function formatTimeNow() {
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      const ss = String(d.getSeconds()).padStart(2, "0");
+      return `${hh}:${mm}:${ss}`;
+    }
+
     const STORAGE_KEY = "molly_gifts_demo_v10";
+    const FALLBACK_KEY = "molly_gifts_demo_state_latest";
+
     const defaultState = {
-      balance: 10000,
+      balance: 5000,
       crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
-      logs: ["Стартовый демо-баланс: +10 000 ★"]
+      betHistory: [],
+      logs: ["Стартовый демо-баланс: +5000 ★"]
     };
+
+    function parseStoredJson(raw) {
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return {
+        balance: cleanNumber(parsed.balance, 5000),
+        crashHistory: Array.isArray(parsed.crashHistory) && parsed.crashHistory.length
+          ? parsed.crashHistory.map(x => Number(x) || 1.0).slice(0, 12)
+          : [...defaultState.crashHistory],
+        betHistory: Array.isArray(parsed.betHistory)
+          ? parsed.betHistory.slice(0, 30)
+          : [],
+        logs: Array.isArray(parsed.logs) && parsed.logs.length
+          ? parsed.logs.slice(0, 20)
+          : [...defaultState.logs]
+      };
+    }
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { ...defaultState };
-        const parsed = JSON.parse(raw);
-        return {
-          balance: cleanNumber(parsed.balance, 10000),
-          crashHistory: Array.isArray(parsed.crashHistory) && parsed.crashHistory.length
-            ? parsed.crashHistory.map(x => Number(x) || 1.0).slice(0, 10)
-            : [...defaultState.crashHistory],
-          logs: Array.isArray(parsed.logs) && parsed.logs.length
-            ? parsed.logs.slice(0, 12)
-            : [...defaultState.logs]
-        };
-      } catch (_) {
-        return { ...defaultState };
-      }
+        const primary = parseStoredJson(localStorage.getItem(STORAGE_KEY));
+        if (primary) return primary;
+        const backup = parseStoredJson(localStorage.getItem(FALLBACK_KEY));
+        if (backup) return backup;
+      } catch (_) {}
+      return {
+        ...defaultState,
+        crashHistory: [...defaultState.crashHistory],
+        betHistory: [...defaultState.betHistory],
+        logs: [...defaultState.logs]
+      };
     }
 
     let state = loadState();
 
     function saveState() {
-      state.balance = cleanNumber(state.balance, 10000);
+      state.balance = cleanNumber(state.balance, 5000);
+      const serialized = JSON.stringify(state);
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        localStorage.setItem(STORAGE_KEY, serialized);
+      } catch (_) {}
+      try {
+        localStorage.setItem(FALLBACK_KEY, serialized);
+      } catch (_) {}
+      try {
+        if (window.name && window.name.startsWith("MOLLY_GIFTS_STATE:")) {
+          window.name = "MOLLY_GIFTS_STATE:" + serialized;
+        }
       } catch (_) {}
     }
+
+    try {
+      if (!localStorage.getItem(STORAGE_KEY) && !localStorage.getItem(FALLBACK_KEY) && window.name && window.name.startsWith("MOLLY_GIFTS_STATE:")) {
+        const restored = parseStoredJson(window.name.slice("MOLLY_GIFTS_STATE:".length));
+        if (restored) {
+          state = restored;
+          saveState();
+        }
+      }
+      window.name = "MOLLY_GIFTS_STATE:" + JSON.stringify(state);
+    } catch (_) {}
+
+    function flushSave() {
+      saveState();
+    }
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) flushSave();
+    });
+    window.addEventListener("pagehide", flushSave);
+    window.addEventListener("beforeunload", flushSave);
 
     const balanceText = document.getElementById("balanceText");
     const activityLog = document.getElementById("activityLog");
     const crashHistoryEl = document.getElementById("crashHistory");
+    const betHistoryListEl = document.getElementById("betHistoryList");
+    const betHistoryCountEl = document.getElementById("betHistoryCount");
 
     function renderBalance() {
-      state.balance = cleanNumber(state.balance, 10000);
+      state.balance = cleanNumber(state.balance, 5000);
       balanceText.textContent = state.balance.toLocaleString("ru-RU");
     }
 
     function addLog(text) {
-      state.logs.unshift(text);
-      state.logs = state.logs.slice(0, 12);
+      state.logs.unshift(`[${formatTimeNow()}] ${text}`);
+      state.logs = state.logs.slice(0, 20);
       saveState();
       renderLogs();
+    }
+
+    function recordBetHistory({ mode, amount, status, mult = null, payout = 0 }) {
+      const safeAmount = cleanNumber(amount, 0);
+      const safePayout = cleanNumber(payout, 0);
+      const profit = status === "cashed" ? (safePayout - safeAmount) : -safeAmount;
+
+      state.betHistory.unshift({
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        time: formatTimeNow(),
+        mode: mode || "Crash",
+        amount: safeAmount,
+        mult: typeof mult === "number" && Number.isFinite(mult) ? +mult.toFixed(2) : null,
+        payout: safePayout,
+        profit,
+        status
+      });
+      state.betHistory = state.betHistory.slice(0, 30);
+      saveState();
+      renderBetHistory();
+    }
+
+    function renderBetHistory() {
+      betHistoryCountEl.textContent = String(state.betHistory.length);
+      if (!state.betHistory.length) {
+        betHistoryListEl.innerHTML = `<div class="section-meta">Ставок пока не было — сделай первую ставку в Crash или Кейсах</div>`;
+        return;
+      }
+
+      betHistoryListEl.innerHTML = state.betHistory.map(item => {
+        const isWin = item.status === "cashed";
+        const multText = item.mult !== null ? ` • ${item.mult.toFixed(2)}x` : "";
+        const rightText = isWin
+          ? `+${item.payout.toLocaleString("ru-RU")} ★`
+          : `-${item.amount.toLocaleString("ru-RU")} ★`;
+        const profitText = isWin
+          ? `Ставка ${item.amount.toLocaleString("ru-RU")} ★ + множитель (${item.profit >= 0 ? "+" : ""}${item.profit.toLocaleString("ru-RU")} ★)`
+          : `Ракета взорвалась • ставка сгорела`;
+
+        return `
+          <div class="history-item">
+            <div class="history-top">
+              <span>${item.mode} • ${item.amount.toLocaleString("ru-RU")} ★${multText}</span>
+              <span style="color:${isWin ? "var(--green)" : "var(--red)"};">${rightText}</span>
+            </div>
+            <div class="history-sub">
+              <span>${profitText}</span>
+              <span>${item.time}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderLogs() {
@@ -1130,6 +1393,10 @@
       tabBtns.forEach(b => b.classList.toggle("active", b.dataset.nav === name));
       haptic("light");
       if (name === "crash") resizeCanvas();
+      if (name === "profile") {
+        renderBetHistory();
+        renderLogs();
+      }
     }
 
     document.querySelectorAll("[data-nav]").forEach(el => {
@@ -1150,8 +1417,8 @@
     });
     document.querySelectorAll("[data-add]").forEach(btn => {
       btn.addEventListener("click", () => {
-        const add = cleanNumber(btn.dataset.add, 100);
-        state.balance = cleanNumber(state.balance, 10000) + add;
+        const add = cleanNumber(btn.dataset.add, 1000);
+        state.balance = cleanNumber(state.balance, 5000) + add;
         saveState();
         renderBalance();
         addLog(`Демо-пополнение: +${add} ★`);
@@ -1161,10 +1428,16 @@
     });
 
     document.getElementById("resetDemoBtn").addEventListener("click", () => {
-      state = { ...defaultState, logs: ["Баланс сброшен до 10 000 ★"] };
+      state = {
+        balance: 5000,
+        crashHistory: [...defaultState.crashHistory],
+        betHistory: [],
+        logs: [`[${formatTimeNow()}] Баланс и история сброшены до 5000 ★`]
+      };
       saveState();
       renderBalance();
       renderCrashHistory();
+      renderBetHistory();
       renderLogs();
       haptic("medium");
     });
@@ -1177,12 +1450,19 @@
         return;
       }
       state.balance -= c;
-      const win = Math.max(5, Math.round(c * (0.5 + Math.random() * 1.9)));
+      const mult = +(0.5 + Math.random() * 1.9).toFixed(2);
+      const win = Math.max(5, Math.round(c * mult));
       state.balance += win;
-      saveState();
+      recordBetHistory({
+        mode: "Кейсы",
+        amount: c,
+        status: "cashed",
+        mult,
+        payout: win
+      });
+      addLog(`Кейс (${c} ★, ${mult.toFixed(2)}x) → получено ${win} ★`);
       renderBalance();
-      addLog(`Кейс (${c} ★) → выпало ${win} ★`);
-      document.getElementById("boxResult").textContent = `Выпал приз на ${win} ★`;
+      document.getElementById("boxResult").textContent = `Выпал приз на ${win} ★ (${mult.toFixed(2)}x)`;
       haptic("success");
     };
 
@@ -1229,14 +1509,14 @@
 
     function getBetAmount() {
       const n = Math.floor(Number(betInput.value));
-      return Number.isFinite(n) && n >= 1 ? n : 10000;
+      return Number.isFinite(n) && n >= 1 ? n : 25;
     }
 
-    // Единый расчёт выплаты: ставка * текущий множитель
-    function calcPayout(amount, mult) {
-      const a = cleanNumber(amount, 0);
-      const m = Number.isFinite(mult) && mult > 0 ? mult : 0;
-      return Math.round(a * m);
+    function calcCashoutTotal(amount, mult) {
+      const safeAmount = cleanNumber(amount, 0);
+      const safeMult = Number.isFinite(mult) && mult > 0 ? mult : 1;
+      const multiplied = Math.round(safeAmount * safeMult);
+      return Math.max(safeAmount, multiplied);
     }
 
     betInput.addEventListener("input", () => {
@@ -1259,28 +1539,28 @@
       const amount = getBetAmount();
 
       if (phase === "flying" && currentRoundBet && currentRoundBet.status === "active") {
-        const payoutNow = calcPayout(currentRoundBet.amount, currentMult);
+        const retNow = calcCashoutTotal(currentRoundBet.amount, currentMult);
         crashActionBtn.classList.add("stop");
-        crashActionBtn.textContent = `Стоп • Забрать ${payoutNow} ★`;
+        crashActionBtn.textContent = `Стоп • Забрать ${retNow.toLocaleString("ru-RU")} ★`;
         return;
       }
 
       if ((phase === "countdown" || phase === "launch") && currentRoundBet) {
         crashActionBtn.classList.add("queued");
-        crashActionBtn.textContent = `Ставка поставлена: ${currentRoundBet.amount} ★`;
+        crashActionBtn.textContent = `Ставка поставлена: ${currentRoundBet.amount.toLocaleString("ru-RU")} ★`;
         return;
       }
 
       if ((phase === "flying" || phase === "exploding") && nextRoundBet) {
         crashActionBtn.classList.add("queued");
-        crashActionBtn.textContent = `На след. раунд: ${nextRoundBet.amount} ★`;
+        crashActionBtn.textContent = `На след. раунд: ${nextRoundBet.amount.toLocaleString("ru-RU")} ★`;
         return;
       }
 
       if (phase === "countdown" || phase === "launch") {
-        crashActionBtn.textContent = `Поставить ставку • ${amount} ★`;
+        crashActionBtn.textContent = `Поставить ставку • ${amount.toLocaleString("ru-RU")} ★`;
       } else {
-        crashActionBtn.textContent = `На след. раунд • ${amount} ★`;
+        crashActionBtn.textContent = `На след. раунд • ${amount.toLocaleString("ru-RU")} ★`;
       }
     }
 
@@ -1288,13 +1568,13 @@
       const rows = [];
 
       const myDisplayBet = nextRoundBet
-        ? { text: `${nextRoundBet.amount} ★ (след. раунд)`, cls: "" }
+        ? { text: `${nextRoundBet.amount.toLocaleString("ru-RU")} ★ (след. раунд)`, cls: "" }
         : currentRoundBet
           ? (currentRoundBet.status === "cashed"
-            ? { text: `+${currentRoundBet.payout} ★ (${currentRoundBet.winMult.toFixed(2)}x)`, cls: "win" }
+            ? { text: `+${currentRoundBet.payout.toLocaleString("ru-RU")} ★ (${currentRoundBet.winMult.toFixed(2)}x)`, cls: "win" }
             : currentRoundBet.status === "lost"
-              ? { text: `Сгорела (-${currentRoundBet.amount} ★)`, cls: "lose" }
-              : { text: `${currentRoundBet.amount} ★`, cls: "" })
+              ? { text: `Сгорела (-${currentRoundBet.amount.toLocaleString("ru-RU")} ★)`, cls: "lose" }
+              : { text: `${currentRoundBet.amount.toLocaleString("ru-RU")} ★`, cls: "" })
           : null;
 
       if (myDisplayBet) {
@@ -1330,10 +1610,10 @@
 
     function pickCrashPoint() {
       const r = Math.random();
-      if (r < 0.12) return +(0.55 + Math.random() * 0.45).toFixed(2);
-      if (r < 0.65) return +(1.15 + Math.random() * 1.65).toFixed(2);
-      if (r < 0.90) return +(2.80 + Math.random() * 2.70).toFixed(2);
-      return +(5.50 + Math.random() * 6.00).toFixed(2);
+      if (r < 0.14) return +(0.15 + Math.random() * 0.65).toFixed(2);
+      if (r < 0.68) return +(0.85 + Math.random() * 1.55).toFixed(2);
+      if (r < 0.92) return +(2.40 + Math.random() * 2.80).toFixed(2);
+      return +(5.20 + Math.random() * 6.00).toFixed(2);
     }
 
     function resizeCanvas() {
@@ -1562,7 +1842,7 @@
       crashStatus.textContent = "Приём ставок";
       crashMult.textContent = "x0.00";
       crashSubnote.textContent = currentRoundBet
-        ? `Ставка ${currentRoundBet.amount} ★ зафиксирована на раунд`
+        ? `Ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ зафиксирована на раунд`
         : "Поставь ставку — ракета взлетит по таймеру";
 
       countdownBox.classList.add("visible");
@@ -1583,7 +1863,7 @@
       crashStatus.textContent = "Отсчёт до старта";
       crashMult.textContent = "3";
       crashSubnote.textContent = currentRoundBet
-        ? `Твоя ставка ${currentRoundBet.amount} ★ в игре`
+        ? `Твоя ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ в игре`
         : "Приём ставок закрывается, старт полёта...";
 
       countdownBox.classList.add("visible");
@@ -1612,7 +1892,7 @@
       crashStatus.textContent = "Полёт • Успей нажать Стоп";
       crashMult.textContent = "x0.00";
       crashSubnote.textContent = currentRoundBet
-        ? `Твоя ставка: ${currentRoundBet.amount} ★`
+        ? `Твоя ставка: ${currentRoundBet.amount.toLocaleString("ru-RU")} ★`
         : "Ракета летит — можно поставить на след. раунд";
 
       renderPlayers();
@@ -1629,15 +1909,23 @@
       spawnExplosion(coords.x, coords.y);
 
       state.crashHistory.unshift(crashPoint);
-      state.crashHistory = state.crashHistory.slice(0, 10);
+      state.crashHistory = state.crashHistory.slice(0, 12);
       saveState();
       renderCrashHistory();
 
       if (currentRoundBet && currentRoundBet.status === "active") {
         currentRoundBet.status = "lost";
-        addLog(`Crash: взрыв на ${crashPoint.toFixed(2)}x (-${currentRoundBet.amount} ★)`);
+        recordBetHistory({
+          mode: "Crash",
+          amount: currentRoundBet.amount,
+          status: "lost",
+          mult: crashPoint,
+          payout: 0
+        });
+        addLog(`Crash: взрыв на ${crashPoint.toFixed(2)}x (-${currentRoundBet.amount.toLocaleString("ru-RU")} ★)`);
         haptic("error");
       } else {
+        saveState();
         haptic("warning");
       }
 
@@ -1649,7 +1937,7 @@
       crashStatus.textContent = "КРАШ! Ракета взорвалась";
       crashMult.textContent = `${crashPoint.toFixed(2)}x`;
       crashSubnote.textContent = currentRoundBet && currentRoundBet.status === "lost"
-        ? `Не успел нажать Стоп — ставка ${currentRoundBet.amount} ★ сгорела`
+        ? `Не успел нажать Стоп — ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ сгорела`
         : `Ракета взорвалась на ${crashPoint.toFixed(2)}x`;
 
       renderPlayers();
@@ -1686,7 +1974,7 @@
         }
       } else if (phase === "flying") {
         const sec = (now - phaseStart) / 1000;
-        currentMult = +(sec * 0.95 + Math.pow(sec, 1.65) * 0.25).toFixed(2);
+        currentMult = +(sec * 0.55 + Math.pow(sec, 1.55) * 0.15).toFixed(2);
 
         demoBots.forEach(b => {
           if (b.status === "active" && currentMult >= b.target && currentMult < crashPoint) {
@@ -1701,8 +1989,9 @@
         } else {
           crashMult.textContent = `${currentMult.toFixed(2)}x`;
           if (currentRoundBet && currentRoundBet.status === "active") {
-            const payoutNow = calcPayout(currentRoundBet.amount, currentMult);
-            crashSubnote.textContent = `К выплате: ${currentRoundBet.amount} ★ × ${currentMult.toFixed(2)} = ${payoutNow} ★`;
+            const retNow = calcCashoutTotal(currentRoundBet.amount, currentMult);
+            const bonusNow = Math.max(0, retNow - currentRoundBet.amount);
+            crashSubnote.textContent = `К возврату: ${retNow.toLocaleString("ru-RU")} ★ (ставка + ${bonusNow.toLocaleString("ru-RU")} ★)`;
           }
           drawScene(Math.min(1, currentMult / 4.2), null);
           renderPlayers();
@@ -1724,20 +2013,28 @@
     function handleCashout() {
       if (phase !== "flying" || !currentRoundBet || currentRoundBet.status !== "active") return;
       const mult = Math.max(0.01, currentMult);
-      const payout = calcPayout(currentRoundBet.amount, mult);
+      const payout = calcCashoutTotal(currentRoundBet.amount, mult);
+      const bonus = Math.max(0, payout - currentRoundBet.amount);
 
       currentRoundBet.status = "cashed";
       currentRoundBet.winMult = mult;
       currentRoundBet.payout = payout;
 
-      state.balance = cleanNumber(state.balance, 10000) + payout;
-      saveState();
+      state.balance = cleanNumber(state.balance, 5000) + payout;
       renderBalance();
 
+      recordBetHistory({
+        mode: "Crash",
+        amount: currentRoundBet.amount,
+        status: "cashed",
+        mult,
+        payout
+      });
+      addLog(`Crash: стоп на ${mult.toFixed(2)}x → +${payout.toLocaleString("ru-RU")} ★ (ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`);
+
       crashStage.className = "crash-stage cashed";
-      crashStatus.textContent = "Стоп нажат • Выплата зачислена";
-      crashSubnote.textContent = `Пришло ${payout} ★ (${currentRoundBet.amount} ★ × ${mult.toFixed(2)})`;
-      addLog(`Crash: стоп на ${mult.toFixed(2)}x (${currentRoundBet.amount} ★) → +${payout} ★`);
+      crashStatus.textContent = "Стоп нажат • Ставка и умножение начислены";
+      crashSubnote.textContent = `На баланс пришло ${payout.toLocaleString("ru-RU")} ★ (ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`;
 
       haptic("success");
       renderPlayers();
@@ -1764,7 +2061,7 @@
           winMult: 0,
           payout: 0
         };
-        crashSubnote.textContent = `Ставка ${amount} ★ списана в раунд — ждём старт`;
+        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ списана в раунд — ждём старт`;
       } else {
         if (nextRoundBet) return;
         state.balance -= amount;
@@ -1772,7 +2069,7 @@
         renderBalance();
 
         nextRoundBet = { amount };
-        crashSubnote.textContent = `Ставка ${amount} ★ списана на следующий раунд`;
+        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ списана на следующий раунд`;
       }
 
       haptic("medium");
@@ -1788,13 +2085,42 @@
       }
     });
 
+    // Splash Screen Animation
+    function runSplashSequence() {
+      const splashScreen = document.getElementById("splashScreen");
+      const splashStatus = document.getElementById("splashStatus");
+      const splashProgressBar = document.getElementById("splashProgressBar");
+      const mainApp = document.getElementById("mainApp");
+
+      const steps = [
+        { pct: 28, text: "Подключение к MOLLY GIFTS...", delay: 80 },
+        { pct: 66, text: "Синхронизация баланса ★...", delay: 420 },
+        { pct: 100, text: "Загрузка завершена", delay: 860 }
+      ];
+
+      steps.forEach(s => {
+        setTimeout(() => {
+          splashProgressBar.style.width = `${s.pct}%`;
+          splashStatus.textContent = s.text;
+        }, s.delay);
+      });
+
+      setTimeout(() => {
+        splashScreen.classList.add("hide");
+        mainApp.classList.add("ready");
+        resizeCanvas();
+      }, 1280);
+    }
+
     // Init
     renderBalance();
     renderCrashHistory();
+    renderBetHistory();
     renderLogs();
     resizeCanvas();
     startCountdownPhase();
     rafId = requestAnimationFrame(loop);
+    runSplashSequence();
   </script>
 </body>
 </html>
