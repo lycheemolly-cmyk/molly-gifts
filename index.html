@@ -891,7 +891,7 @@
       cursor: pointer;
     }
 
-    .add-own-nft-btn {
+    .add-own-gift-btn {
       width: 100%;
       border: 1px solid rgba(255, 42, 133, 0.42);
       border-radius: var(--radius-md);
@@ -909,7 +909,7 @@
       transition: transform 0.14s ease, border-color 0.14s ease;
     }
 
-    .add-own-nft-btn:active {
+    .add-own-gift-btn:active {
       transform: scale(0.98);
       border-color: var(--pink-bright);
     }
@@ -1860,7 +1860,7 @@
         </div>
         <div>
           <div class="brand-title">MOLLY GIFTS</div>
-          <div class="brand-sub"><span class="live-dot"></span> Demo • Stars &amp; NFT</div>
+          <div class="brand-sub"><span class="live-dot"></span> Demo • Stars &amp; Gifts</div>
         </div>
       </div>
 
@@ -1876,7 +1876,7 @@
     <!-- HUB -->
     <main class="view active" id="view-hub">
       <section class="hero-card">
-        <div class="hero-chip">Режим Crash • Stars &amp; TON</div>
+        <div class="hero-chip">Режим Crash • Звёзды ★</div>
         <h1 class="hero-title">Успей нажать Стоп</h1>
         <p class="hero-desc">Ракета стартует с x0.00. Забирай множитель в звёздах до того, как она взорвётся.</p>
         <button class="hero-cta" data-nav="crash">🚀 Запустить Crash</button>
@@ -1913,7 +1913,7 @@
         <div class="mode-card" data-nav="cases">
           <div class="mode-top">
             <div class="mode-icon">🎁</div>
-            <span class="mode-tag pink">NFT</span>
+            <span class="mode-tag pink">Gifts</span>
           </div>
           <div>
             <div class="mode-name">Кейсы</div>
@@ -2177,9 +2177,9 @@
           <input type="range" id="upgradeSlider" class="upgrade-slider" min="1" max="85" value="35" />
         </div>
 
-        <button type="button" class="add-own-nft-btn" id="openAddNftModalBtn">
+        <button type="button" class="add-own-gift-btn" id="openAddGiftModalBtn">
           <span>✦</span>
-          <span>Добавить свой подарок или NFT</span>
+          <span>Добавить свой подарок</span>
         </button>
 
         <div class="section-meta" id="upgradeStatusText" style="text-align:center;min-height:18px;color:var(--text);">
@@ -2275,7 +2275,7 @@
       <div class="demo-pill">Демо-режим • В разработке</div>
       <h2 class="modal-title">Вывод звёзд и подарков</h2>
       <p class="modal-text">
-        Сейчас приложение работает в <b>демо-режиме</b>. Вывод реальных Telegram Stars, TON и подарков пока недоступен — модуль вывода находится в активной разработке.
+        Сейчас приложение работает в <b>демо-режиме</b>. Вывод реальных Telegram Stars и подарков пока недоступен — модуль вывода находится в активной разработке.
       </p>
       <a class="dev-channel-link" href="https://t.me/devMikhail" target="_blank" rel="noopener noreferrer">
         <span>📢 Канал разработки MOLLY GIFTS</span>
@@ -2285,19 +2285,19 @@
     </div>
   </div>
 
-  <!-- Rounded Demo Modal for "Добавить свой подарок или NFT" -->
-  <div class="modal-backdrop" id="addNftDemoModal">
+  <!-- Rounded Demo Modal for "Добавить свой подарок" -->
+  <div class="modal-backdrop" id="addGiftDemoModal">
     <div class="modal-rounded">
       <div class="demo-pill">Демо-режим • В разработке</div>
-      <h2 class="modal-title">Приём своих подарков и NFT</h2>
+      <h2 class="modal-title">Приём своих подарков</h2>
       <p class="modal-text">
-        Сейчас функция работает в <b>демо-режиме</b>. Прямое внесение реальных Telegram-подарков и NFT на баланс пока недоступно — модуль находится в активной разработке.
+        Сейчас функция работает в <b>демо-режиме</b>. Прямое внесение реальных Telegram-подарков на баланс пока недоступно — модуль находится в активной разработке.
       </p>
       <a class="dev-channel-link" href="https://t.me/devMikhail" target="_blank" rel="noopener noreferrer">
         <span>📢 Канал разработки MOLLY GIFTS</span>
         <span style="color:var(--pink-bright);">Открыть →</span>
       </a>
-      <button type="button" class="action-btn" id="closeAddNftModalBtn">Понятно</button>
+      <button type="button" class="action-btn" id="closeAddGiftModalBtn">Понятно</button>
     </div>
   </div>
 
@@ -2313,7 +2313,7 @@
         <button class="topup-option" data-add="5000">+5000 ★</button>
         <button class="topup-option" data-add="10000">+10000 ★</button>
       </div>
-      <div class="section-meta">Тестовое пополнение без списания реальных Telegram Stars / TON.</div>
+      <div class="section-meta">Тестовое пополнение без списания реальных Telegram Stars.</div>
     </div>
   </div>
 
@@ -2440,7 +2440,7 @@
       `;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v14";
+    const STORAGE_KEY = "molly_gifts_demo_v15";
     const defaultState = {
       balance: 5000,
       lastFreeCaseAt: 0,
@@ -2660,16 +2660,16 @@
       if (e.target === withdrawDemoModal) withdrawDemoModal.classList.remove("open");
     });
 
-    const addNftDemoModal = document.getElementById("addNftDemoModal");
-    document.getElementById("openAddNftModalBtn").addEventListener("click", () => {
-      addNftDemoModal.classList.add("open");
+    const addGiftDemoModal = document.getElementById("addGiftDemoModal");
+    document.getElementById("openAddGiftModalBtn").addEventListener("click", () => {
+      addGiftDemoModal.classList.add("open");
       haptic("light");
     });
-    document.getElementById("closeAddNftModalBtn").addEventListener("click", () => {
-      addNftDemoModal.classList.remove("open");
+    document.getElementById("closeAddGiftModalBtn").addEventListener("click", () => {
+      addGiftDemoModal.classList.remove("open");
     });
-    addNftDemoModal.addEventListener("click", e => {
-      if (e.target === addNftDemoModal) addNftDemoModal.classList.remove("open");
+    addGiftDemoModal.addEventListener("click", e => {
+      if (e.target === addGiftDemoModal) addGiftDemoModal.classList.remove("open");
     });
 
     const topupModal = document.getElementById("topupModal");
@@ -3055,7 +3055,7 @@
       if (!found) return;
       currentCaseMode = "paid";
       currentPaidCase = found;
-      caseDropBanner.textContent = "Выигранные NFT-подарки добавляются в инвентарь и Апгрейд";
+      caseDropBanner.textContent = "Выигранные подарки добавляются в инвентарь и Апгрейд";
       renderCasesUI();
       haptic("light");
     });
