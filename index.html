@@ -1006,4 +1006,1636 @@
       border: 1px solid rgba(255, 42, 133, 0.42);
       border-radius: var(--radius-md);
       padding: 12px 14px;
-      background: linear-gradient(145deg, rgba(228, 0, 124, 0.2), rgba(2
+      background: linear-gradient(145deg, rgba(228, 0, 124, 0.2), rgba(24, 24, 32, 0.96));
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(228, 0, 124, 0.18);
+      transition: transform 0.14s ease, border-color 0.14s ease;
+    }
+
+    .add-own-gift-btn:active {
+      transform: scale(0.98);
+      border-color: var(--pink-bright);
+    }
+
+    .upgrade-picker-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .inv-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .inv-item {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 9px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: border-color 0.14s ease, transform 0.14s ease;
+    }
+
+    .inv-item.selected {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      transform: translateY(-1px);
+    }
+
+    /* ================= CRASH SCREEN ================= */
+    .history-strip {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+      flex: 1;
+    }
+
+    .history-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hist-pill {
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .hist-pill.high {
+      color: var(--pink-bright);
+      border-color: rgba(255, 42, 133, 0.35);
+      background: var(--pink-soft);
+    }
+
+    .crash-stage {
+      background: radial-gradient(circle at 75% 25%, rgba(228, 0, 124, 0.16), transparent 55%), #0c0c11;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      height: 280px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 22px;
+    }
+
+    .crash-stage.flying {
+      border-color: rgba(255, 42, 133, 0.45);
+      box-shadow: inset 0 0 42px rgba(228, 0, 124, 0.14);
+    }
+
+    .crash-stage.crashed {
+      border-color: rgba(255, 59, 48, 0.75);
+      box-shadow: inset 0 0 54px rgba(255, 59, 48, 0.25);
+      animation: stageShake 0.38s ease;
+    }
+
+    .crash-stage.cashed {
+      border-color: rgba(48, 209, 88, 0.55);
+      box-shadow: inset 0 0 40px rgba(48, 209, 88, 0.16);
+    }
+
+    .crash-stage.countdown,
+    .crash-stage.launch {
+      border-color: rgba(255, 42, 133, 0.32);
+    }
+
+    #crashCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .crash-readout {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .crash-status {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .crash-stage.crashed .crash-status {
+      color: var(--red);
+    }
+
+    .crash-stage.cashed .crash-status {
+      color: var(--green);
+    }
+
+    .crash-stage.countdown .crash-status,
+    .crash-stage.launch .crash-status {
+      color: var(--pink-bright);
+    }
+
+    .crash-mult {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+      color: #fff;
+      text-shadow: 0 6px 24px rgba(0, 0, 0, 0.75);
+      transition: color 0.12s ease;
+    }
+
+    .crash-stage.crashed .crash-mult {
+      color: var(--red);
+      text-shadow: 0 0 28px rgba(255, 59, 48, 0.55);
+    }
+
+    .crash-stage.cashed .crash-mult {
+      color: var(--green);
+      text-shadow: 0 0 24px rgba(48, 209, 88, 0.45);
+    }
+
+    .crash-subnote {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      min-height: 16px;
+    }
+
+    .crash-stage.crashed .crash-subnote {
+      color: #ff8a80;
+    }
+
+    .countdown-box {
+      position: relative;
+      z-index: 3;
+      margin-top: 10px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      background: rgba(17, 17, 22, 0.9);
+      border: 1px solid rgba(255, 42, 133, 0.35);
+      border-radius: 16px;
+      padding: 11px 18px;
+      backdrop-filter: blur(8px);
+    }
+
+    .countdown-box.visible {
+      display: flex;
+    }
+
+    .cd-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cd-bar-track {
+      width: 170px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    .cd-bar-fill {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink), var(--pink-bright));
+      transition: width 0.12s linear;
+    }
+
+    /* Controls Card */
+    .control-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bet-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+    }
+
+    .bet-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .bet-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bet-input {
+      width: 112px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 800;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+    }
+
+    .preset-scroll {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .preset-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .preset-btn {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      padding: 8px 13px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.14s ease, background 0.14s ease;
+    }
+
+    .preset-btn.active {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      color: #fff;
+    }
+
+    .autocash-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 10px;
+    }
+
+    .autocash-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .autocash-pills {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .autocash-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .auto-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      padding: 6px 9px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.14s ease;
+    }
+
+    .auto-btn.active {
+      border-color: var(--green);
+      background: rgba(48, 209, 88, 0.16);
+      color: var(--green);
+    }
+
+    .auto-btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+
+    .action-btn {
+      width: 100%;
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      box-shadow: 0 10px 24px var(--pink-glow);
+      cursor: pointer;
+      transition: transform 0.14s ease, opacity 0.14s ease;
+    }
+
+    .action-btn:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .action-btn.stop {
+      background: linear-gradient(135deg, #28cd41, #30d158);
+      box-shadow: 0 10px 24px rgba(48, 209, 88, 0.35);
+      color: #06140a;
+    }
+
+    .action-btn.queued {
+      background: var(--surface-elevated);
+      border: 1px solid rgba(255, 42, 133, 0.45);
+      box-shadow: none;
+      color: var(--pink-bright);
+    }
+
+    /* ================= MINES GAME ================= */
+    .mines-mult-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .mines-mult-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mines-step-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 11px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .mines-step-pill.passed {
+      color: var(--green);
+      border-color: rgba(48, 209, 88, 0.35);
+      background: rgba(48, 209, 88, 0.12);
+    }
+
+    .mines-step-pill.current {
+      color: #fff;
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+    }
+
+    .mines-board-wrap {
+      background: radial-gradient(circle at 50% 15%, rgba(255, 42, 133, 0.12), transparent 65%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mines-board-wrap.lost {
+      border-color: rgba(255, 59, 48, 0.65);
+      animation: stageShake 0.35s ease;
+    }
+
+    .mines-board-wrap.won {
+      border-color: rgba(48, 209, 88, 0.55);
+    }
+
+    .mines-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .mine-tile {
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(155deg, #1f1f2b, #14141c);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 0.14s ease, border-color 0.16s ease, background 0.18s ease, opacity 0.18s ease;
+    }
+
+    .mine-tile:active:not(:disabled) {
+      transform: scale(0.93);
+    }
+
+    .mine-tile .tile-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.26);
+    }
+
+    .mine-tile.safe {
+      background: linear-gradient(155deg, rgba(48, 209, 88, 0.24), rgba(228, 0, 124, 0.18));
+      border-color: rgba(48, 209, 88, 0.7);
+      font-size: 22px;
+      color: var(--gold);
+    }
+
+    .mine-tile.bomb {
+      background: linear-gradient(155deg, rgba(255, 59, 48, 0.34), rgba(45, 10, 14, 0.9));
+      border-color: var(--red);
+      font-size: 22px;
+    }
+
+    .mine-tile.revealed-dim {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    .mines-live-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .mines-live-left {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .mines-live-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: #fff;
+    }
+
+    .mines-count-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 10px;
+    }
+
+    .mines-quick-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .mines-quick-count::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mine-cnt-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      padding: 6px 11px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .mine-cnt-btn.active {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      color: #fff;
+    }
+
+    /* ================= ARENA GAME ================= */
+    .arena-panel {
+      background: radial-gradient(circle at 50% 10%, rgba(255, 42, 133, 0.18), transparent 65%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .arena-stage-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      background: #0b0b10;
+    }
+
+    #arenaCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .arena-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(7, 7, 9, 0.72);
+      backdrop-filter: blur(4px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 18px;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .arena-overlay.show {
+      display: flex;
+    }
+
+    .arena-meta-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .arena-stat-pill {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .arena-zone-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .players-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-elevated);
+    }
+
+    .player-badge {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .player-badge.win {
+      color: var(--green);
+    }
+
+    .player-badge.lose {
+      color: var(--red);
+    }
+
+    /* ================= PROFILE & USER WALLET ================= */
+    .profile-hero-card {
+      position: relative;
+      background:
+        radial-gradient(125% 110% at 92% 0%, rgba(255, 42, 133, 0.25), rgba(17, 17, 22, 0.96) 62%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.014) 0px, rgba(255, 255, 255, 0.014) 2px, transparent 2px, transparent 14px),
+        var(--surface);
+      border: 1px solid rgba(255, 42, 133, 0.3);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .profile-gear-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(24, 24, 32, 0.88);
+      color: var(--text);
+      font-size: 17px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .profile-gear-btn:active {
+      transform: scale(0.92) rotate(25deg);
+      border-color: var(--pink-bright);
+      color: var(--pink-bright);
+    }
+
+    .profile-user-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding-right: 36px;
+    }
+
+    .profile-avatar-wrap {
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px var(--pink-glow);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-user-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-handle {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .wager-strip-card {
+      background: rgba(24, 24, 32, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .translucent-gifts-trigger {
+      background: rgba(255, 42, 133, 0.09);
+      border: 1px solid rgba(255, 42, 133, 0.28);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      transition: background 0.15s ease, transform 0.14s ease, border-color 0.15s ease;
+    }
+
+    .translucent-gifts-trigger:active {
+      transform: scale(0.98);
+      background: rgba(255, 42, 133, 0.16);
+      border-color: var(--pink-bright);
+    }
+
+    .vip-summary-card {
+      background: linear-gradient(150deg, rgba(255, 42, 133, 0.15), rgba(20, 20, 28, 0.94) 65%);
+      border: 1px solid rgba(255, 42, 133, 0.34);
+      border-radius: var(--radius-xl);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .vip-summary-card:active {
+      transform: scale(0.985);
+      border-color: var(--pink-bright);
+    }
+
+    .vip-summary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .vip-summary-rates {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .profile-stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 13px 14px;
+    }
+
+    .profile-stat-num {
+      font-size: 20px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .profile-stat-lbl {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .accordion-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 15px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 0 16px 16px;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .accordion-card.open .accordion-body {
+      display: flex;
+    }
+
+    .accordion-card.open .accordion-chev {
+      transform: rotate(180deg);
+    }
+
+    .accordion-chev {
+      transition: transform 0.2s ease;
+      color: var(--text-muted);
+    }
+
+    .seg-switch {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      background: var(--surface-elevated);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .seg-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .seg-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+    }
+
+    .pager-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* VIP Club Screen */
+    .vip-hero-banner {
+      background: radial-gradient(120% 110% at 88% 12%, rgba(255, 42, 133, 0.24), rgba(17, 17, 22, 0.98) 65%), var(--surface);
+      border: 1px solid rgba(255, 42, 133, 0.34);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .vip-tiers-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .vip-tier-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      border-radius: 14px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .vip-tier-btn.active {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      color: #fff;
+    }
+
+    .vip-two-cols {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .vip-perk-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+    }
+
+    .vip-action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .vip-priv-item {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Settings & Gifts Empty State */
+    .setting-row {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toggle-pill {
+      width: 52px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: #252532;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease;
+      flex-shrink: 0;
+    }
+
+    .toggle-pill::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.18s ease;
+    }
+
+    .toggle-pill.on {
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      border-color: var(--pink-bright);
+    }
+
+    .toggle-pill.on::after {
+      transform: translateX(22px);
+    }
+
+    .lang-pill-group {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .lang-choice-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .lang-choice-btn.active {
+      background: #fff;
+      color: #09090c;
+    }
+
+    .empty-gifts-box {
+      padding: 24px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      border-radius: 20px;
+      background: rgba(24, 24, 32, 0.72);
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+    }
+
+    .white-add-gift-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 22px;
+      background: #fff;
+      color: #09090c;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.16);
+    }
+
+    .white-add-gift-btn:active {
+      transform: scale(0.97);
+    }
+
+    .profile-wallet-box {
+      background: rgba(12, 12, 17, 0.78);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .profile-wallet-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .profile-wallet-amount {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .profile-wallet-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .profile-topup-btn {
+      border: 1px solid var(--border-strong);
+      background: var(--surface-elevated);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 11px 13px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .withdraw-btn {
+      border: none;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+      border-radius: 14px;
+      padding: 11px 15px;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px var(--pink-glow);
+      cursor: pointer;
+    }
+
+    .withdraw-btn:active {
+      transform: scale(0.96);
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+    }
+
+    .history-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 11px 13px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 12px;
+    }
+
+    .history-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .history-sub {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 11px;
+    }
+
+    /* Bottom iOS Floating Pill Tabbar */
+    .tabbar {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(var(--safe-bottom) + 8px);
+      width: calc(100% - 32px);
+      max-width: 448px;
+      background: rgba(20, 20, 28, 0.78);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      z-index: 20;
+    }
+
+    .tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 999px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.16s ease, color 0.16s ease, transform 0.12s ease;
+    }
+
+    .tab-btn:active {
+      transform: scale(0.95);
+    }
+
+    .tab-btn span.ico {
+      font-size: 16px;
+      line-height: 1.05;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.26), rgba(228, 0, 124, 0.16));
+      color: var(--pink-bright);
+      box-shadow: inset 0 0 0 1px rgba(255, 42, 133, 0.35);
+    }
+
+    /* Rounded Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.76);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 18px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-rounded {
+      width: 100%;
+      max-width: 420px;
+      background: radial-gradient(circle at 80% 0%, rgba(255, 42, 133, 0.2), rgba(17, 17, 22, 0.98) 62%), var(--surface);
+      border: 1px solid rgba(255, 42, 133, 0.34);
+      border-radius: 28px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    .demo-pill {
+      align-self: flex-start;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--pink-bright);
+      background: var(--pink-soft);
+      border: 1px solid rgba(255, 42, 133, 0.32);
+      border-radius: 999px;
+      padding: 5px 10px;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .modal-text {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .dev-channel-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 15px;
+      border-radius: 18px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-strong);
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .topup-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      background: var(--surface-elevated);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .topup-tab-btn {
+      border: none;
+      border-radius: 11px;
+      padding: 9px 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .topup-tab-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+    }
+
+    .topup-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .topup-option {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      text-align: center;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .topup-option.active {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+    }
+
+    .gift-deposit-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .gift-deposit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+    }
+
+    .mini-pink-btn {
+      border: none;
+      border-radius: 11px;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <!-- Splash Loader -->
+  <div class="splash-screen" id="splashScreen" aria-hidden="true">
+    <div class="splash-ambient-ring"></div>
+    <div class="splash-portal">
+      <span class="splash-sparkle s1">✦</span>
+      <span class="splash-sparkle s2">★</span>
+      <span class="splash-sparkle s3">✦</span>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L14.9 8.2L21.7 9.1L16.7 13.8L17.9 20.6L12 17.3L6.1 20.6L7.3 13.8L2.3 9.1L9.1 8.2L12 2Z" fill="url(#mgSplash)"/>
+        <defs>
+          <linearGradient id="mgSplash" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#FF2A85"/>
+            <stop offset="1" stop-color="#E4007C"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span style="font-size:11px;font-weight:800;color:#ff85ba;letter-spacing:0.08em;">GIFTS</span>
+    </div>
+    <div class="splash-pct" id="splashPct">0%</div>
+    <div class="splash-brand">MOLLY GIFTS</div>
+    <div class="splash-status" id="splashStatus">Запуск портала подарков...</div>
+    <div class="splash-progress-wrap">
+      <div class="splash-progress-bar" id="splashProgressBar"></div>
+    </div>
+    <div class="splash-pills">
+      <span class="splash-mini-chip">★ Звёзды</span>
+      <span class="splash-mini-chip">🎁 Подарки</span>
+      <span class="splash-mini-chip">5 режимов</span>
+    </div>
+  </div>
+
+  <div class="app" id="mainApp">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L14.9 8.2L21.7 9.1L16.7 13.8L17.9 20.6L12 17.3L6.1 20.6L7.3 13.8L2.3 9.1L9.1 8.2L12 2Z" fill="url(#mgPink)"/>
+            <defs>
+              <linearGradient id="mgPink" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FF2A85"/>
+                <stop offset="1" stop-color="#E4007C"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">MOLLY GIFTS</div>
+          <div class="brand-sub"><span class="live-dot"></span> Demo • Stars &amp; Gifts</div>
+        </div>
+      </div>
+
+      <div class="balance-pill">
+        <div class="balance-val">
+          <span class="star-icon">★</span>
+          <span id="balanceText">5000</span>
+        </div>
+        <button class="plus-btn" id="openTopupBtn" aria-label="Пополнить">+</button>
+      </div>
+    </header>
+
+    <!-- HUB -->
+    <main class="view active" id="view-hub">
+      <section class="hero-card">
+        <div class="hero-chip">Режим Crash • Звёзды ★</div>
+        <h1 class="hero-title" id="hubHeroTitle">Успей нажать Стоп</h1>
+        <p class="hero-desc" id="hubHeroDesc">Ракета стартует с x0.00. Забирай множитель в звёздах до того, как она взорвётся.</p>
+        <button class="hero-cta" data-nav="crash">🚀 Запустить Crash</button>
+      </section>
+
+      <div class="section-head">
+        <span class="section-title" id="hubModesTitle">Режимы</span>
+        <span class="section-meta" id="hubModesMeta">Единый баланс ★</span>
+      </div>
+
+      <section class="modes-grid">
+        <div class="mode-card featured" data-nav="crash">
+          <div class="mode-top">
+            <div class="mode-icon">🚀</div>
+            <span class="mode-tag pink">Hot</span>
+          </div>
+          <div>
+            <div class="mode-name">Crash</div>
+            <div class="mode-hint">Старт с x0, рост множителя до взрыва</div>
+          </div>
+        </div>
+
+        <div class="mode-card" data-nav="mines">
+          <div class="mode-top">
+            <div class="mode-icon">💣</div>
+            <span class="mode-tag pink">Mines</span>
+          </div>
+          <div>
+            <div class="mode-name" id="modeMinesName">Мины</div>
+            <div class="mode-hint" id="modeMinesHint">Открывай ячейки без мин и расти множитель</div>
+          </div>
+        </div>
+
+        <div class="mode-card" data-nav="cases">
+          <div class="mode-top">
+            <div class="mode-icon">🎁</div>
+            <span class="mode-tag pink">Gifts</span>
+          </div>
+          <div>
+            <div class="mode-name" id="modeCasesName">Кейсы</div>
+            <div class="mode-hint" id="modeCasesHint">Подарки Telegram и бесплатный кейс 24ч</div>
+          </div>
+        </div>
+
+        <div class="mode-card" data-nav="upgrade">
+          <div class="mode-top">
+            <div class="mode-icon">⚡</div>
+            <span class="mode-tag pink">Upgrade</span>
+          </div>
+          <div>
+            <div class="mode-name" id="modeUpgradeName">Апгрейд</div>
+            <div class="mode-hint" id="modeUpgradeHint">Шанс задаёт заполненность колеса</div>
+          </div>
+        </div>
+
+        <div class="mode-card" data-nav="arena" style="grid-column:span 2;min-height:118px;">
+          <div class="mode-top">
+            <div class="mode-icon">🎯</div>
+            <span class="mode-tag pink">Arena</span>
+          </div>
+          <div>
+            <div class="mode-name" id="modeArenaName">Арена</div>
+            <div class="mode-hint" id="modeArenaHint">Доли поля по ставкам и полёт шарика</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- TASKS -->
+    <section class="view" id="view-tasks">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <span class="section-title" style="font-size:16px;">Задания</span>
+      </div>
+
+      <div class="info-card">
+        <div class="section-head">
+          <span class="section-title">Активные задания</span>
+          <span class="section-meta" id="tasksDoneCount">0 / 3</span>
+        </div>
+        <div id="tasksList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </section>
+
+    <!-- TOP -->
+    <section class="view" id="view-top">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <span class="section-title" style="font-size:16px;">Топ игроков</span>
+      </div>
+
+      <div class="info-card">
+        <div class="section-head">
+          <span class="section-title">Рейтинг по звёздам ★</span>
+          <span class="section-meta">Demo</span>
+        </div>
+        <div id="leaderboardList" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </section>
+
+    <!-- CRASH -->
+    <section class="view" id="view-crash">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <div class="history-strip" id="crashHistory"></div>
+      </div>
+
+      <div class="crash-stage countdown" id="crashStage">
+        <canvas id="crashCanvas"></canvas>
+        <div class="crash-readout">
+          <div class="crash-status" id="crashStatus">Приём ставок</div>
+          <div class="crash-mult" id="crashMult">x0.00</div>
+          <div class="crash-subnote" id="crashSubnote">Таймер раунда идёт независимо от ставок</div>
+        </div>
+        <div class="countdown-box visible" id="countdownBox">
+          <div class="cd-title" id="countdownText">До следующего раунда: 30 сек</div>
+          <div class="cd-bar-track">
+            <div class="cd-bar-fill" id="cdBarFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="control-card">
+        <div class="bet-row">
+          <div class="bet-label">Сумма ставки</div>
+          <div class="bet-input-wrap">
+            <input type="number" id="betInput" class="bet-input" value="25" min="1" max="10000000" />
+            <span class="star-icon">★</span>
+          </div>
+        </div>
+
+        <div class="preset-scroll" id="presetScroll">
+          <button class="preset-btn active" data-bet="25">25 ★</button>
+          <button class="preset-btn" data-bet="50">50 ★</button>
+          <button class="preset-btn" data-bet="100">100 ★</button>
+          <button class="preset-btn" data-bet="250">250 ★</button>
+          <button class="preset-btn"
