@@ -674,10 +674,18 @@
       outline: none;
     }
 
-    .preset-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+    /* Single-row scrollable quick bets */
+    .preset-scroll {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .preset-scroll::-webkit-scrollbar {
+      display: none;
     }
 
     .preset-btn {
@@ -687,14 +695,61 @@
       color: var(--text);
       font-size: 12px;
       font-weight: 700;
-      padding: 9px 0;
+      font-variant-numeric: tabular-nums;
+      padding: 8px 13px;
       cursor: pointer;
+      flex-shrink: 0;
+      transition: border-color 0.14s ease, background 0.14s ease;
     }
 
     .preset-btn.active {
       border-color: var(--pink-bright);
       background: var(--pink-soft);
       color: #fff;
+    }
+
+    /* Second row: Auto cashout */
+    .autocash-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 7px 10px;
+    }
+
+    .autocash-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .autocash-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .auto-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .auto-btn.active {
+      border-color: var(--green);
+      background: rgba(48, 209, 88, 0.16);
+      color: var(--green);
     }
 
     .action-btn {
@@ -1053,13 +1108,27 @@
           </div>
         </div>
 
-        <div class="preset-row">
+        <!-- Строка 1: быстрый выбор суммы в один ряд с прокруткой -->
+        <div class="preset-scroll" id="presetScroll">
           <button class="preset-btn active" data-bet="25">25 ★</button>
           <button class="preset-btn" data-bet="50">50 ★</button>
           <button class="preset-btn" data-bet="100">100 ★</button>
           <button class="preset-btn" data-bet="250">250 ★</button>
           <button class="preset-btn" data-bet="500">500 ★</button>
           <button class="preset-btn" data-bet="1000">1000 ★</button>
+          <button class="preset-btn" data-bet="2500">2500 ★</button>
+          <button class="preset-btn" data-bet="5000">5000 ★</button>
+          <button class="preset-btn" data-bet="10000">10000 ★</button>
+        </div>
+
+        <!-- Строка 2: автозабор ставки по множителю -->
+        <div class="autocash-row">
+          <span class="autocash-label">Автозабор</span>
+          <div class="autocash-pills" id="autoCashPills">
+            <button class="auto-btn" data-auto="2">x2</button>
+            <button class="auto-btn" data-auto="5">x5</button>
+            <button class="auto-btn" data-auto="10">x10</button>
+          </div>
         </div>
 
         <button class="action-btn" id="crashActionBtn">Поставить ставку • 25 ★</button>
@@ -1316,7 +1385,7 @@
       renderLogs();
     }
 
-    function recordBetHistory({ mode, amount, status, mult = null, payout = 0 }) {
+    function recordBetHistory({ mode, amount, status, mult = null, payout = 0, note = "" }) {
       const safeAmount = cleanNumber(amount, 0);
       const safePayout = cleanNumber(payout, 0);
       const profit = status === "cashed" ? (safePayout - safeAmount) : -safeAmount;
@@ -1329,6 +1398,7 @@
         mult: typeof mult === "number" && Number.isFinite(mult) ? +mult.toFixed(2) : null,
         payout: safePayout,
         profit,
+        note,
         status
       });
       state.betHistory = state.betHistory.slice(0, 30);
@@ -1350,7 +1420,7 @@
           ? `+${item.payout.toLocaleString("ru-RU")} ★`
           : `-${item.amount.toLocaleString("ru-RU")} ★`;
         const profitText = isWin
-          ? `Ставка ${item.amount.toLocaleString("ru-RU")} ★ + множитель (${item.profit >= 0 ? "+" : ""}${item.profit.toLocaleString("ru-RU")} ★)`
+          ? `${item.note ? item.note + " • " : ""}Ставка ${item.amount.toLocaleString("ru-RU")} ★ + множитель (${item.profit >= 0 ? "+" : ""}${item.profit.toLocaleString("ru-RU")} ★)`
           : `Ракета взорвалась • ставка сгорела`;
 
         return `
@@ -1494,6 +1564,9 @@
     let sparks = [];
     let rafId = null;
 
+    // null | 2 | 5 | 10
+    let autoCashoutTarget = null;
+
     let currentRoundBet = null;
     let nextRoundBet = null;
 
@@ -1536,6 +1609,27 @@
       });
     });
 
+    // Автозабор x2 / x5 / x10 (повторное нажатие по активной кнопке выключает автозабор)
+    document.querySelectorAll(".auto-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const val = Number(btn.dataset.auto);
+        if (autoCashoutTarget === val) {
+          autoCashoutTarget = null;
+          btn.classList.remove("active");
+          haptic("light");
+        } else {
+          autoCashoutTarget = val;
+          document.querySelectorAll(".auto-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          haptic("medium");
+        }
+        if (currentRoundBet && currentRoundBet.status === "pending") {
+          currentRoundBet.autoTarget = autoCashoutTarget;
+        }
+        renderPlayers();
+      });
+    });
+
     function updateActionButton() {
       crashActionBtn.classList.remove("stop", "queued");
       const amount = getBetAmount();
@@ -1570,13 +1664,19 @@
       const rows = [];
 
       const myDisplayBet = nextRoundBet
-        ? { text: `${nextRoundBet.amount.toLocaleString("ru-RU")} ★ (след. раунд)`, cls: "" }
+        ? {
+            text: `${nextRoundBet.amount.toLocaleString("ru-RU")} ★ (след. раунд${nextRoundBet.autoTarget ? `, авто x${nextRoundBet.autoTarget}` : ""})`,
+            cls: ""
+          }
         : currentRoundBet
           ? (currentRoundBet.status === "cashed"
             ? { text: `+${currentRoundBet.payout.toLocaleString("ru-RU")} ★ (${currentRoundBet.winMult.toFixed(2)}x)`, cls: "win" }
             : currentRoundBet.status === "lost"
               ? { text: `Сгорела (-${currentRoundBet.amount.toLocaleString("ru-RU")} ★)`, cls: "lose" }
-              : { text: `${currentRoundBet.amount.toLocaleString("ru-RU")} ★`, cls: "" })
+              : {
+                  text: `${currentRoundBet.amount.toLocaleString("ru-RU")} ★${currentRoundBet.autoTarget ? ` • авто x${currentRoundBet.autoTarget}` : ""}`,
+                  cls: ""
+                })
           : null;
 
       if (myDisplayBet) {
@@ -1826,6 +1926,7 @@
       if (nextRoundBet) {
         currentRoundBet = {
           amount: nextRoundBet.amount,
+          autoTarget: nextRoundBet.autoTarget ?? autoCashoutTarget,
           status: "pending",
           winMult: 0,
           payout: 0
@@ -1844,7 +1945,7 @@
       crashStatus.textContent = "Приём ставок";
       crashMult.textContent = "x0.00";
       crashSubnote.textContent = currentRoundBet
-        ? `Ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ зафиксирована на раунд`
+        ? `Ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ зафиксирована${currentRoundBet.autoTarget ? ` • авто x${currentRoundBet.autoTarget}` : ""}`
         : "Поставь ставку — ракета взлетит по таймеру";
 
       countdownBox.classList.add("visible");
@@ -1883,6 +1984,9 @@
 
       if (currentRoundBet) {
         currentRoundBet.status = "active";
+        if (currentRoundBet.autoTarget == null && autoCashoutTarget != null) {
+          currentRoundBet.autoTarget = autoCashoutTarget;
+        }
       }
 
       demoBots.forEach(b => {
@@ -1894,7 +1998,7 @@
       crashStatus.textContent = "Полёт • Успей нажать Стоп";
       crashMult.textContent = "x0.00";
       crashSubnote.textContent = currentRoundBet
-        ? `Твоя ставка: ${currentRoundBet.amount.toLocaleString("ru-RU")} ★`
+        ? `Твоя ставка: ${currentRoundBet.amount.toLocaleString("ru-RU")} ★${currentRoundBet.autoTarget ? ` • автозабор на x${currentRoundBet.autoTarget}` : ""}`
         : "Ракета летит — можно поставить на след. раунд";
 
       renderPlayers();
@@ -1946,6 +2050,47 @@
       updateActionButton();
     }
 
+    function settleCashout(mult, isAuto = false) {
+      if (!currentRoundBet || currentRoundBet.status !== "active") return;
+      const safeMult = Math.max(0.01, mult);
+      const payout = calcCashoutTotal(currentRoundBet.amount, safeMult);
+      const bonus = Math.max(0, payout - currentRoundBet.amount);
+
+      currentRoundBet.status = "cashed";
+      currentRoundBet.winMult = safeMult;
+      currentRoundBet.payout = payout;
+
+      state.balance = cleanNumber(state.balance, 5000) + payout;
+      renderBalance();
+
+      recordBetHistory({
+        mode: "Crash",
+        amount: currentRoundBet.amount,
+        status: "cashed",
+        mult: safeMult,
+        payout,
+        note: isAuto ? `Авто x${safeMult.toFixed(2)}` : ""
+      });
+
+      addLog(
+        isAuto
+          ? `Crash (авто x${safeMult.toFixed(2)}): победа → +${payout.toLocaleString("ru-RU")} ★ (ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`
+          : `Crash: стоп на ${safeMult.toFixed(2)}x → +${payout.toLocaleString("ru-RU")} ★ (ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`
+      );
+
+      crashStage.className = "crash-stage cashed";
+      crashStatus.textContent = isAuto
+        ? `Автозабор на ${safeMult.toFixed(2)}x • Победа зафиксирована`
+        : "Стоп нажат • Ставка и умножение начислены";
+      crashSubnote.textContent = isAuto
+        ? `Победа зафиксирована: +${payout.toLocaleString("ru-RU")} ★ — ракета летит дальше`
+        : `На баланс пришло ${payout.toLocaleString("ru-RU")} ★ (ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`;
+
+      haptic("success");
+      renderPlayers();
+      updateActionButton();
+    }
+
     function loop(now) {
       if (phase === "countdown") {
         const elapsed = now - phaseStart;
@@ -1985,6 +2130,18 @@
           }
         });
 
+        // Проверяем автозабор до проверки взрыва
+        if (
+          currentRoundBet &&
+          currentRoundBet.status === "active" &&
+          currentRoundBet.autoTarget &&
+          currentMult >= currentRoundBet.autoTarget &&
+          currentMult < crashPoint
+        ) {
+          const triggerMult = Math.max(currentRoundBet.autoTarget, currentMult);
+          settleCashout(triggerMult, true);
+        }
+
         if (currentMult >= crashPoint) {
           currentMult = crashPoint;
           startCrashExplosion();
@@ -1993,7 +2150,7 @@
           if (currentRoundBet && currentRoundBet.status === "active") {
             const retNow = calcCashoutTotal(currentRoundBet.amount, currentMult);
             const bonusNow = Math.max(0, retNow - currentRoundBet.amount);
-            crashSubnote.textContent = `К возврату: ${retNow.toLocaleString("ru-RU")} ★ (ставка + ${bonusNow.toLocaleString("ru-RU")} ★)`;
+            crashSubnote.textContent = `К возврату: ${retNow.toLocaleString("ru-RU")} ★ (ставка + ${bonusNow.toLocaleString("ru-RU")} ★)${currentRoundBet.autoTarget ? ` • авто x${currentRoundBet.autoTarget}` : ""}`;
           }
           drawScene(Math.min(1, currentMult / 4.2), null);
           renderPlayers();
@@ -2014,33 +2171,7 @@
 
     function handleCashout() {
       if (phase !== "flying" || !currentRoundBet || currentRoundBet.status !== "active") return;
-      const mult = Math.max(0.01, currentMult);
-      const payout = calcCashoutTotal(currentRoundBet.amount, mult);
-      const bonus = Math.max(0, payout - currentRoundBet.amount);
-
-      currentRoundBet.status = "cashed";
-      currentRoundBet.winMult = mult;
-      currentRoundBet.payout = payout;
-
-      state.balance = cleanNumber(state.balance, 5000) + payout;
-      renderBalance();
-
-      recordBetHistory({
-        mode: "Crash",
-        amount: currentRoundBet.amount,
-        status: "cashed",
-        mult,
-        payout
-      });
-      addLog(`Crash: стоп на ${mult.toFixed(2)}x → +${payout.toLocaleString("ru-RU")} ★ (ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`);
-
-      crashStage.className = "crash-stage cashed";
-      crashStatus.textContent = "Стоп нажат • Ставка и умножение начислены";
-      crashSubnote.textContent = `На баланс пришло ${payout.toLocaleString("ru-RU")} ★ (ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`;
-
-      haptic("success");
-      renderPlayers();
-      updateActionButton();
+      settleCashout(currentMult, false);
     }
 
     function placeBetAction() {
@@ -2059,18 +2190,22 @@
 
         currentRoundBet = {
           amount,
+          autoTarget: autoCashoutTarget,
           status: "pending",
           winMult: 0,
           payout: 0
         };
-        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ списана в раунд — ждём старт`;
+        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ списана в раунд${autoCashoutTarget ? ` • авто x${autoCashoutTarget}` : ""}`;
       } else {
         if (nextRoundBet) return;
         state.balance -= amount;
         saveState();
         renderBalance();
 
-        nextRoundBet = { amount };
+        nextRoundBet = {
+          amount,
+          autoTarget: autoCashoutTarget
+        };
         crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ списана на следующий раунд`;
       }
 
