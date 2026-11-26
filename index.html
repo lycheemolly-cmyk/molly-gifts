@@ -8,15 +8,14 @@
   <style>
     :root {
       --bg: #070709;
-      --surface: #0e1015;
-      --surface-2: #151820;
-      --surface-hover: #1b1f2a;
-      --border: rgba(255, 255, 255, 0.11);
-      --border-strong: rgba(255, 255, 255, 0.26);
-      --text: #f4f5f7;
-      --muted: #98a0ad;
-      --silver: #d4d9e2;
-      --accent: #e5e7eb;
+      --surface: #0e1016;
+      --surface-2: #151822;
+      --surface-hover: #1c202e;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.24);
+      --text: #f5f7fa;
+      --muted: #9aa3b2;
+      --accent: #ffffff;
       --good: #4ade80;
       --bad: #f87171;
       --warn: #facc15;
@@ -30,7 +29,10 @@
 
     html, body {
       min-height: 100vh;
-      background-color: var(--bg);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(124, 58, 237, 0.14), transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(16, 185, 129, 0.08), transparent 40%),
+        var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
       -webkit-tap-highlight-color: transparent;
@@ -39,7 +41,7 @@
     body {
       display: flex;
       justify-content: center;
-      padding: 14px 14px 86px;
+      padding: 12px 14px 90px;
     }
 
     .app {
@@ -56,14 +58,15 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      background: var(--surface);
+      background: rgba(14, 16, 22, 0.88);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 10px 12px;
       position: sticky;
       top: 10px;
-      z-index: 20;
-      backdrop-filter: blur(10px);
+      z-index: 25;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     }
 
     .brand {
@@ -73,39 +76,48 @@
       min-width: 0;
     }
 
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #272b3a, #11131a);
+      border: 1px solid var(--border-strong);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
     .brand-title {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
       white-space: nowrap;
     }
 
     .bank-pill {
       font-size: 11px;
-      color: var(--muted);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
+      font-weight: 600;
+      color: #fca5a5;
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.25);
       border-radius: 999px;
       padding: 3px 8px;
       white-space: nowrap;
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     .balance-box {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       background: var(--surface-2);
       border: 1px solid var(--border-strong);
       border-radius: 999px;
-      padding: 5px 6px 5px 10px;
+      padding: 5px 6px 5px 11px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
     .plus-btn {
@@ -115,20 +127,26 @@
       border: none;
       background: var(--accent);
       color: #070709;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 15px;
       line-height: 1;
       cursor: pointer;
       display: grid;
       place-items: center;
+      transition: transform 0.12s ease;
     }
 
-    /* Cards & Typography */
+    .plus-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Surfaces */
     .card {
-      background: var(--surface);
+      background: linear-gradient(180deg, rgba(21, 24, 34, 0.92), rgba(14, 16, 22, 0.96));
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
     }
 
     .row-between {
@@ -139,130 +157,249 @@
     }
 
     .section-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text);
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
     }
 
     .muted {
       font-size: 12px;
       color: var(--muted);
-      line-height: 1.45;
+      line-height: 1.4;
+    }
+
+    .nowrap {
+      white-space: nowrap;
     }
 
     .back-btn {
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
-      border-radius: 10px;
+      border-radius: 11px;
       padding: 7px 12px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .back-btn:hover {
       background: var(--surface-hover);
     }
 
-    /* Hub Grid */
-    .games-grid {
+    /* Asymmetric Bento Game Grid */
+    .bento-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1.32fr 1fr;
       gap: 10px;
     }
 
-    .game-tile {
-      background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    .game-banner {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
       border: 1px solid var(--border);
-      border-radius: 16px;
       padding: 14px;
       text-align: left;
       color: var(--text);
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      min-height: 112px;
-      transition: border-color 0.15s ease, transform 0.12s ease;
+      justify-content: flex-end;
+      min-height: 124px;
+      transition: transform 0.14s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .game-tile:hover {
+    .game-banner.wide {
+      grid-column: 1 / -1;
+      min-height: 136px;
+    }
+
+    .game-banner:hover {
       border-color: var(--border-strong);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
     }
 
-    .game-tile:active {
+    .game-banner:active {
       transform: scale(0.985);
     }
 
-    .tile-icon {
-      font-size: 22px;
-      margin-bottom: 8px;
+    .theme-upgrade {
+      background: radial-gradient(circle at 82% 28%, rgba(16, 185, 129, 0.34), transparent 55%),
+                  linear-gradient(135deg, #0b241d 0%, #0e131b 65%, #121722 100%);
     }
 
-    .tile-name {
-      font-size: 15px;
+    .theme-battle {
+      background: radial-gradient(circle at 78% 24%, rgba(59, 130, 246, 0.32), transparent 58%),
+                  linear-gradient(145deg, #0d1b33 0%, #0e121b 70%);
+    }
+
+    .theme-cases {
+      background: radial-gradient(circle at 76% 24%, rgba(168, 85, 247, 0.34), transparent 58%),
+                  linear-gradient(145deg, #211036 0%, #0e121b 70%);
+    }
+
+    .theme-quests {
+      background: radial-gradient(circle at 80% 25%, rgba(245, 158, 11, 0.28), transparent 58%),
+                  linear-gradient(135deg, #291c0b 0%, #0e121b 70%);
+    }
+
+    .banner-art-img {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 104px;
+      height: 104px;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+      z-index: 1;
+    }
+
+    .game-banner:not(.wide) .banner-art-img {
+      width: 68px;
+      height: 68px;
+      right: 6px;
+      top: 10px;
+      transform: none;
+    }
+
+    .banner-fallback-icon {
+      position: absolute;
+      right: 16px;
+      top: 14px;
+      font-size: 34px;
+      opacity: 0.9;
+      pointer-events: none;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5));
+      z-index: 1;
+    }
+
+    .game-banner.wide .banner-fallback-icon {
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 48px;
+    }
+
+    .banner-scrim {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(7, 7, 9, 0.08) 25%, rgba(7, 7, 9, 0.86) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .banner-content {
+      position: relative;
+      z-index: 2;
+      max-width: 78%;
+    }
+
+    .game-banner.wide .banner-content {
+      max-width: 70%;
+    }
+
+    .banner-tag {
+      display: inline-block;
+      font-size: 10px;
       font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #e5e7eb;
+      margin-bottom: 6px;
+    }
+
+    .banner-title {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.15;
       margin-bottom: 3px;
     }
 
-    .tile-sub {
+    .banner-sub {
       font-size: 11px;
-      color: var(--muted);
+      color: #cbd5e1;
     }
 
-    /* Gifts Inventory */
+    /* Gifts Strip */
     .gifts-strip {
       display: flex;
-      gap: 8px;
+      gap: 9px;
       overflow-x: auto;
       padding-bottom: 4px;
-      margin-top: 10px;
+      margin-top: 11px;
     }
 
     .gift-chip {
-      min-width: 116px;
+      min-width: 122px;
       background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 10px;
       cursor: pointer;
       flex-shrink: 0;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
     .gift-chip.selected {
-      border-color: var(--accent);
-      background: var(--surface-hover);
+      border-color: var(--good);
+      background: rgba(74, 222, 128, 0.08);
+    }
+
+    .gift-thumb-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .gift-img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      border-radius: 8px;
     }
 
     .gift-num {
       font-size: 11px;
       color: var(--muted);
+      font-weight: 600;
     }
 
     .gift-title {
       font-size: 13px;
       font-weight: 700;
-      margin: 3px 0;
+      margin-bottom: 2px;
     }
 
     .gift-val {
       font-size: 12px;
       color: var(--warn);
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    /* Primary & Secondary Buttons */
+    /* Buttons */
     .btn-primary {
       width: 100%;
       background: var(--accent);
       color: #070709;
       border: none;
-      border-radius: 12px;
+      border-radius: 13px;
       padding: 12px 14px;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: scale(0.985);
     }
 
     .btn-primary:disabled {
@@ -273,19 +410,20 @@
     .btn-secondary {
       background: var(--surface-2);
       color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 11px;
       padding: 8px 12px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .btn-secondary:hover {
       background: var(--surface-hover);
     }
 
-    /* Upgrade Ring */
+    /* Upgrade Visualizer */
     .upgrade-ring-wrap {
       display: flex;
       flex-direction: column;
@@ -294,14 +432,19 @@
     }
 
     .upgrade-ring {
-      width: 168px;
-      height: 168px;
+      width: 176px;
+      height: 176px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       background: conic-gradient(var(--good) 0% 35%, rgba(255,255,255,0.12) 35% 100%);
-      padding: 10px;
-      transition: background 0.25s ease;
+      padding: 11px;
+      box-shadow: 0 0 32px rgba(74, 222, 128, 0.12);
+      transition: background 0.25s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .upgrade-ring.spinning {
+      transform: rotate(720deg);
     }
 
     .upgrade-ring-inner {
@@ -313,14 +456,14 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       text-align: center;
       padding: 10px;
     }
 
     .chance-num {
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 24px;
+      font-weight: 900;
     }
 
     .vs-grid {
@@ -328,26 +471,27 @@
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .slot-box {
       background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 11px;
       text-align: center;
     }
 
-    /* Battle Box */
+    /* Battle & Stats */
     .timer-badge {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--warn);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
+      background: rgba(250, 204, 21, 0.1);
+      border: 1px solid rgba(250, 204, 21, 0.28);
       border-radius: 10px;
-      padding: 6px 12px;
+      padding: 6px 11px;
+      white-space: nowrap;
     }
 
     .stat-row {
@@ -360,11 +504,10 @@
     .mini-stat {
       background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 11px;
     }
 
-    /* Toast / Result */
     .status-banner {
       border-radius: 12px;
       padding: 10px 12px;
@@ -378,11 +521,13 @@
     .status-good {
       color: var(--good);
       border-color: rgba(74, 222, 128, 0.35);
+      background: rgba(74, 222, 128, 0.08);
     }
 
     .status-bad {
       color: var(--bad);
       border-color: rgba(248, 113, 113, 0.35);
+      background: rgba(248, 113, 113, 0.08);
     }
 
     /* Views */
@@ -404,25 +549,28 @@
       transform: translateX(-50%);
       width: calc(100% - 28px);
       max-width: 440px;
-      background: var(--surface);
+      background: rgba(14, 16, 22, 0.92);
       border: 1px solid var(--border-strong);
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 6px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
-      z-index: 20;
+      z-index: 25;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
     }
 
     .b-nav-btn {
       background: transparent;
       border: none;
       color: var(--muted);
-      border-radius: 11px;
-      padding: 8px 6px;
+      border-radius: 12px;
+      padding: 9px 6px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
     }
 
     .b-nav-btn.active {
@@ -434,12 +582,13 @@
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.72);
+      background: rgba(0, 0, 0, 0.75);
       display: none;
       align-items: flex-end;
       justify-content: center;
       z-index: 50;
       padding: 12px;
+      backdrop-filter: blur(4px);
     }
 
     .modal-backdrop.open {
@@ -451,7 +600,7 @@
       max-width: 440px;
       background: var(--surface);
       border: 1px solid var(--border-strong);
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 18px;
     }
 
@@ -466,7 +615,7 @@
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--muted);
-      border-radius: 10px;
+      border-radius: 11px;
       padding: 9px;
       font-size: 13px;
       font-weight: 700;
@@ -490,7 +639,7 @@
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
-      border-radius: 10px;
+      border-radius: 11px;
       padding: 9px 4px;
       font-size: 13px;
       font-weight: 700;
@@ -506,6 +655,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
       padding: 9px 0;
       border-bottom: 1px solid var(--border);
       font-size: 12px;
@@ -518,67 +668,75 @@
 </head>
 <body>
   <div class="app">
-    <!-- Top Bar -->
+    <!-- Top Header -->
     <header class="header">
       <div class="brand">
+        <div class="brand-mark">MG</div>
         <span class="brand-title">MOLLY GIFTS</span>
         <span class="bank-pill" id="top-bank-pill">Банк: 0</span>
       </div>
-      <div class="header-right">
-        <div class="balance-box">
-          <span id="stars-balance">120 ★</span>
-          <button class="plus-btn" id="open-topup-btn" title="Пополнить">+</button>
-        </div>
+      <div class="balance-box">
+        <span id="stars-balance">120 ★</span>
+        <button class="plus-btn" id="open-topup-btn" title="Пополнить">+</button>
       </div>
     </header>
 
     <!-- HOME VIEW -->
     <main class="view active" id="view-home">
       <section class="card">
-        <div class="row-between" style="margin-bottom: 8px;">
-          <span class="section-title">Режимы игры</span>
-          <span class="muted">Демо-сборка</span>
+        <div class="row-between" style="margin-bottom: 10px;">
+          <span class="section-title">Главная</span>
+          <span class="muted">4 режима • Демо</span>
         </div>
-        <p class="muted" style="margin-bottom: 12px;">
-          Единый баланс звёзд во всех режимах. Подарки зачисляются через аккаунт-банк и доступны для апгрейда.
-        </p>
 
-        <div class="games-grid">
-          <button class="game-tile" data-open-view="upgrade">
-            <div class="tile-icon">⚡</div>
-            <div>
-              <div class="tile-name">Апгрейд</div>
-              <div class="tile-sub">Улучшить или сжечь в банк</div>
+        <div class="bento-grid">
+          <button class="game-banner wide theme-upgrade" data-open-view="upgrade">
+            <img class="banner-art-img" src="./assets/upgrade.png" alt="Апгрейд" onerror="this.style.display='none'" />
+            <div class="banner-fallback-icon">⚡</div>
+            <div class="banner-scrim"></div>
+            <div class="banner-content">
+              <span class="banner-tag">Риск / Банк</span>
+              <div class="banner-title">Апгрейд</div>
+              <div class="banner-sub">Улучши подарок или оставь его в банке</div>
             </div>
           </button>
 
-          <button class="game-tile" data-open-view="battle">
-            <div class="tile-icon">⚔️</div>
-            <div>
-              <div class="tile-name">Битва за лот</div>
-              <div class="tile-sub">Ставки от 1 ★ • Таймер 60с</div>
+          <button class="game-banner theme-battle" data-open-view="battle">
+            <img class="banner-art-img" src="./assets/battle.png" alt="Битва за лот" onerror="this.style.display='none'" />
+            <div class="banner-fallback-icon">⚔️</div>
+            <div class="banner-scrim"></div>
+            <div class="banner-content">
+              <span class="banner-tag">60 сек</span>
+              <div class="banner-title">Битва за лот</div>
+              <div class="banner-sub">Ставки от 1 ★</div>
             </div>
           </button>
 
-          <button class="game-tile" data-open-view="cases">
-            <div class="tile-icon">📦</div>
-            <div>
-              <div class="tile-name">Кейсы</div>
-              <div class="tile-sub">Открытие за звёзды</div>
+          <button class="game-banner theme-cases" data-open-view="cases">
+            <img class="banner-art-img" src="./assets/cases.png" alt="Кейсы" onerror="this.style.display='none'" />
+            <div class="banner-fallback-icon">📦</div>
+            <div class="banner-scrim"></div>
+            <div class="banner-content">
+              <span class="banner-tag">Дроп</span>
+              <div class="banner-title">Кейсы</div>
+              <div class="banner-sub">Коробки за 25 ★</div>
             </div>
           </button>
 
-          <button class="game-tile" data-open-view="quests">
-            <div class="tile-icon">🎯</div>
-            <div>
-              <div class="tile-name">Миссии</div>
-              <div class="tile-sub">Бонусы и стартовые ★</div>
+          <button class="game-banner wide theme-quests" data-open-view="quests">
+            <img class="banner-art-img" src="./assets/missions.png" alt="Миссии" onerror="this.style.display='none'" />
+            <div class="banner-fallback-icon">🎯</div>
+            <div class="banner-scrim"></div>
+            <div class="banner-content">
+              <span class="banner-tag">Бонусы</span>
+              <div class="banner-title">Миссии</div>
+              <div class="banner-sub">Быстрые награды звёздами на общий баланс</div>
             </div>
           </button>
         </div>
       </section>
 
-      <!-- Inventory / Bank Relayer Demo -->
+      <!-- Inventory / Bank Account Demo -->
       <section class="card">
         <div class="row-between">
           <div>
@@ -599,7 +757,7 @@
         <div class="row-between" style="margin-bottom: 12px;">
           <button class="back-btn" data-open-view="home">← Назад</button>
           <span class="section-title">Апгрейд</span>
-          <label class="muted" style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <label class="muted nowrap" style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
             <input type="checkbox" id="fast-upgrade-toggle" />
             Быстро
           </label>
@@ -608,13 +766,13 @@
         <div class="vs-grid">
           <div class="slot-box">
             <div class="muted">Ваш подарок</div>
-            <div id="upg-from-name" style="font-weight: 700; margin-top: 4px;">—</div>
+            <div id="upg-from-name" style="font-weight: 800; font-size: 13px; margin-top: 4px;">—</div>
             <div id="upg-from-val" class="gift-val" style="margin-top: 2px;">0 ★</div>
           </div>
-          <div style="font-weight: 800; color: var(--muted);">→</div>
+          <div style="font-weight: 900; color: var(--muted);">→</div>
           <div class="slot-box">
-            <div class="muted">Цель апгрейда</div>
-            <div id="upg-to-name" style="font-weight: 700; margin-top: 4px;">Серебряный Шлем</div>
+            <div class="muted">Цель</div>
+            <div id="upg-to-name" style="font-weight: 800; font-size: 13px; margin-top: 4px;">Silver Crown</div>
             <div id="upg-to-val" class="gift-val" style="margin-top: 2px;">150 ★</div>
           </div>
         </div>
@@ -629,7 +787,7 @@
           </div>
         </div>
 
-        <div class="muted" style="margin-bottom: 6px;">Выберите подарок из инвентаря:</div>
+        <div class="muted" style="margin-bottom: 4px;">Инвентарь:</div>
         <div class="gifts-strip" id="upgrade-gifts-list" style="margin-bottom: 14px;"></div>
 
         <button class="btn-primary" id="run-upgrade-btn" disabled>Запустить апгрейд</button>
@@ -647,19 +805,19 @@
         </div>
 
         <div class="slot-box" style="text-align: left; padding: 14px;">
-          <div class="muted">Текущий лот</div>
+          <div class="muted">Активный лот</div>
           <div style="font-size: 17px; font-weight: 800; margin: 4px 0;">Neon Mask #804</div>
-          <div class="muted">Удерживай лидерство 60 сек без перебития, чтобы забрать лот.</div>
+          <div class="muted">Удерживай первое место 60 секунд без перебития, чтобы забрать подарок.</div>
         </div>
 
         <div class="stat-row">
           <div class="mini-stat">
-            <div class="muted">Текущая ставка</div>
+            <div class="muted">Ставка</div>
             <div style="font-size: 18px; font-weight: 800; margin-top: 4px;" id="battle-bid">12 ★</div>
           </div>
           <div class="mini-stat">
             <div class="muted">Лидер</div>
-            <div style="font-size: 15px; font-weight: 700; margin-top: 6px;" id="battle-leader">@lycheemolly</div>
+            <div style="font-size: 14px; font-weight: 800; margin-top: 6px;" id="battle-leader">@lycheemolly</div>
           </div>
         </div>
 
@@ -674,14 +832,14 @@
         <div class="row-between" style="margin-bottom: 12px;">
           <button class="back-btn" data-open-view="home">← Назад</button>
           <span class="section-title">Кейсы</span>
-          <span class="muted">Стоимость: 25 ★</span>
+          <span class="muted nowrap">25 ★</span>
         </div>
 
-        <div class="slot-box" style="padding: 16px; margin-bottom: 14px;">
-          <div style="font-size: 28px; margin-bottom: 6px;">📦</div>
-          <div style="font-size: 16px; font-weight: 700;">Molly Starter Box</div>
+        <div class="slot-box" style="padding: 18px; margin-bottom: 14px;">
+          <div style="font-size: 32px; margin-bottom: 6px;">📦</div>
+          <div style="font-size: 17px; font-weight: 800;">Molly Starter Box</div>
           <div class="muted" style="margin-top: 4px;">
-            Внутри: подарок в инвентарь, бонусные звёзды или утешительный банк.
+            Подарок в инвентарь, бонусные звёзды или слот в банк.
           </div>
         </div>
 
@@ -696,7 +854,7 @@
         <div class="row-between" style="margin-bottom: 12px;">
           <button class="back-btn" data-open-view="home">← Назад</button>
           <span class="section-title">Миссии</span>
-          <span class="muted">Награды в ★</span>
+          <span class="muted nowrap">Награды в ★</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -705,15 +863,15 @@
               <div style="font-weight: 700; font-size: 13px;">Ежедневный чек-ин</div>
               <div class="muted">Забрать стартовый бонус</div>
             </div>
-            <button class="btn-secondary" data-quest="checkin" data-reward="15">+15 ★</button>
+            <button class="btn-secondary nowrap" data-quest="checkin" data-reward="15">+15 ★</button>
           </div>
 
           <div class="mini-stat row-between">
             <div>
               <div style="font-weight: 700; font-size: 13px;">Тест аккаунта-банка</div>
-              <div class="muted">Добавить тестовый подарок в профиль</div>
+              <div class="muted">Бонус за проверку механики</div>
             </div>
-            <button class="btn-secondary" data-quest="gift" data-reward="10">+10 ★</button>
+            <button class="btn-secondary nowrap" data-quest="gift" data-reward="10">+10 ★</button>
           </div>
         </div>
         <div id="quest-result"></div>
@@ -728,7 +886,7 @@
             <div style="font-size: 18px; font-weight: 800;" id="profile-name">Mikhail</div>
             <div class="muted" id="profile-handle">@lycheemolly</div>
           </div>
-          <span class="bank-pill" id="profile-stars-pill">120 ★</span>
+          <span class="bank-pill" style="color: var(--warn); background: rgba(250,204,21,0.1); border-color: rgba(250,204,21,0.25);" id="profile-stars-pill">120 ★</span>
         </div>
 
         <div class="stat-row">
@@ -806,17 +964,17 @@
     }
 
     const DEMO_GIFT_POOL = [
-      { title: "Heart Box", value: 45 },
-      { title: "Pixel Cap", value: 75 },
-      { title: "Star Ring", value: 110 },
-      { title: "Cyber Mask", value: 140 }
+      { title: "Heart Box", value: 45, img: "./assets/gift-box.png", emoji: "🎁" },
+      { title: "Pixel Cap", value: 75, img: "./assets/gift-cap.png", emoji: "🧢" },
+      { title: "Star Ring", value: 110, img: "./assets/gift-ring.png", emoji: "💍" },
+      { title: "Cyber Mask", value: 140, img: "./assets/gift-mask.png", emoji: "🎭" }
     ];
 
     const state = {
       stars: 120,
       gifts: [
-        { id: 1, num: "#2041", title: "Heart Box", value: 45 },
-        { id: 2, num: "#5189", title: "Pixel Cap", value: 75 }
+        { id: 1, num: "#2041", title: "Heart Box", value: 45, img: "./assets/gift-box.png", emoji: "🎁" },
+        { id: 2, num: "#5189", title: "Pixel Cap", value: 75, img: "./assets/gift-cap.png", emoji: "🧢" }
       ],
       selectedGiftId: 1,
       bankBurnedCount: 0,
@@ -826,12 +984,16 @@
       topupMethod: "stars",
       topupAmount: 100,
       claimedQuests: {},
-      history: []
+      history: [],
+      isSpinningUpgrade: false
     };
 
     function addHistory(text) {
-      state.history.unshift({ text, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) });
-      if (state.history.length > 12) state.history.pop();
+      state.history.unshift({
+        text,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      });
+      if (state.history.length > 14) state.history.pop();
     }
 
     function renderAll() {
@@ -855,7 +1017,7 @@
       const upgList = document.getElementById("upgrade-gifts-list");
 
       if (!state.gifts.length) {
-        const emptyHtml = `<div class="muted" style="padding: 8px 0;">Подарков пока нет — добавьте через «+ Добавить подарок».</div>`;
+        const emptyHtml = `<div class="muted" style="padding: 8px 0;">Подарков нет — нажмите «+ Добавить подарок».</div>`;
         homeList.innerHTML = emptyHtml;
         upgList.innerHTML = emptyHtml;
         return;
@@ -865,7 +1027,10 @@
         const activeClass = g.id === state.selectedGiftId ? "selected" : "";
         return `
           <div class="gift-chip ${activeClass}" data-select-gift="${g.id}">
-            <div class="gift-num">${g.num}</div>
+            <div class="gift-thumb-row">
+              <span style="font-size: 18px;">${g.emoji || "🎁"}</span>
+              <span class="gift-num">${g.num}</span>
+            </div>
             <div class="gift-title">${g.title}</div>
             <div class="gift-val">${g.value} ★</div>
           </div>
@@ -877,6 +1042,7 @@
 
       document.querySelectorAll("[data-select-gift]").forEach((el) => {
         el.addEventListener("click", () => {
+          if (state.isSpinningUpgrade) return;
           state.selectedGiftId = Number(el.getAttribute("data-select-gift"));
           renderAll();
         });
@@ -907,11 +1073,11 @@
       fromNameEl.textContent = `${gift.title} ${gift.num}`;
       fromValEl.textContent = `${gift.value} ★`;
 
-      const rawChance = Math.min(85, Math.max(10, Math.round((gift.value / targetVal) * 100)));
-      chanceTextEl.textContent = `${rawChance}%`;
+      const chance = Math.min(85, Math.max(10, Math.round((gift.value / targetVal) * 100)));
+      chanceTextEl.textContent = `${chance}%`;
       subEl.textContent = `Успех / Банк`;
-      ringEl.style.background = `conic-gradient(var(--good) 0% ${rawChance}%, rgba(248, 113, 113, 0.35) ${rawChance}% 100%)`;
-      btnEl.disabled = false;
+      ringEl.style.background = `conic-gradient(var(--good) 0% ${chance}%, rgba(248, 113, 113, 0.36) ${chance}% 100%)`;
+      btnEl.disabled = state.isSpinningUpgrade;
     }
 
     function renderBattlePanel() {
@@ -931,7 +1097,7 @@
       wrap.innerHTML = state.history.map((item) => `
         <div class="history-item">
           <span>${item.text}</span>
-          <span class="muted">${item.time}</span>
+          <span class="muted nowrap">${item.time}</span>
         </div>
       `).join("");
     }
@@ -955,14 +1121,16 @@
       btn.addEventListener("click", () => openView(btn.getAttribute("data-bottom-tab")));
     });
 
-    // Add Demo Gift (Relayer Bank Simulation)
+    // Add Demo Gift
     document.getElementById("add-demo-gift-btn").addEventListener("click", () => {
       const sample = DEMO_GIFT_POOL[Math.floor(Math.random() * DEMO_GIFT_POOL.length)];
       const newGift = {
         id: Date.now(),
         num: `#${Math.floor(1000 + Math.random() * 8999)}`,
         title: sample.title,
-        value: sample.value
+        value: sample.value,
+        img: sample.img,
+        emoji: sample.emoji
       };
       state.gifts.push(newGift);
       state.selectedGiftId = newGift.id;
@@ -972,34 +1140,50 @@
       renderAll();
     });
 
-    // Upgrade Action
+    // Upgrade Action with optional spin animation
     document.getElementById("run-upgrade-btn").addEventListener("click", () => {
+      if (state.isSpinningUpgrade) return;
       const idx = state.gifts.findIndex((g) => g.id === state.selectedGiftId);
       if (idx === -1) return;
 
       const gift = state.gifts[idx];
       const chance = Math.min(85, Math.max(10, Math.round((gift.value / 150) * 100)));
-      const roll = Math.random() * 100;
-      const win = roll <= chance;
+      const fastMode = document.getElementById("fast-upgrade-toggle").checked;
+      const ringEl = document.getElementById("upgrade-ring");
       const resEl = document.getElementById("upgrade-result");
 
-      if (win) {
-        state.gifts[idx] = {
-          ...gift,
-          title: "Silver Crown",
-          value: gift.value + 65
-        };
-        addHistory(`Апгрейд успешен: ${gift.num} → Silver Crown`);
-        resEl.innerHTML = `<div class="status-banner status-good">Успех! Подарок ${gift.num} улучшен до Silver Crown.</div>`;
-      } else {
-        state.gifts.splice(idx, 1);
-        state.bankBurnedCount += 1;
-        state.selectedGiftId = state.gifts[0] ? state.gifts[0].id : null;
-        addHistory(`Сгорел в банк: ${gift.title} ${gift.num}`);
-        resEl.innerHTML = `<div class="status-banner status-bad">Не повезло: ${gift.title} ${gift.num} сгорел и остался в банке.</div>`;
-      }
+      const finishUpgrade = () => {
+        const win = Math.random() * 100 <= chance;
+        if (win) {
+          state.gifts[idx] = {
+            ...gift,
+            title: "Silver Crown",
+            value: gift.value + 65,
+            emoji: "👑"
+          };
+          addHistory(`Апгрейд успешен: ${gift.num} → Silver Crown`);
+          resEl.innerHTML = `<div class="status-banner status-good">Успех! Подарок ${gift.num} улучшен до Silver Crown.</div>`;
+        } else {
+          state.gifts.splice(idx, 1);
+          state.bankBurnedCount += 1;
+          state.selectedGiftId = state.gifts[0] ? state.gifts[0].id : null;
+          addHistory(`Сгорел в банк: ${gift.title} ${gift.num}`);
+          resEl.innerHTML = `<div class="status-banner status-bad">Не повезло: ${gift.title} ${gift.num} сгорел и ушёл в банк.</div>`;
+        }
+        state.isSpinningUpgrade = false;
+        ringEl.classList.remove("spinning");
+        renderAll();
+      };
 
-      renderAll();
+      if (fastMode) {
+        finishUpgrade();
+      } else {
+        state.isSpinningUpgrade = true;
+        document.getElementById("run-upgrade-btn").disabled = true;
+        ringEl.classList.add("spinning");
+        resEl.innerHTML = `<div class="status-banner">Крутим апгрейд...</div>`;
+        setTimeout(finishUpgrade, 650);
+      }
     });
 
     // Battle Bid & Timer
@@ -1030,7 +1214,7 @@
       renderBattlePanel();
     }, 1000);
 
-    // Cases Action
+    // Cases
     document.getElementById("open-case-btn").addEventListener("click", () => {
       const resEl = document.getElementById("case-result");
       if (state.stars < 25) {
@@ -1050,7 +1234,9 @@
           id: Date.now(),
           num: `#${Math.floor(1000 + Math.random() * 8999)}`,
           title: "Star Ring",
-          value: 95
+          value: 95,
+          img: "./assets/gift-ring.png",
+          emoji: "💍"
         };
         state.gifts.push(g);
         state.selectedGiftId = g.id;
@@ -1058,7 +1244,7 @@
         resEl.innerHTML = `<div class="status-banner status-good">Дроп: подарок ${g.title} ${g.num} добавлен в инвентарь!</div>`;
       } else {
         state.bankBurnedCount += 1;
-        addHistory(`Кейс: пустой слот ушёл в банк`);
+        addHistory(`Кейс: взнос ушёл в банк`);
         resEl.innerHTML = `<div class="status-banner status-bad">Пустой кейс — взнос ушёл в банк.</div>`;
       }
 
@@ -1086,7 +1272,7 @@
       });
     });
 
-    // Topup Modal Logic
+    // Topup Modal
     const modal = document.getElementById("topup-modal");
     document.getElementById("open-topup-btn").addEventListener("click", () => {
       updateTopupPreview();
