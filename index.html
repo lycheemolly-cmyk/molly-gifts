@@ -1498,6 +1498,136 @@
       color: var(--red);
     }
 
+    /* ================= PROFILE & USER WALLET ================= */
+    .profile-hero-card {
+      background: radial-gradient(125% 110% at 92% 0%, rgba(255, 42, 133, 0.24), rgba(17, 17, 22, 0.98) 62%), var(--surface);
+      border: 1px solid rgba(255, 42, 133, 0.28);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .profile-user-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .profile-avatar-wrap {
+      width: 58px;
+      height: 58px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px var(--pink-glow);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-user-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-handle {
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-wallet-box {
+      background: rgba(12, 12, 17, 0.78);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .profile-wallet-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .profile-wallet-amount {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .profile-wallet-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .profile-topup-btn {
+      border: 1px solid var(--border-strong);
+      background: var(--surface-elevated);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 11px 13px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .profile-topup-btn:active {
+      background: var(--surface-press);
+    }
+
+    .withdraw-btn {
+      border: none;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+      border-radius: 14px;
+      padding: 11px 15px;
+      font-size: 13px;
+      font-weight: 800;
+      box-shadow: 0 8px 20px var(--pink-glow);
+      cursor: pointer;
+    }
+
+    .withdraw-btn:active {
+      transform: scale(0.96);
+    }
+
     .info-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -2070,16 +2200,36 @@
 
     <!-- PROFILE -->
     <section class="view" id="view-profile">
+      <div class="profile-hero-card">
+        <div class="profile-user-row">
+          <div class="profile-avatar-wrap" id="profileAvatarBox">MG</div>
+          <div class="profile-user-info">
+            <div class="profile-name" id="profileDisplayName">Demo Player</div>
+            <div class="profile-handle" id="profileUsernameSub">Telegram Profile • Demo</div>
+          </div>
+        </div>
+
+        <div class="profile-wallet-box">
+          <div>
+            <div class="profile-wallet-label">Баланс профиля</div>
+            <div class="profile-wallet-amount">
+              <span class="star-icon">★</span>
+              <span id="profileBalanceText">5000</span>
+            </div>
+          </div>
+          <div class="profile-wallet-actions">
+            <button type="button" class="profile-topup-btn" id="profileTopupBtn">+ ★</button>
+            <button type="button" class="withdraw-btn" id="openWithdrawModalBtn">Вывод</button>
+          </div>
+        </div>
+      </div>
+
       <div class="info-card">
-        <div class="section-title">Профиль и сохранение</div>
-        <div class="list-item">
-          <span>Пользователь</span>
-          <span id="tgUserLabel">Ты (Demo)</span>
+        <div class="section-head">
+          <span class="section-title">История ставок</span>
+          <span class="section-meta" id="betHistoryCount">0</span>
         </div>
-        <div class="list-item">
-          <span>Сбросить демо-баланс до 5000 ★</span>
-          <button class="back-btn" id="resetDemoBtn">Сброс</button>
-        </div>
+        <div id="betHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
 
       <div class="info-card">
@@ -2092,14 +2242,9 @@
 
       <div class="info-card">
         <div class="section-head">
-          <span class="section-title">История ставок</span>
-          <span class="section-meta" id="betHistoryCount">0</span>
+          <span class="section-title">Последние операции</span>
+          <button class="back-btn" id="resetDemoBtn">Сброс 5000 ★</button>
         </div>
-        <div id="betHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
-      </div>
-
-      <div class="info-card">
-        <div class="section-title">Последние операции</div>
         <div id="activityLog" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
     </section>
@@ -2123,6 +2268,22 @@
       <span>Профиль</span>
     </button>
   </nav>
+
+  <!-- Rounded Demo Modal for "Вывод" -->
+  <div class="modal-backdrop" id="withdrawDemoModal">
+    <div class="modal-rounded">
+      <div class="demo-pill">Демо-режим • В разработке</div>
+      <h2 class="modal-title">Вывод звёзд и подарков</h2>
+      <p class="modal-text">
+        Сейчас приложение работает в <b>демо-режиме</b>. Вывод реальных Telegram Stars, TON и подарков пока недоступен — модуль вывода находится в активной разработке.
+      </p>
+      <a class="dev-channel-link" href="https://t.me/devMikhail" target="_blank" rel="noopener noreferrer">
+        <span>📢 Канал разработки MOLLY GIFTS</span>
+        <span style="color:var(--pink-bright);">Открыть →</span>
+      </a>
+      <button type="button" class="action-btn" id="closeWithdrawModalBtn">Понятно</button>
+    </div>
+  </div>
 
   <!-- Rounded Demo Modal for "Добавить свой подарок или NFT" -->
   <div class="modal-backdrop" id="addNftDemoModal">
@@ -2279,7 +2440,7 @@
       `;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v13";
+    const STORAGE_KEY = "molly_gifts_demo_v14";
     const defaultState = {
       balance: 5000,
       lastFreeCaseAt: 0,
@@ -2328,6 +2489,7 @@
     }
 
     const balanceText = document.getElementById("balanceText");
+    const profileBalanceText = document.getElementById("profileBalanceText");
     const profileInventoryCountEl = document.getElementById("profileInventoryCount");
     const profileInventoryListEl = document.getElementById("profileInventoryList");
     const betHistoryListEl = document.getElementById("betHistoryList");
@@ -2336,7 +2498,9 @@
     const crashHistoryEl = document.getElementById("crashHistory");
 
     function renderBalance() {
-      balanceText.textContent = cleanNumber(state.balance, 5000).toLocaleString("ru-RU");
+      const formatted = cleanNumber(state.balance, 5000).toLocaleString("ru-RU");
+      balanceText.textContent = formatted;
+      if (profileBalanceText) profileBalanceText.textContent = formatted;
     }
 
     function addLog(text) {
@@ -2424,11 +2588,40 @@
       }).join("");
     }
 
-    const userLabel = document.getElementById("tgUserLabel");
-    const myName = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user)
-      ? (tg.initDataUnsafe.user.username ? `@${tg.initDataUnsafe.user.username}` : tg.initDataUnsafe.user.first_name)
-      : "Ты (Demo)";
-    userLabel.textContent = myName;
+    // Telegram Profile Identity & Avatar
+    const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
+    const myName = tgUser
+      ? ([tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || (tgUser.username ? `@${tgUser.username}` : "Telegram User"))
+      : "Demo Player";
+    const myHandle = tgUser && tgUser.username
+      ? `@${tgUser.username} • Telegram Demo`
+      : tgUser && tgUser.id
+        ? `ID ${tgUser.id} • Telegram Demo`
+        : "Telegram Profile • Demo";
+
+    const profileDisplayNameEl = document.getElementById("profileDisplayName");
+    const profileUsernameSubEl = document.getElementById("profileUsernameSub");
+    const profileAvatarBoxEl = document.getElementById("profileAvatarBox");
+
+    function renderTelegramProfileHeader() {
+      profileDisplayNameEl.textContent = myName;
+      profileUsernameSubEl.textContent = myHandle;
+
+      const initials = (myName.replace(/^@/, "").trim().slice(0, 2) || "MG").toUpperCase();
+      profileAvatarBoxEl.textContent = initials;
+
+      if (tgUser && tgUser.photo_url) {
+        const img = document.createElement("img");
+        img.src = tgUser.photo_url;
+        img.alt = myName;
+        img.className = "profile-avatar-img";
+        img.onerror = () => {
+          profileAvatarBoxEl.textContent = initials;
+        };
+        profileAvatarBoxEl.innerHTML = "";
+        profileAvatarBoxEl.appendChild(img);
+      }
+    }
 
     const views = document.querySelectorAll(".view");
     const tabBtns = document.querySelectorAll(".tab-btn");
@@ -2442,6 +2635,8 @@
       if (name === "cases") renderCasesUI();
       if (name === "upgrade") renderUpgradeUI();
       if (name === "profile") {
+        renderTelegramProfileHeader();
+        renderBalance();
         renderProfileInventory();
         renderBetHistory();
         renderLogs();
@@ -2453,6 +2648,18 @@
     });
 
     // Modals
+    const withdrawDemoModal = document.getElementById("withdrawDemoModal");
+    document.getElementById("openWithdrawModalBtn").addEventListener("click", () => {
+      withdrawDemoModal.classList.add("open");
+      haptic("light");
+    });
+    document.getElementById("closeWithdrawModalBtn").addEventListener("click", () => {
+      withdrawDemoModal.classList.remove("open");
+    });
+    withdrawDemoModal.addEventListener("click", e => {
+      if (e.target === withdrawDemoModal) withdrawDemoModal.classList.remove("open");
+    });
+
     const addNftDemoModal = document.getElementById("addNftDemoModal");
     document.getElementById("openAddNftModalBtn").addEventListener("click", () => {
       addNftDemoModal.classList.add("open");
@@ -2466,10 +2673,12 @@
     });
 
     const topupModal = document.getElementById("topupModal");
-    document.getElementById("openTopupBtn").addEventListener("click", () => {
+    function openTopupModal() {
       topupModal.classList.add("open");
       haptic("light");
-    });
+    }
+    document.getElementById("openTopupBtn").addEventListener("click", openTopupModal);
+    document.getElementById("profileTopupBtn").addEventListener("click", openTopupModal);
     document.getElementById("closeTopupBtn").addEventListener("click", () => {
       topupModal.classList.remove("open");
     });
@@ -3686,6 +3895,7 @@
       }, 1200);
     }
 
+    renderTelegramProfileHeader();
     renderBalance();
     renderCrashHistory();
     renderProfileInventory();
