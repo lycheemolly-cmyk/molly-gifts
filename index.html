@@ -46,6 +46,18 @@
       overflow-x: hidden;
     }
 
+    body.perf-mode .splash-ambient-ring,
+    body.perf-mode .splash-sparkle {
+      animation: none !important;
+    }
+
+    body.perf-mode .tabbar,
+    body.perf-mode .modal-backdrop,
+    body.perf-mode .countdown-box {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
     /* Upgraded Splash / Entry Loader */
     .splash-screen {
       position: fixed;
@@ -628,7 +640,7 @@
     }
 
     .case-tile {
-      background: var(--surface);
+      background: radial-gradient(circle at 50% 25%, rgba(255, 42, 133, 0.14), rgba(17, 17, 22, 0.98) 72%);
       border: 1px solid var(--border);
       border-radius: var(--radius-xl);
       padding: 14px;
@@ -829,7 +841,7 @@
     }
 
     .prize-card {
-      background: linear-gradient(165deg, rgba(255, 42, 133, 0.1), var(--surface-elevated) 68%);
+      background: linear-gradient(165deg, rgba(255, 42, 133, 0.12), var(--surface-elevated) 70%);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 10px 8px;
@@ -1323,7 +1335,13 @@
     .autocash-pills {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .autocash-pills::-webkit-scrollbar {
+      display: none;
     }
 
     .auto-btn {
@@ -1334,8 +1352,9 @@
       font-size: 12px;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
-      padding: 6px 10px;
+      padding: 6px 9px;
       cursor: pointer;
+      flex-shrink: 0;
       transition: all 0.14s ease;
     }
 
@@ -1560,115 +1579,6 @@
       color: #fff;
     }
 
-    /* ================= CASCADE GAME ================= */
-    .cascade-panel {
-      background: radial-gradient(circle at 50% 10%, rgba(255, 42, 133, 0.16), transparent 65%), var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .cascade-top-stats {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      background: var(--surface-elevated);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 9px 12px;
-    }
-
-    .cascade-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
-      background: #0c0c11;
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-lg);
-      padding: 8px;
-    }
-
-    .cascade-cell {
-      aspect-ratio: 1 / 1;
-      border-radius: 11px;
-      background: var(--surface-elevated);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      font-size: 16px;
-      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
-    }
-
-    .cascade-cell.boosted {
-      border-color: rgba(255, 42, 133, 0.55);
-      background: rgba(255, 42, 133, 0.12);
-    }
-
-    .cascade-cell.win-hit {
-      border-color: var(--green);
-      background: rgba(48, 209, 88, 0.2);
-      transform: scale(1.05);
-    }
-
-    .cascade-cell-mult {
-      position: absolute;
-      bottom: 1px;
-      right: 2px;
-      font-size: 8px;
-      font-weight: 900;
-      color: var(--gold);
-      line-height: 1;
-    }
-
-    .cascade-bonus-banner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
-      background: linear-gradient(135deg, rgba(255, 42, 133, 0.16), rgba(24, 24, 32, 0.96));
-      border: 1px solid rgba(255, 42, 133, 0.34);
-      cursor: pointer;
-    }
-
-    .cascade-controls-bottom {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 8px;
-      align-items: stretch;
-    }
-
-    .cascade-side-toggles {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .cascade-mini-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-elevated);
-      color: var(--text-muted);
-      border-radius: 12px;
-      padding: 8px 11px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .cascade-mini-btn.active {
-      border-color: var(--pink-bright);
-      background: var(--pink-soft);
-      color: var(--pink-bright);
-    }
-
     /* ================= ARENA GAME ================= */
     .arena-panel {
       background: radial-gradient(circle at 50% 10%, rgba(255, 42, 133, 0.18), transparent 65%), var(--surface);
@@ -1775,19 +1685,49 @@
 
     /* ================= PROFILE & USER WALLET ================= */
     .profile-hero-card {
-      background: radial-gradient(125% 110% at 92% 0%, rgba(255, 42, 133, 0.24), rgba(17, 17, 22, 0.98) 62%), var(--surface);
-      border: 1px solid rgba(255, 42, 133, 0.28);
+      position: relative;
+      background:
+        radial-gradient(125% 110% at 92% 0%, rgba(255, 42, 133, 0.25), rgba(17, 17, 22, 0.96) 62%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.014) 0px, rgba(255, 255, 255, 0.014) 2px, transparent 2px, transparent 14px),
+        var(--surface);
+      border: 1px solid rgba(255, 42, 133, 0.3);
       border-radius: var(--radius-xl);
       padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .profile-gear-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(24, 24, 32, 0.88);
+      color: var(--text);
+      font-size: 17px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 2;
+      transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .profile-gear-btn:active {
+      transform: scale(0.92) rotate(25deg);
+      border-color: var(--pink-bright);
+      color: var(--pink-bright);
     }
 
     .profile-user-row {
       display: flex;
       align-items: center;
       gap: 13px;
+      padding-right: 36px;
     }
 
     .profile-avatar-wrap {
@@ -1834,6 +1774,350 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .wager-strip-card {
+      background: rgba(24, 24, 32, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .translucent-gifts-trigger {
+      background: rgba(255, 42, 133, 0.09);
+      border: 1px solid rgba(255, 42, 133, 0.28);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      transition: background 0.15s ease, transform 0.14s ease, border-color 0.15s ease;
+    }
+
+    .translucent-gifts-trigger:active {
+      transform: scale(0.98);
+      background: rgba(255, 42, 133, 0.16);
+      border-color: var(--pink-bright);
+    }
+
+    .vip-summary-card {
+      background: linear-gradient(150deg, rgba(255, 42, 133, 0.15), rgba(20, 20, 28, 0.94) 65%);
+      border: 1px solid rgba(255, 42, 133, 0.34);
+      border-radius: var(--radius-xl);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .vip-summary-card:active {
+      transform: scale(0.985);
+      border-color: var(--pink-bright);
+    }
+
+    .vip-summary-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .vip-summary-rates {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .profile-stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 13px 14px;
+    }
+
+    .profile-stat-num {
+      font-size: 20px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .profile-stat-lbl {
+      margin-top: 3px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .accordion-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+    }
+
+    .accordion-header {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 15px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .accordion-body {
+      display: none;
+      padding: 0 16px 16px;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .accordion-card.open .accordion-body {
+      display: flex;
+    }
+
+    .accordion-card.open .accordion-chev {
+      transform: rotate(180deg);
+    }
+
+    .accordion-chev {
+      transition: transform 0.2s ease;
+      color: var(--text-muted);
+    }
+
+    .seg-switch {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      background: var(--surface-elevated);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .seg-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 8px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .seg-btn.active {
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+    }
+
+    .pager-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* VIP Club Screen */
+    .vip-hero-banner {
+      background: radial-gradient(120% 110% at 88% 12%, rgba(255, 42, 133, 0.24), rgba(17, 17, 22, 0.98) 65%), var(--surface);
+      border: 1px solid rgba(255, 42, 133, 0.34);
+      border-radius: var(--radius-xl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .vip-tiers-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .vip-tier-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      border-radius: 14px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .vip-tier-btn.active {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      color: #fff;
+    }
+
+    .vip-two-cols {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .vip-perk-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+    }
+
+    .vip-action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .vip-priv-item {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    /* Settings & Gifts Empty State */
+    .setting-row {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .toggle-pill {
+      width: 52px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: #252532;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease;
+      flex-shrink: 0;
+    }
+
+    .toggle-pill::after {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.18s ease;
+    }
+
+    .toggle-pill.on {
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      border-color: var(--pink-bright);
+    }
+
+    .toggle-pill.on::after {
+      transform: translateX(22px);
+    }
+
+    .lang-pill-group {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .lang-choice-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .lang-choice-btn.active {
+      background: #fff;
+      color: #09090c;
+    }
+
+    .empty-gifts-box {
+      padding: 24px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+      border-radius: 20px;
+      background: rgba(24, 24, 32, 0.72);
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+    }
+
+    .white-add-gift-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 22px;
+      background: #fff;
+      color: #09090c;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.16);
+    }
+
+    .white-add-gift-btn:active {
+      transform: scale(0.97);
     }
 
     .profile-wallet-box {
@@ -2181,7 +2465,7 @@
     <div class="splash-pills">
       <span class="splash-mini-chip">★ Звёзды</span>
       <span class="splash-mini-chip">🎁 Подарки</span>
-      <span class="splash-mini-chip">6 режимов</span>
+      <span class="splash-mini-chip">5 режимов</span>
     </div>
   </div>
 
@@ -2218,14 +2502,14 @@
     <main class="view active" id="view-hub">
       <section class="hero-card">
         <div class="hero-chip">Режим Crash • Звёзды ★</div>
-        <h1 class="hero-title">Успей нажать Стоп</h1>
-        <p class="hero-desc">Ракета стартует с x0.00. Забирай множитель в звёздах до того, как она взорвётся.</p>
+        <h1 class="hero-title" id="hubHeroTitle">Успей нажать Стоп</h1>
+        <p class="hero-desc" id="hubHeroDesc">Ракета стартует с x0.00. Забирай множитель в звёздах до того, как она взорвётся.</p>
         <button class="hero-cta" data-nav="crash">🚀 Запустить Crash</button>
       </section>
 
       <div class="section-head">
-        <span class="section-title">Режимы</span>
-        <span class="section-meta">Единый баланс ★</span>
+        <span class="section-title" id="hubModesTitle">Режимы</span>
+        <span class="section-meta" id="hubModesMeta">Единый баланс ★</span>
       </div>
 
       <section class="modes-grid">
@@ -2246,8 +2530,8 @@
             <span class="mode-tag pink">Mines</span>
           </div>
           <div>
-            <div class="mode-name">Мины</div>
-            <div class="mode-hint">Открывай ячейки без мин и расти множитель</div>
+            <div class="mode-name" id="modeMinesName">Мины</div>
+            <div class="mode-hint" id="modeMinesHint">Открывай ячейки без мин и расти множитель</div>
           </div>
         </div>
 
@@ -2257,8 +2541,8 @@
             <span class="mode-tag pink">Gifts</span>
           </div>
           <div>
-            <div class="mode-name">Кейсы</div>
-            <div class="mode-hint">Подарки Telegram и бесплатный кейс 24ч</div>
+            <div class="mode-name" id="modeCasesName">Кейсы</div>
+            <div class="mode-hint" id="modeCasesHint">Подарки Telegram и бесплатный кейс 24ч</div>
           </div>
         </div>
 
@@ -2268,30 +2552,19 @@
             <span class="mode-tag pink">Upgrade</span>
           </div>
           <div>
-            <div class="mode-name">Апгрейд</div>
-            <div class="mode-hint">Шанс задаёт заполненность колеса</div>
+            <div class="mode-name" id="modeUpgradeName">Апгрейд</div>
+            <div class="mode-hint" id="modeUpgradeHint">Шанс задаёт заполненность колеса</div>
           </div>
         </div>
 
-        <div class="mode-card" data-nav="cascade">
-          <div class="mode-top">
-            <div class="mode-icon">✨</div>
-            <span class="mode-tag pink">New</span>
-          </div>
-          <div>
-            <div class="mode-name">Каскад</div>
-            <div class="mode-hint">Кластеры от 5 символов, каскады и бонус x10</div>
-          </div>
-        </div>
-
-        <div class="mode-card" data-nav="arena">
+        <div class="mode-card" data-nav="arena" style="grid-column:span 2;min-height:118px;">
           <div class="mode-top">
             <div class="mode-icon">🎯</div>
             <span class="mode-tag pink">Arena</span>
           </div>
           <div>
-            <div class="mode-name">Арена</div>
-            <div class="mode-hint">Доли поля по ставкам и полёт шарика</div>
+            <div class="mode-name" id="modeArenaName">Арена</div>
+            <div class="mode-hint" id="modeArenaHint">Доли поля по ставкам и полёт шарика</div>
           </div>
         </div>
       </section>
@@ -2375,6 +2648,7 @@
         <div class="autocash-row">
           <span class="autocash-label" id="autoCashLabel">Авто</span>
           <div class="autocash-pills" id="autoCashPills">
+            <button type="button" class="auto-btn" data-auto="1.5">x1.5</button>
             <button type="button" class="auto-btn" data-auto="2">x2</button>
             <button type="button" class="auto-btn" data-auto="5">x5</button>
             <button type="button" class="auto-btn" data-auto="10">x10</button>
@@ -2445,59 +2719,6 @@
         </div>
 
         <button class="action-btn" id="minesActionBtn">Начать игру</button>
-      </div>
-    </section>
-
-    <!-- CASCADE -->
-    <section class="view" id="view-cascade">
-      <div class="back-row">
-        <button class="back-btn" data-nav="hub">← Назад</button>
-        <span class="section-title" style="font-size:16px;">Каскад</span>
-        <button type="button" class="back-btn" id="cascadeRulesBtn">? Правила</button>
-      </div>
-
-      <div class="cascade-panel">
-        <div class="cascade-top-stats">
-          <div>
-            <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Выигрыш</div>
-            <div style="font-size:16px;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;" id="cascadeWinText">0 ★</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Фриспины</div>
-            <div style="font-size:14px;font-weight:800;color:var(--pink-bright);" id="cascadeSpinsInfo">Обычный раунд</div>
-          </div>
-        </div>
-
-        <div class="cascade-grid" id="cascadeGrid"></div>
-
-        <div class="section-meta" id="cascadeStatusText" style="text-align:center;color:var(--text);min-height:18px;">
-          Собери 5+ одинаковых символов по сторонам • Каскады усиливают клетки
-        </div>
-
-        <div class="cascade-bonus-banner" id="cascadeBuyBonusBtn">
-          <div>
-            <div style="font-size:13px;font-weight:800;">КУПИТЬ БОНУС <span class="mode-tag pink">x10</span></div>
-            <div style="font-size:11px;color:var(--text-muted);">Раунд со скаттерами и фриспинами (подтверждение перед покупкой)</div>
-          </div>
-          <div style="font-size:14px;font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;" id="cascadeBonusPriceText">100 ★</div>
-        </div>
-
-        <div class="bet-row">
-          <button type="button" class="back-btn" id="cascadeBetMinus">−</button>
-          <div style="text-align:center;">
-            <div class="bet-label">Ставка</div>
-            <div style="font-size:16px;font-weight:900;font-variant-numeric:tabular-nums;"><span id="cascadeBetVal">10</span> <span class="star-icon">★</span></div>
-          </div>
-          <button type="button" class="back-btn" id="cascadeBetPlus">+</button>
-        </div>
-
-        <div class="cascade-controls-bottom">
-          <div class="cascade-side-toggles">
-            <button type="button" class="cascade-mini-btn" id="cascadeTurboBtn">⚡ ТУРБО</button>
-            <button type="button" class="cascade-mini-btn" id="cascadeAutoBtn">↻ АВТО</button>
-          </div>
-          <button type="button" class="action-btn" id="cascadeSpinBtn">КРУТИТЬ</button>
-        </div>
       </div>
     </section>
 
@@ -2691,12 +2912,51 @@
     <!-- PROFILE -->
     <section class="view" id="view-profile">
       <div class="profile-hero-card">
+        <button type="button" class="profile-gear-btn" id="openSettingsModalBtn" aria-label="Настройки">⚙</button>
+
         <div class="profile-user-row">
           <div class="profile-avatar-wrap" id="profileAvatarBox">MG</div>
           <div class="profile-user-info">
             <div class="profile-name" id="profileDisplayName">Demo Player</div>
             <div class="profile-handle" id="profileUsernameSub">Telegram Profile • Demo</div>
           </div>
+        </div>
+
+        <div class="wager-strip-card">
+          <span style="color:var(--text-muted);" id="wagerLeftLabel">Осталось отыграть</span>
+          <span style="font-weight:900;font-variant-numeric:tabular-nums;"><span id="wagerLeftVal">0</span> <span class="star-icon">★</span></span>
+        </div>
+
+        <button type="button" class="translucent-gifts-trigger" id="openMyGiftsModalBtn">
+          <span style="display:flex;align-items:center;gap:9px;">
+            <span>🎁</span>
+            <span id="myGiftsTriggerText">Мои Подарки (0)</span>
+          </span>
+          <span style="color:var(--text-muted);">›</span>
+        </button>
+
+        <div class="vip-summary-card" id="openVipClubBtn">
+          <div class="vip-summary-top">
+            <div style="display:flex;align-items:center;gap:11px;">
+              <div id="vipSummaryFace" style="width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,0.08);display:grid;place-items:center;font-size:22px;">🙂</div>
+              <div>
+                <div style="font-size:15px;font-weight:900;">VIP Клуб</div>
+                <div style="font-size:12px;color:var(--text-muted);" id="vipSummaryTierName">Новичок • Demo</div>
+              </div>
+            </div>
+            <span style="color:var(--pink-bright);font-weight:800;font-size:13px;">›</span>
+          </div>
+          <div class="vip-summary-rates">
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);">Рейкбек</div>
+              <div style="font-size:15px;font-weight:900;"><span id="vipSummaryRakeback">3%</span> <span style="color:var(--gold);">0.00 ★</span></div>
+            </div>
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);">Кэшбек</div>
+              <div style="font-size:15px;font-weight:900;"><span id="vipSummaryCashback">3%</span> <span style="color:var(--gold);">0 ★</span></div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);" id="vipSummaryNextHint">Далее: Игрок • 1 000 ★ оборота</div>
         </div>
 
         <div class="profile-wallet-box">
@@ -2714,36 +2974,149 @@
         </div>
       </div>
 
-      <div class="info-card">
-        <div class="section-head">
-          <span class="section-title">Банк подарков</span>
-          <span class="section-meta" id="bankGiftsCount">0</span>
+      <div class="profile-stats-grid">
+        <div class="profile-stat-box">
+          <div class="profile-stat-num" id="statTotalActions">0</div>
+          <div class="profile-stat-lbl">Всего действий</div>
         </div>
-        <div id="bankGiftsList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        <div class="profile-stat-box">
+          <div class="profile-stat-num" id="statDepositsCount">0</div>
+          <div class="profile-stat-lbl">Поступления</div>
+        </div>
+        <div class="profile-stat-box">
+          <div class="profile-stat-num" id="statSpendingsCount">0</div>
+          <div class="profile-stat-lbl">Списания</div>
+        </div>
+        <div class="profile-stat-box">
+          <div class="profile-stat-num" id="statWithdrawsCount">0</div>
+          <div class="profile-stat-lbl">Выводы</div>
+        </div>
       </div>
 
-      <div class="info-card">
-        <div class="section-head">
-          <span class="section-title">История ставок</span>
-          <span class="section-meta" id="betHistoryCount">0</span>
+      <!-- Ваша История -->
+      <div class="accordion-card open" id="accHistoryCard">
+        <button type="button" class="accordion-header" id="accHistoryToggle">
+          <span>🕒 Ваша История</span>
+          <span class="accordion-chev">⌄</span>
+        </button>
+        <div class="accordion-body">
+          <div class="seg-switch">
+            <button type="button" class="seg-btn active" id="histTabDeposits">Поступления</button>
+            <button type="button" class="seg-btn" id="histTabGames">Игр</button>
+          </div>
+          <div id="profileHistoryRows" style="display:flex;flex-direction:column;gap:8px;"></div>
+          <div class="pager-row">
+            <button type="button" class="back-btn" id="histPrevBtn">‹</button>
+            <span id="histPageLabel">1 / 1</span>
+            <button type="button" class="back-btn" id="histNextBtn">›</button>
+          </div>
         </div>
-        <div id="betHistoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
 
-      <div class="info-card">
-        <div class="section-head">
-          <span class="section-title">Мои подарки (инвентарь)</span>
-          <span class="section-meta" id="profileInventoryCount">0</span>
+      <!-- Рефералка -->
+      <div class="accordion-card" id="accReferralCard">
+        <button type="button" class="accordion-header" id="accReferralToggle">
+          <span>👥 Рефералка</span>
+          <span class="accordion-chev">⌄</span>
+        </button>
+        <div class="accordion-body">
+          <div class="vip-two-cols">
+            <div class="profile-stat-box" style="background:var(--surface-elevated);">
+              <div style="font-size:11px;color:var(--text-muted);">Приглашено</div>
+              <div class="profile-stat-num" id="refInvitedCount">0</div>
+            </div>
+            <div class="profile-stat-box" style="background:var(--surface-elevated);">
+              <div style="font-size:11px;color:var(--text-muted);">Всего заработано</div>
+              <div class="profile-stat-num" style="color:var(--gold);" id="refEarnedStars">0 ★</div>
+            </div>
+          </div>
+          <div class="modal-text" style="background:var(--surface-elevated);border:1px solid var(--border);border-radius:14px;padding:11px 12px;">
+            Получайте <b>15%</b> от чистых проигрышей рефералов и бонусы с активных приглашений.
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button type="button" class="action-btn" style="padding:12px;" id="inviteFriendBtn">🔗 Пригласить друга</button>
+            <button type="button" class="back-btn" style="border-radius:16px;padding:0 14px;" id="copyRefLinkBtn" aria-label="Копировать">📋</button>
+          </div>
+          <div class="section-meta" id="refCopyStatus" style="text-align:center;"></div>
         </div>
-        <div id="profileInventoryList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
 
-      <div class="info-card">
-        <div class="section-head">
-          <span class="section-title">Последние операции</span>
-          <button class="back-btn" id="resetDemoBtn">Сброс 5000 ★</button>
+      <!-- Раздел Создателя -->
+      <div class="accordion-card" id="accCreatorCard">
+        <button type="button" class="accordion-header" id="accCreatorToggle">
+          <span>👑 Раздел Создателя</span>
+          <span class="accordion-chev">⌄</span>
+        </button>
+        <div class="accordion-body">
+          <div class="list-item">
+            <span>Банк подарков</span>
+            <span style="color:var(--pink-bright);font-weight:800;" id="bankGiftsCount">0</span>
+          </div>
+          <div id="bankGiftsList" style="display:flex;flex-direction:column;gap:6px;"></div>
+          <div class="section-head" style="margin-top:4px;">
+            <span class="section-title" style="font-size:13px;">Последние операции</span>
+            <button class="back-btn" id="resetDemoBtn">Сброс 5000 ★</button>
+          </div>
+          <div id="activityLog" style="display:flex;flex-direction:column;gap:6px;"></div>
         </div>
-        <div id="activityLog" style="display:flex;flex-direction:column;gap:8px;"></div>
+      </div>
+    </section>
+
+    <!-- VIP CLUB SCREEN -->
+    <section class="view" id="view-vip">
+      <div class="back-row">
+        <button class="back-btn" data-nav="profile">← Назад</button>
+        <span class="section-title" style="font-size:16px;">VIP Клуб</span>
+      </div>
+
+      <div class="vip-hero-banner">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div>
+            <div style="font-size:20px;font-weight:900;" id="vipDetailTitle">Новичок</div>
+            <div style="font-size:12px;color:var(--text-muted);" id="vipDetailLevelLine">Уровень 1 из 5 • Demo статус</div>
+          </div>
+          <div id="vipDetailFace" style="width:52px;height:52px;border-radius:18px;background:rgba(255,255,255,0.08);display:grid;place-items:center;font-size:28px;">🙂</div>
+        </div>
+        <div class="section-meta" style="color:var(--text);">
+          Оборот за всё время: <b id="vipTurnoverVal">0</b> ★ • До уровня «Игрок»: <b id="vipNextLeftVal">1 000</b> ★
+        </div>
+        <div class="demo-pill">В демо-режиме VIP-статус зафиксирован как базовый (активно в рабочей версии)</div>
+      </div>
+
+      <div class="vip-tiers-strip" id="vipTiersStrip"></div>
+
+      <div class="vip-two-cols">
+        <div class="vip-perk-box">
+          <div style="font-size:20px;font-weight:900;color:var(--pink-bright);" id="vipRakebackPct">3%</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" id="vipRakebackDesc">Рейкбек от маржи 5%</div>
+        </div>
+        <div class="vip-perk-box">
+          <div style="font-size:20px;font-weight:900;color:var(--gold);" id="vipCashbackPct">3%</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">Кэшбек без Арены</div>
+        </div>
+      </div>
+
+      <div class="vip-action-card">
+        <div class="section-head">
+          <span class="section-title">Рейкбек</span>
+          <span class="section-meta">Отыгрыш x3</span>
+        </div>
+        <div style="font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;" id="vipRakebackBalance">0.00 ★</div>
+        <button type="button" class="action-btn" id="vipClaimRakebackBtn" disabled>Забрать можно от 1 ★</button>
+      </div>
+
+      <div class="vip-action-card">
+        <div class="section-head">
+          <span class="section-title">Кэшбек</span>
+          <span class="section-meta">Накопление</span>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted);">До следующего кэшбека: <b style="color:#fff;" id="vipCashbackTimer">3 д 3 ч</b></div>
+        <div style="font-size:16px;font-weight:800;color:var(--gold);" id="vipCashbackBalance">0 ★</div>
+      </div>
+
+      <div class="vip-action-card">
+        <div class="section-title">Все привилегии</div>
+        <div id="vipPrivilegesList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
     </section>
   </div>
@@ -2768,6 +3141,58 @@
     </button>
   </nav>
 
+  <!-- Settings Modal (from Profile Gear) -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-rounded">
+      <div class="section-head">
+        <span class="modal-title">Настройки</span>
+        <button type="button" class="back-btn" id="closeSettingsModalBtn">✕</button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div style="font-size:14px;font-weight:800;">Звуки и вибрация</div>
+          <div style="font-size:11px;color:var(--text-muted);">Отклик и вибрация при действиях</div>
+        </div>
+        <button type="button" class="toggle-pill on" id="toggleSoundVibBtn" aria-label="Звуки и вибрация"></button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span style="font-size:14px;font-weight:800;">Производительный режим</span>
+            <span class="mode-tag pink" id="perfBadgeTag">ECO</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);">Снижает нагрузку на анимации и эффекты</div>
+        </div>
+        <button type="button" class="toggle-pill" id="togglePerfModeBtn" aria-label="Производительный режим"></button>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div style="font-size:14px;font-weight:800;">Язык</div>
+          <div style="font-size:11px;color:var(--text-muted);">Язык интерфейса</div>
+        </div>
+        <div class="lang-pill-group">
+          <button type="button" class="lang-choice-btn active" data-lang="ru">RU</button>
+          <button type="button" class="lang-choice-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Gifts Modal (from Translucent Profile Section) -->
+  <div class="modal-backdrop" id="myGiftsModal">
+    <div class="modal-rounded">
+      <div class="section-head">
+        <span class="modal-title" id="myGiftsModalTitle">Мои Подарки (0)</span>
+        <button type="button" class="back-btn" id="closeMyGiftsModalBtn">✕</button>
+      </div>
+
+      <div id="myGiftsModalBody" style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;"></div>
+    </div>
+  </div>
+
   <!-- Rounded Demo Modal for "Вывод" -->
   <div class="modal-backdrop" id="withdrawDemoModal">
     <div class="modal-rounded">
@@ -2788,9 +3213,9 @@
   <div class="modal-backdrop" id="addGiftDemoModal">
     <div class="modal-rounded">
       <div class="demo-pill">Демо-режим • В разработке</div>
-      <h2 class="modal-title">Приём своих подарков</h2>
+      <h2 class="modal-title">Банк подарков и свой подарок</h2>
       <p class="modal-text">
-        Сейчас функция работает в <b>демо-режиме</b>. Прямое внесение реальных Telegram-подарков пока недоступно — модуль находится в активной разработке.
+        В рабочей версии кнопка переводит на банк-профиль: после отправки подарка он появится в разделе «Мои Подарки» и его можно будет поставить, например, в Апгрейд. Сейчас в <b>демо-режиме</b> функция в разработке.
       </p>
       <a class="dev-channel-link" href="https://t.me/devMikhail" target="_blank" rel="noopener noreferrer">
         <span>📢 Канал разработки MOLLY GIFTS</span>
@@ -2800,11 +3225,11 @@
     </div>
   </div>
 
-  <!-- Topup Modal: Stars (from 50 ★, quick 50/100/500/1000) & Gift Deposit to Bank -->
+  <!-- Topup Modal: Stars (50 .. 100000 ★, UI says от 50 ★) & Gift Deposit to Bank -->
   <div class="modal-backdrop" id="topupModal">
     <div class="modal-rounded">
       <div class="section-head">
-        <span class="section-title">Пополнение баланса ★</span>
+        <span class="modal-title">Пополнение баланса ★</span>
         <button class="back-btn" id="closeTopupBtn">Закрыть</button>
       </div>
 
@@ -2824,13 +3249,13 @@
         <div class="bet-row">
           <div class="bet-label">Своя сумма (от 50 ★)</div>
           <div class="bet-input-wrap">
-            <input type="number" id="customTopupInput" class="bet-input" value="50" min="50" step="1" />
+            <input type="number" id="customTopupInput" class="bet-input" value="50" min="50" max="100000" step="1" />
             <span class="star-icon">★</span>
           </div>
         </div>
 
         <button type="button" class="action-btn" id="confirmStarsTopupBtn">Пополнить на 50 ★</button>
-        <div class="section-meta">Минимум 50 ★. В демо-режиме без списания реальных Telegram Stars.</div>
+        <div class="section-meta" id="topupLimitHint">Пополнение от 50 ★. В демо-режиме без списания реальных Telegram Stars.</div>
       </div>
 
       <div id="topupGiftPanel" style="display:none;flex-direction:column;gap:10px;">
@@ -2846,7 +3271,7 @@
   <div class="modal-backdrop" id="arenaBetModal">
     <div class="modal-rounded">
       <div class="section-head">
-        <span class="section-title">Вход на арену</span>
+        <span class="modal-title">Вход на арену</span>
         <button class="back-btn" id="closeArenaModalBtn">Закрыть</button>
       </div>
       <div class="bet-row">
@@ -2866,18 +3291,6 @@
     </div>
   </div>
 
-  <!-- Cascade Bonus / Rules Modal -->
-  <div class="modal-backdrop" id="cascadeModal">
-    <div class="modal-rounded">
-      <div class="section-head">
-        <span class="section-title" id="cascadeModalTitle">Правила Каскада</span>
-        <button class="back-btn" id="closeCascadeModalBtn">Закрыть</button>
-      </div>
-      <p class="modal-text" id="cascadeModalBody"></p>
-      <button type="button" class="action-btn" id="cascadeModalConfirmBtn">Понятно</button>
-    </div>
-  </div>
-
   <script>
     const tg = window.Telegram && window.Telegram.WebApp;
     if (tg) {
@@ -2887,15 +3300,128 @@
       if (tg.setBackgroundColor) tg.setBackgroundColor("#070709");
     }
 
-    function haptic(type = "light") {
-      try {
-        if (!tg || !tg.HapticFeedback) return;
-        if (type === "success" || type === "error" || type === "warning") {
-          tg.HapticFeedback.notificationOccurred(type);
-        } else {
-          tg.HapticFeedback.impactOccurred(type);
-        }
-      } catch (_) {}
+    const FREE_CASE_COOLDOWN_MS = 24 * 60 * 60 * 1000;
+    const TOPUP_MIN_STARS = 50;
+    const TOPUP_MAX_STARS = 100000;
+
+    const VIP_LEVELS = [
+      { level: 1, name: "Новичок", minTurnover: 0, rakeback: 3, cashback: 3, face: "🙂" },
+      { level: 2, name: "Игрок", minTurnover: 1000, rakeback: 5, cashback: 5, face: "😎" },
+      { level: 3, name: "Хардкор", minTurnover: 10000, rakeback: 8, cashback: 7, face: "😈" },
+      { level: 4, name: "Демон", minTurnover: 50000, rakeback: 10, cashback: 7.5, face: "👹" },
+      { level: 5, name: "Легенда", minTurnover: 200000, rakeback: 15, cashback: 8, face: "👑" }
+    ];
+
+    const TG_GIFTS = [
+      { id: "lol-pop", name: "Lol Pop", value: 420, accent: "#ff2a85", badge: "LP" },
+      { id: "pet-snake", name: "Pet Snake", value: 422, accent: "#30d158", badge: "PS" },
+      { id: "liberty-f", name: "Liberty F...", value: 566, accent: "#2ee6a6", badge: "LF" },
+      { id: "swag-bag", name: "Swag Bag", value: 576, accent: "#ffd60a", badge: "SB" },
+      { id: "jolly-chi", name: "Jolly Chi...", value: 768, accent: "#ff9f0a", badge: "JC" },
+      { id: "bunny-m", name: "Bunny M...", value: 857, accent: "#ff69b4", badge: "BM" },
+      { id: "sleigh-bell", name: "Sleigh Bell", value: 886, accent: "#ffd60a", badge: "SL" },
+      { id: "berry-box", name: "Berry Box", value: 890, accent: "#ff375f", badge: "BB" },
+      { id: "hanging-star", name: "Hanging ...", value: 922, accent: "#ffd60a", badge: "HS" },
+      { id: "top-hat", name: "Top Hat", value: 945, accent: "#bf5af2", badge: "TH" },
+      { id: "jingle-bell", name: "Jingle Be...", value: 965, accent: "#ff453a", badge: "JB" },
+      { id: "sakura-f", name: "Sakura F...", value: 997, accent: "#ff85ba", badge: "SF" },
+      { id: "love-can", name: "Love Can...", value: 1048, accent: "#ff2a85", badge: "LC" },
+      { id: "mad-pump", name: "Mad Pu...", value: 1104, accent: "#ff9500", badge: "MP" },
+      { id: "skull-flo", name: "Skull Flo...", value: 1122, accent: "#bf5af2", badge: "SK" },
+      { id: "flying-br", name: "Flying Br...", value: 1146, accent: "#ff9f0a", badge: "FB" },
+      { id: "valentin-box", name: "Valentin...", value: 1198, accent: "#ff2d55", badge: "VB" },
+      { id: "crystal-ball", name: "Crystal ...", value: 1244, accent: "#bf5af2", badge: "CB" },
+      { id: "snoop-ci", name: "Snoop Ci...", value: 1513, accent: "#ffd60a", badge: "SC" },
+      { id: "love-poti", name: "Love Poti...", value: 1560, accent: "#ff2a85", badge: "LP" },
+      { id: "ionic-dry", name: "Ionic Dry...", value: 1586, accent: "#64d2ff", badge: "ID" },
+      { id: "eternal-r", name: "Eternal R...", value: 2605, accent: "#ff2d55", badge: "ER" },
+      { id: "electric-skull", name: "Electric ...", value: 2758, accent: "#bf5af2", badge: "ES" },
+      { id: "genie-lamp", name: "Genie La...", value: 3182, accent: "#ffd60a", badge: "GL" },
+      { id: "signet-ring", name: "Signet Ri...", value: 3302, accent: "#ffd60a", badge: "SR" },
+      { id: "toy-bear", name: "Toy Bear", value: 3311, accent: "#ff69b4", badge: "TB" },
+      { id: "diamond-ring", name: "Diamond...", value: 3550, accent: "#64d2ff", badge: "DR" },
+      { id: "neko-helm", name: "Neko Hel...", value: 3580, accent: "#ff2a85", badge: "NH" },
+      { id: "voodoo-doll", name: "Voodoo ...", value: 3696, accent: "#ff9f0a", badge: "VD" },
+      { id: "vintage-cigar", name: "Vintage ...", value: 3949, accent: "#ffd60a", badge: "VC" },
+      { id: "bonded-ring", name: "Bonded ...", value: 4208, accent: "#ffd60a", badge: "BR" },
+      { id: "kissed-frog", name: "Kissed F...", value: 4526, accent: "#30d158", badge: "KF" },
+      { id: "swiss-watch", name: "Swiss W...", value: 5497, accent: "#ffd60a", badge: "SW" },
+      { id: "magic-potion", name: "Magic P...", value: 5659, accent: "#30d158", badge: "MP" },
+      { id: "mini-oscar", name: "Mini Osc...", value: 6114, accent: "#ffd60a", badge: "MO" },
+      { id: "ion-gem", name: "Ion Gem", value: 7160, accent: "#64d2ff", badge: "IG" }
+    ];
+
+    const PAID_CASES = [
+      { id: "start", title: "Start", price: 100, artKind: "start", prizes: TG_GIFTS.slice(0, 9) },
+      { id: "boost", title: "Boost", price: 500, artKind: "boost", prizes: TG_GIFTS.slice(3, 18) },
+      { id: "elite", title: "Elite", price: 1500, artKind: "elite", prizes: TG_GIFTS.slice(0, 36) }
+    ];
+
+    const DEMO_TASKS = [
+      { id: "t1", title: "Сделать пополнение в демо-режиме", reward: 100 },
+      { id: "t2", title: "Открыть кейс или сыграть в Мины", reward: 150 },
+      { id: "t3", title: "Сделать ставку на Арене или в Crash", reward: 200 }
+    ];
+
+    // Custom artwork for gifts and cases
+    function renderGiftSvg(item, size = 44) {
+      const c = item.accent || "#ff2a85";
+      const code = (item.badge || "MG").slice(0, 2).toUpperCase();
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="gbg_${item.id}" x1="4" y1="4" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="${c}" stop-opacity="0.28"/>
+              <stop offset="100%" stop-color="#14141d" stop-opacity="0.96"/>
+            </linearGradient>
+          </defs>
+          <rect x="3" y="3" width="46" height="46" rx="15" fill="url(#gbg_${item.id})" stroke="${c}" stroke-opacity="0.48" stroke-width="1.4"/>
+          <path d="M26 11L30.5 19.5L40 20.8L33 27.4L34.7 36.8L26 32.2L17.3 36.8L19 27.4L12 20.8L21.5 19.5L26 11Z" fill="${c}" fill-opacity="0.26" stroke="${c}" stroke-width="1.3"/>
+          <circle cx="26" cy="25" r="8.5" fill="#0d0d13" stroke="${c}" stroke-width="1.4"/>
+          <text x="26" y="28" text-anchor="middle" fill="#ffffff" font-size="7.5" font-weight="900" font-family="system-ui, sans-serif">${code}</text>
+        </svg>
+      `;
+    }
+
+    function renderCaseArtSvg(kind, size = 68) {
+      if (kind === "free") {
+        return `
+          <svg width="${size}" height="${size}" viewBox="0 0 68 68" fill="none" aria-hidden="true">
+            <rect x="8" y="8" width="52" height="52" rx="18" fill="rgba(255,214,10,0.1)" stroke="rgba(255,214,10,0.35)" stroke-width="1.4"/>
+            <rect x="15" y="29" width="38" height="23" rx="7" fill="#1b1826" stroke="#ffd60a" stroke-width="1.8"/>
+            <rect x="13" y="23" width="42" height="8" rx="4" fill="#292238" stroke="#ff2a85" stroke-width="1.6"/>
+            <path d="M34 15C30 15 28 19 34 23C40 19 38 15 34 15Z" stroke="#ffd60a" stroke-width="1.8"/>
+            <circle cx="34" cy="40" r="4" fill="#ffd60a"/>
+          </svg>
+        `;
+      }
+      if (kind === "boost") {
+        return `
+          <svg width="${size}" height="${size}" viewBox="0 0 68 68" fill="none" aria-hidden="true">
+            <rect x="8" y="8" width="52" height="52" rx="18" fill="rgba(255,42,133,0.14)" stroke="rgba(255,42,133,0.4)" stroke-width="1.4"/>
+            <path d="M18 26L24 15L34 21L44 15L50 26H18Z" fill="#ffd60a" stroke="#ff9f0a" stroke-width="1.4" stroke-linejoin="round"/>
+            <rect x="15" y="26" width="38" height="26" rx="8" fill="#221728" stroke="#ff2a85" stroke-width="1.8"/>
+            <path d="M34 31L36.6 36.6L42.8 37.5L38.3 41.8L39.4 48L34 45.1L28.6 48L29.7 41.8L25.2 37.5L31.4 36.6L34 31Z" fill="#ff2a85"/>
+          </svg>
+        `;
+      }
+      if (kind === "elite") {
+        return `
+          <svg width="${size}" height="${size}" viewBox="0 0 68 68" fill="none" aria-hidden="true">
+            <rect x="8" y="8" width="52" height="52" rx="18" fill="rgba(48,209,88,0.12)" stroke="rgba(48,209,88,0.42)" stroke-width="1.4"/>
+            <polygon points="34,14 52,27 45,52 23,52 16,27" fill="#172420" stroke="#30d158" stroke-width="1.8" stroke-linejoin="round"/>
+            <path d="M34 22L37 28.5L44 29.5L39 34.3L40.2 41.3L34 38L27.8 41.3L29 34.3L24 29.5L31 28.5L34 22Z" fill="#ffd60a"/>
+          </svg>
+        `;
+      }
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 68 68" fill="none" aria-hidden="true">
+          <rect x="8" y="8" width="52" height="52" rx="18" fill="rgba(228,0,124,0.13)" stroke="rgba(255,42,133,0.34)" stroke-width="1.4"/>
+          <rect x="15" y="29" width="38" height="23" rx="7" fill="#1a1724" stroke="#ff2a85" stroke-width="1.8"/>
+          <rect x="13" y="23" width="42" height="8" rx="4" fill="#241c30" stroke="#ff85ba" stroke-width="1.5"/>
+          <circle cx="34" cy="40" r="4.5" fill="#ff2a85"/>
+        </svg>
+      `;
     }
 
     function cleanNumber(val, fallback = 5000) {
@@ -2908,144 +3434,100 @@
       return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
     }
 
-    const FREE_CASE_COOLDOWN_MS = 24 * 60 * 60 * 1000;
-
-    const TG_GIFTS = [
-      { id: "lol-pop", name: "Lol Pop", value: 420, accent: "#ff2a85" },
-      { id: "pet-snake", name: "Pet Snake", value: 422, accent: "#30d158" },
-      { id: "liberty-f", name: "Liberty F...", value: 566, accent: "#2ee6a6" },
-      { id: "swag-bag", name: "Swag Bag", value: 576, accent: "#ffd60a" },
-      { id: "jolly-chi", name: "Jolly Chi...", value: 768, accent: "#ff9f0a" },
-      { id: "bunny-m", name: "Bunny M...", value: 857, accent: "#ff69b4" },
-      { id: "sleigh-bell", name: "Sleigh Bell", value: 886, accent: "#ffd60a" },
-      { id: "berry-box", name: "Berry Box", value: 890, accent: "#ff375f" },
-      { id: "hanging-star", name: "Hanging ...", value: 922, accent: "#ffd60a" },
-      { id: "top-hat", name: "Top Hat", value: 945, accent: "#bf5af2" },
-      { id: "jingle-bell", name: "Jingle Be...", value: 965, accent: "#ff453a" },
-      { id: "sakura-f", name: "Sakura F...", value: 997, accent: "#ff85ba" },
-      { id: "love-can", name: "Love Can...", value: 1048, accent: "#ff2a85" },
-      { id: "mad-pump", name: "Mad Pu...", value: 1104, accent: "#ff9500" },
-      { id: "skull-flo", name: "Skull Flo...", value: 1122, accent: "#bf5af2" },
-      { id: "flying-br", name: "Flying Br...", value: 1146, accent: "#ff9f0a" },
-      { id: "valentin-box", name: "Valentin...", value: 1198, accent: "#ff2d55" },
-      { id: "crystal-ball", name: "Crystal ...", value: 1244, accent: "#bf5af2" },
-      { id: "snoop-ci", name: "Snoop Ci...", value: 1513, accent: "#ffd60a" },
-      { id: "love-poti", name: "Love Poti...", value: 1560, accent: "#ff2a85" },
-      { id: "ionic-dry", name: "Ionic Dry...", value: 1586, accent: "#64d2ff" },
-      { id: "eternal-r", name: "Eternal R...", value: 2605, accent: "#ff2d55" },
-      { id: "electric-skull", name: "Electric ...", value: 2758, accent: "#bf5af2" },
-      { id: "genie-lamp", name: "Genie La...", value: 3182, accent: "#ffd60a" },
-      { id: "signet-ring", name: "Signet Ri...", value: 3302, accent: "#ffd60a" },
-      { id: "toy-bear", name: "Toy Bear", value: 3311, accent: "#ff69b4" },
-      { id: "diamond-ring", name: "Diamond...", value: 3550, accent: "#64d2ff" },
-      { id: "neko-helm", name: "Neko Hel...", value: 3580, accent: "#ff2a85" },
-      { id: "voodoo-doll", name: "Voodoo ...", value: 3696, accent: "#ff9f0a" },
-      { id: "vintage-cigar", name: "Vintage ...", value: 3949, accent: "#ffd60a" },
-      { id: "bonded-ring", name: "Bonded ...", value: 4208, accent: "#ffd60a" },
-      { id: "kissed-frog", name: "Kissed F...", value: 4526, accent: "#30d158" },
-      { id: "swiss-watch", name: "Swiss W...", value: 5497, accent: "#ffd60a" },
-      { id: "magic-potion", name: "Magic P...", value: 5659, accent: "#30d158" },
-      { id: "mini-oscar", name: "Mini Osc...", value: 6114, accent: "#ffd60a" },
-      { id: "ion-gem", name: "Ion Gem", value: 7160, accent: "#64d2ff" }
-    ];
-
-    const PAID_CASES = [
-      { id: "start", title: "Start", price: 100, artKind: "start", prizes: TG_GIFTS.slice(0, 9) },
-      { id: "boost", title: "Boost", price: 500, artKind: "boost", prizes: TG_GIFTS.slice(3, 18) },
-      { id: "elite", title: "Elite", price: 1500, artKind: "elite", prizes: TG_GIFTS.slice(0, 36) }
-    ];
-
-    const DEMO_TASKS = [
-      { id: "t1", title: "Сделать пополнение в демо-режиме", reward: 100, done: false },
-      { id: "t2", title: "Открыть кейс или сыграть в Каскад", reward: 150, done: false },
-      { id: "t3", title: "Сделать ставку на Арене или в Crash", reward: 200, done: false }
-    ];
-
-    function renderGiftSvg(item, size = 44) {
-      const c = item.accent || "#ff2a85";
-      return `
-        <svg width="${size}" height="${size}" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <rect x="4" y="4" width="40" height="40" rx="13" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" />
-          <circle cx="24" cy="24" r="11" fill="${c}" fill-opacity="0.22" />
-          <path d="M24 12L27.2 18.8L34.6 19.8L29.2 25L30.5 32.4L24 28.9L17.5 32.4L18.8 25L13.4 19.8L20.8 18.8L24 12Z" fill="${c}" />
-          <circle cx="34" cy="14" r="2.2" fill="#ffd60a" />
-        </svg>
-      `;
+    function formatShortDate() {
+      const d = new Date();
+      return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
     }
 
-    function renderCaseArtSvg(kind, size = 64) {
-      if (kind === "free") {
-        return `
-          <svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-            <rect x="10" y="24" width="44" height="28" rx="8" fill="#1e1c2a" stroke="#ffd60a" stroke-width="2" />
-            <path d="M18 24C18 16 46 16 46 24" stroke="#ff2a85" stroke-width="3" stroke-linecap="round" />
-            <path d="M32 24L35.2 30.8L42.6 31.8L37.2 37L38.5 44.4L32 40.9L25.5 44.4L26.8 37L21.4 31.8L28.8 30.8L32 24Z" fill="#ffd60a" />
-          </svg>
-        `;
-      }
-      if (kind === "boost") {
-        return `
-          <svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-            <rect x="11" y="25" width="42" height="27" rx="9" fill="#231928" stroke="#ff2a85" stroke-width="2" />
-            <path d="M20 22L24 13L32 18L40 13L44 22H20Z" fill="#ffd60a" />
-          </svg>
-        `;
-      }
-      if (kind === "elite") {
-        return `
-          <svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-            <circle cx="32" cy="34" r="20" fill="#182b20" stroke="#30d158" stroke-width="2" />
-            <path d="M32 24L35.2 30.8L42.6 31.8L37.2 37L38.5 44.4L32 40.9L25.5 44.4L26.8 37L21.4 31.8L28.8 30.8L32 24Z" fill="#ff2a85" />
-          </svg>
-        `;
-      }
-      return `
-        <svg width="${size}" height="${size}" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-          <rect x="11" y="25" width="42" height="27" rx="8" fill="#1a1826" stroke="#ff2a85" stroke-width="2" />
-          <path d="M32 26L34.8 32L41.4 32.9L36.6 37.5L37.8 44L32 40.9L26.2 44L27.4 37.5L22.6 32.9L29.2 32L32 26Z" fill="#ff2a85" />
-        </svg>
-      `;
-    }
-
-    const STORAGE_KEY = "molly_gifts_demo_v21";
+    const STORAGE_KEY = "molly_gifts_demo_v22";
     const defaultState = {
       balance: 5000,
       lastFreeCaseAt: 0,
-      inventory: [
-        { uid: "demo_1", giftId: "lol-pop" },
-        { uid: "demo_2", giftId: "pet-snake" },
-        { uid: "demo_3", giftId: "swag-bag" }
-      ],
+      inventory: [],
       bankGifts: [],
       crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
       betHistory: [],
+      depositHistory: [],
       tasksDone: [],
-      logs: ["Стартовый демо-баланс: +5000 ★"]
+      turnover: 0,
+      wagerLeft: 0,
+      rakebackAccrued: 0,
+      cashbackAccrued: 0,
+      totalActions: 0,
+      depositsCount: 0,
+      spendingsCount: 0,
+      withdrawsCount: 0,
+      refInvited: 0,
+      refEarned: 0,
+      settings: {
+        soundAndVib: true,
+        perfMode: false,
+        lang: "ru"
+      },
+      logs: [`[${formatTimeNow()}] Стартовый демо-баланс: +5000 ★`]
     };
 
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { ...defaultState, inventory: [...defaultState.inventory], bankGifts: [], crashHistory: [...defaultState.crashHistory], betHistory: [], tasksDone: [], logs: [...defaultState.logs] };
+        if (!raw) {
+          return {
+            ...defaultState,
+            inventory: [],
+            bankGifts: [],
+            crashHistory: [...defaultState.crashHistory],
+            betHistory: [],
+            depositHistory: [],
+            tasksDone: [],
+            settings: { ...defaultState.settings },
+            logs: [...defaultState.logs]
+          };
+        }
         const parsed = JSON.parse(raw);
         return {
           balance: cleanNumber(parsed.balance, 5000),
           lastFreeCaseAt: Number(parsed.lastFreeCaseAt) || 0,
           inventory: Array.isArray(parsed.inventory)
             ? parsed.inventory.filter(it => it && TG_GIFTS.some(g => g.id === it.giftId)).slice(0, 60)
-            : [...defaultState.inventory],
+            : [],
           bankGifts: Array.isArray(parsed.bankGifts)
             ? parsed.bankGifts.filter(it => it && TG_GIFTS.some(g => g.id === it.giftId)).slice(0, 60)
             : [],
           crashHistory: Array.isArray(parsed.crashHistory) && parsed.crashHistory.length
             ? parsed.crashHistory.map(x => Number(x) || 1.0).slice(0, 12)
             : [...defaultState.crashHistory],
-          betHistory: Array.isArray(parsed.betHistory) ? parsed.betHistory.slice(0, 30) : [],
+          betHistory: Array.isArray(parsed.betHistory) ? parsed.betHistory.slice(0, 50) : [],
+          depositHistory: Array.isArray(parsed.depositHistory) ? parsed.depositHistory.slice(0, 50) : [],
           tasksDone: Array.isArray(parsed.tasksDone) ? parsed.tasksDone : [],
-          logs: Array.isArray(parsed.logs) && parsed.logs.length ? parsed.logs.slice(0, 20) : [...defaultState.logs]
+          turnover: cleanNumber(parsed.turnover, 0),
+          wagerLeft: cleanNumber(parsed.wagerLeft, 0),
+          rakebackAccrued: Number.isFinite(Number(parsed.rakebackAccrued)) ? Math.max(0, +Number(parsed.rakebackAccrued).toFixed(2)) : 0,
+          cashbackAccrued: cleanNumber(parsed.cashbackAccrued, 0),
+          totalActions: cleanNumber(parsed.totalActions, 0),
+          depositsCount: cleanNumber(parsed.depositsCount, 0),
+          spendingsCount: cleanNumber(parsed.spendingsCount, 0),
+          withdrawsCount: cleanNumber(parsed.withdrawsCount, 0),
+          refInvited: cleanNumber(parsed.refInvited, 0),
+          refEarned: cleanNumber(parsed.refEarned, 0),
+          settings: {
+            soundAndVib: parsed.settings && typeof parsed.settings.soundAndVib === "boolean" ? parsed.settings.soundAndVib : true,
+            perfMode: parsed.settings && typeof parsed.settings.perfMode === "boolean" ? parsed.settings.perfMode : false,
+            lang: parsed.settings && parsed.settings.lang === "en" ? "en" : "ru"
+          },
+          logs: Array.isArray(parsed.logs) && parsed.logs.length ? parsed.logs.slice(0, 25) : [...defaultState.logs]
         };
       } catch (_) {
-        return { ...defaultState, inventory: [...defaultState.inventory], bankGifts: [], crashHistory: [...defaultState.crashHistory], betHistory: [], tasksDone: [], logs: [...defaultState.logs] };
+        return {
+          ...defaultState,
+          inventory: [],
+          bankGifts: [],
+          crashHistory: [...defaultState.crashHistory],
+          betHistory: [],
+          depositHistory: [],
+          tasksDone: [],
+          settings: { ...defaultState.settings },
+          logs: [...defaultState.logs]
+        };
       }
     }
 
@@ -3057,18 +3539,67 @@
       } catch (_) {}
     }
 
+    function haptic(type = "light") {
+      if (!state.settings.soundAndVib) return;
+      try {
+        if (!tg || !tg.HapticFeedback) return;
+        if (type === "success" || type === "error" || type === "warning") {
+          tg.HapticFeedback.notificationOccurred(type);
+        } else {
+          tg.HapticFeedback.impactOccurred(type);
+        }
+      } catch (_) {}
+    }
+
     function getGiftById(id) {
       return TG_GIFTS.find(g => g.id === id) || TG_GIFTS[0];
     }
 
+    // Demo VIP stays fixed at base level 1 ("Новичок") as requested
+    function getActiveVipLevel() {
+      return VIP_LEVELS[0];
+    }
+
+    function registerSpend(amount) {
+      const safe = cleanNumber(amount, 0);
+      if (safe <= 0) return;
+      state.totalActions += 1;
+      state.spendingsCount += 1;
+      state.turnover += safe;
+      if (state.wagerLeft > 0) {
+        state.wagerLeft = Math.max(0, state.wagerLeft - safe);
+      }
+      const vip = getActiveVipLevel();
+      const marginPart = safe * 0.05;
+      state.rakebackAccrued = +(state.rakebackAccrued + marginPart * (vip.rakeback / 100)).toFixed(2);
+      state.cashbackAccrued += Math.floor(safe * (vip.cashback / 100) * 0.02);
+      saveState();
+    }
+
+    function registerDeposit(amount, title = "Пополнение", isGameWin = false) {
+      const safe = cleanNumber(amount, 0);
+      if (safe <= 0) return;
+      state.totalActions += 1;
+      if (!isGameWin) {
+        state.depositsCount += 1;
+      }
+      state.depositHistory.unshift({
+        id: `${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        title,
+        amount: safe,
+        date: formatShortDate()
+      });
+      state.depositHistory = state.depositHistory.slice(0, 50);
+      saveState();
+    }
+
     const balanceText = document.getElementById("balanceText");
     const profileBalanceText = document.getElementById("profileBalanceText");
-    const profileInventoryCountEl = document.getElementById("profileInventoryCount");
-    const profileInventoryListEl = document.getElementById("profileInventoryList");
+    const myGiftsTriggerText = document.getElementById("myGiftsTriggerText");
+    const myGiftsModalTitle = document.getElementById("myGiftsModalTitle");
+    const myGiftsModalBody = document.getElementById("myGiftsModalBody");
     const bankGiftsCountEl = document.getElementById("bankGiftsCount");
     const bankGiftsListEl = document.getElementById("bankGiftsList");
-    const betHistoryListEl = document.getElementById("betHistoryList");
-    const betHistoryCountEl = document.getElementById("betHistoryCount");
     const activityLog = document.getElementById("activityLog");
     const crashHistoryEl = document.getElementById("crashHistory");
 
@@ -3076,11 +3607,14 @@
       const formatted = cleanNumber(state.balance, 5000).toLocaleString("ru-RU");
       balanceText.textContent = formatted;
       if (profileBalanceText) profileBalanceText.textContent = formatted;
+      if (myGiftsTriggerText) myGiftsTriggerText.textContent = `Мои Подарки (${state.inventory.length})`;
+      if (myGiftsModalTitle) myGiftsModalTitle.textContent = `Мои Подарки (${state.inventory.length})`;
     }
 
     function addLog(text) {
+      state.totalActions += 1;
       state.logs.unshift(`[${formatTimeNow()}] ${text}`);
-      state.logs = state.logs.slice(0, 20);
+      state.logs = state.logs.slice(0, 25);
       saveState();
       renderLogs();
     }
@@ -3090,7 +3624,7 @@
       const safePayout = cleanNumber(payout, 0);
       state.betHistory.unshift({
         id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-        time: formatTimeNow(),
+        time: formatShortDate(),
         mode: mode || "Crash",
         amount: safeAmount,
         mult: typeof mult === "number" && Number.isFinite(mult) ? +mult.toFixed(2) : null,
@@ -3098,9 +3632,9 @@
         note,
         status
       });
-      state.betHistory = state.betHistory.slice(0, 30);
+      state.betHistory = state.betHistory.slice(0, 50);
       saveState();
-      renderBetHistory();
+      renderProfileHistory();
     }
 
     function renderLogs() {
@@ -3111,33 +3645,6 @@
       crashHistoryEl.innerHTML = state.crashHistory
         .map(val => `<span class="hist-pill ${val >= 2 ? "high" : ""}">${Number(val).toFixed(2)}x</span>`)
         .join("");
-    }
-
-    function renderBetHistory() {
-      betHistoryCountEl.textContent = String(state.betHistory.length);
-      if (!state.betHistory.length) {
-        betHistoryListEl.innerHTML = `<div class="section-meta">Ставок пока не было</div>`;
-        return;
-      }
-      betHistoryListEl.innerHTML = state.betHistory.map(item => {
-        const isWin = item.status === "cashed";
-        const multText = item.mult !== null ? ` • ${item.mult.toFixed(2)}x` : "";
-        const rightText = isWin
-          ? `+${item.payout.toLocaleString("ru-RU")} ★`
-          : `-${item.amount.toLocaleString("ru-RU")} ★`;
-        return `
-          <div class="history-item">
-            <div class="history-top">
-              <span>${item.mode} • ${item.amount.toLocaleString("ru-RU")} ★${multText}</span>
-              <span style="color:${isWin ? "var(--green)" : "var(--red)"};">${rightText}</span>
-            </div>
-            <div class="history-sub">
-              <span>${item.note || (isWin ? "Выигрыш" : "Ставка сгорела")}</span>
-              <span>${item.time}</span>
-            </div>
-          </div>
-        `;
-      }).join("");
     }
 
     function renderBankGifts() {
@@ -3160,18 +3667,31 @@
       }).join("");
     }
 
-    function renderProfileInventory() {
-      profileInventoryCountEl.textContent = String(state.inventory.length);
+    function renderMyGiftsModal() {
       if (!state.inventory.length) {
-        profileInventoryListEl.innerHTML = `<div class="section-meta">Подарков пока нет — открой кейс</div>`;
+        myGiftsModalBody.innerHTML = `
+          <div class="empty-gifts-box">
+            <div style="font-size:34px;">🎁</div>
+            <div style="font-size:15px;font-weight:800;">В инвентаре пока нет подарков</div>
+            <button type="button" class="white-add-gift-btn" id="emptyModalAddGiftBtn">+ Добавить подарок</button>
+          </div>
+        `;
+        const btn = document.getElementById("emptyModalAddGiftBtn");
+        if (btn) {
+          btn.addEventListener("click", () => {
+            document.getElementById("myGiftsModal").classList.remove("open");
+            document.getElementById("addGiftDemoModal").classList.add("open");
+          });
+        }
         return;
       }
-      profileInventoryListEl.innerHTML = state.inventory.map(entry => {
+
+      myGiftsModalBody.innerHTML = state.inventory.map(entry => {
         const g = getGiftById(entry.giftId);
         return `
           <div class="list-item">
             <div style="display:flex;align-items:center;gap:10px;">
-              ${renderGiftSvg(g, 34)}
+              ${renderGiftSvg(g, 36)}
               <span>${g.name}</span>
             </div>
             <span style="color:var(--gold);font-weight:800;">${g.value} ★</span>
@@ -3214,6 +3734,309 @@
       }
     }
 
+    // Profile history, stats, VIP and referral
+    let histTabMode = "deposits";
+    let histPage = 1;
+    let selectedVipPreviewLevel = 1;
+
+    const profileHistoryRowsEl = document.getElementById("profileHistoryRows");
+    const histPageLabelEl = document.getElementById("histPageLabel");
+
+    function renderProfileHistory() {
+      const items = histTabMode === "deposits" ? state.depositHistory : state.betHistory;
+      const pageSize = 4;
+      const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+      if (histPage > totalPages) histPage = totalPages;
+      if (histPage < 1) histPage = 1;
+
+      histPageLabelEl.textContent = `${histPage} / ${totalPages}`;
+      const slice = items.slice((histPage - 1) * pageSize, histPage * pageSize);
+
+      if (!slice.length) {
+        profileHistoryRowsEl.innerHTML = `<div class="section-meta">${histTabMode === "deposits" ? "Поступлений пока нет" : "Истории игр пока нет"}</div>`;
+        return;
+      }
+
+      if (histTabMode === "deposits") {
+        profileHistoryRowsEl.innerHTML = slice.map(d => `
+          <div class="history-item">
+            <div class="history-top">
+              <span>${d.title}</span>
+              <span style="color:var(--green);">+${d.amount.toLocaleString("ru-RU")} ★</span>
+            </div>
+            <div class="history-sub">
+              <span>Зачислено на баланс</span>
+              <span>${d.date}</span>
+            </div>
+          </div>
+        `).join("");
+      } else {
+        profileHistoryRowsEl.innerHTML = slice.map(item => {
+          const isWin = item.status === "cashed";
+          const multText = item.mult !== null ? ` • ${item.mult.toFixed(2)}x` : "";
+          const rightText = isWin
+            ? `+${item.payout.toLocaleString("ru-RU")} ★`
+            : `-${item.amount.toLocaleString("ru-RU")} ★`;
+          return `
+            <div class="history-item">
+              <div class="history-top">
+                <span>${item.mode} • ${item.amount.toLocaleString("ru-RU")} ★${multText}</span>
+                <span style="color:${isWin ? "var(--green)" : "var(--red)"};">${rightText}</span>
+              </div>
+              <div class="history-sub">
+                <span>${item.note || (isWin ? "Выигрыш" : "Ставка сгорела")}</span>
+                <span>${item.time}</span>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    function renderVipScreen() {
+      const activeVip = getActiveVipLevel();
+      const previewVip = VIP_LEVELS.find(v => v.level === selectedVipPreviewLevel) || activeVip;
+
+      document.getElementById("vipSummaryFace").textContent = activeVip.face;
+      document.getElementById("vipSummaryTierName").textContent = `${activeVip.name} • Demo`;
+      document.getElementById("vipSummaryRakeback").textContent = `${activeVip.rakeback}%`;
+      document.getElementById("vipSummaryCashback").textContent = `${activeVip.cashback}%`;
+      document.getElementById("vipSummaryNextHint").textContent = `Далее: Игрок • 1 000 ★ оборота`;
+
+      document.getElementById("vipDetailTitle").textContent = previewVip.name;
+      document.getElementById("vipDetailLevelLine").textContent = `Уровень ${previewVip.level} из 5 • Оборот от ${previewVip.minTurnover.toLocaleString("ru-RU")} ★`;
+      document.getElementById("vipDetailFace").textContent = previewVip.face;
+      document.getElementById("vipTurnoverVal").textContent = state.turnover.toLocaleString("ru-RU");
+      document.getElementById("vipNextLeftVal").textContent = Math.max(0, 1000 - state.turnover).toLocaleString("ru-RU");
+      document.getElementById("vipRakebackPct").textContent = `${previewVip.rakeback}%`;
+      document.getElementById("vipRakebackDesc").textContent = `Рейкбек от маржи 5% (${previewVip.name})`;
+      document.getElementById("vipCashbackPct").textContent = `${previewVip.cashback}%`;
+      document.getElementById("vipRakebackBalance").textContent = `${state.rakebackAccrued.toFixed(2)} ★`;
+      document.getElementById("vipCashbackBalance").textContent = `${state.cashbackAccrued.toLocaleString("ru-RU")} ★`;
+
+      const claimBtn = document.getElementById("vipClaimRakebackBtn");
+      claimBtn.disabled = state.rakebackAccrued < 1;
+      claimBtn.textContent = state.rakebackAccrued >= 1
+        ? `Забрать рейкбек ${state.rakebackAccrued.toFixed(2)} ★`
+        : "Забрать можно от 1 ★";
+
+      document.getElementById("vipTiersStrip").innerHTML = VIP_LEVELS.map(v => `
+        <button type="button" class="vip-tier-btn ${v.level === previewVip.level ? "active" : ""}" data-vip-lvl="${v.level}">
+          <span style="font-size:20px;">${v.face}</span>
+          <span>Ур.${v.level}</span>
+        </button>
+      `).join("");
+
+      document.getElementById("vipPrivilegesList").innerHTML = VIP_LEVELS.map(v => `
+        <div class="vip-priv-item" style="${v.level === previewVip.level ? "border-color:rgba(255,42,133,0.45);" : ""}">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:22px;">${v.face}</span>
+            <div>
+              <div style="font-size:14px;font-weight:800;">${v.name}</div>
+              <div style="font-size:11px;color:var(--text-muted);">Оборот от ${v.minTurnover.toLocaleString("ru-RU")} ★</div>
+            </div>
+          </div>
+          <div style="text-align:right;font-size:12px;font-weight:800;">
+            <div>Рейкбек ${v.rakeback}%</div>
+            <div style="color:var(--gold);">Кэшбек ${v.cashback}%</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderProfileAll() {
+      renderTelegramProfileHeader();
+      renderBalance();
+      document.getElementById("wagerLeftVal").textContent = state.wagerLeft.toLocaleString("ru-RU");
+      document.getElementById("statTotalActions").textContent = state.totalActions.toLocaleString("ru-RU");
+      document.getElementById("statDepositsCount").textContent = state.depositsCount.toLocaleString("ru-RU");
+      document.getElementById("statSpendingsCount").textContent = state.spendingsCount.toLocaleString("ru-RU");
+      document.getElementById("statWithdrawsCount").textContent = state.withdrawsCount.toLocaleString("ru-RU");
+      document.getElementById("refInvitedCount").textContent = state.refInvited.toLocaleString("ru-RU");
+      document.getElementById("refEarnedStars").textContent = `${state.refEarned.toLocaleString("ru-RU")} ★`;
+      renderVipScreen();
+      renderProfileHistory();
+      renderBankGifts();
+      renderLogs();
+    }
+
+    document.getElementById("histTabDeposits").addEventListener("click", () => {
+      histTabMode = "deposits";
+      histPage = 1;
+      document.getElementById("histTabDeposits").classList.add("active");
+      document.getElementById("histTabGames").classList.remove("active");
+      renderProfileHistory();
+    });
+
+    document.getElementById("histTabGames").addEventListener("click", () => {
+      histTabMode = "games";
+      histPage = 1;
+      document.getElementById("histTabGames").classList.add("active");
+      document.getElementById("histTabDeposits").classList.remove("active");
+      renderProfileHistory();
+    });
+
+    document.getElementById("histPrevBtn").addEventListener("click", () => {
+      histPage = Math.max(1, histPage - 1);
+      renderProfileHistory();
+    });
+
+    document.getElementById("histNextBtn").addEventListener("click", () => {
+      histPage += 1;
+      renderProfileHistory();
+    });
+
+    document.getElementById("accHistoryToggle").addEventListener("click", () => {
+      document.getElementById("accHistoryCard").classList.toggle("open");
+    });
+    document.getElementById("accReferralToggle").addEventListener("click", () => {
+      document.getElementById("accReferralCard").classList.toggle("open");
+    });
+    document.getElementById("accCreatorToggle").addEventListener("click", () => {
+      document.getElementById("accCreatorCard").classList.toggle("open");
+    });
+
+    document.getElementById("openVipClubBtn").addEventListener("click", () => {
+      selectedVipPreviewLevel = 1;
+      switchView("vip");
+    });
+
+    document.getElementById("vipTiersStrip").addEventListener("click", e => {
+      const btn = e.target.closest("[data-vip-lvl]");
+      if (!btn) return;
+      selectedVipPreviewLevel = Number(btn.dataset.vipLvl) || 1;
+      renderVipScreen();
+      haptic("light");
+    });
+
+    document.getElementById("vipClaimRakebackBtn").addEventListener("click", () => {
+      if (state.rakebackAccrued < 1) return;
+      const claimed = Math.floor(state.rakebackAccrued * 100) / 100;
+      const addStars = Math.floor(claimed);
+      state.rakebackAccrued = +(state.rakebackAccrued - addStars).toFixed(2);
+      state.balance += addStars;
+      state.wagerLeft += addStars * 3;
+      registerDeposit(addStars, "Рейкбек VIP", true);
+      saveState();
+      renderBalance();
+      renderVipScreen();
+      addLog(`VIP Рейкбек: получено +${addStars} ★ (отыгрыш x3)`);
+      haptic("success");
+    });
+
+    function getReferralLink() {
+      const refCode = tgUser && tgUser.id ? `ref_${tgUser.id}` : "ref_demo_molly";
+      return `https://t.me/share/url?url=${encodeURIComponent("https://t.me/devMikhail?start=" + refCode)}&text=${encodeURIComponent("Заходи в MOLLY GIFTS за звёздами и подарками!")}`;
+    }
+
+    document.getElementById("inviteFriendBtn").addEventListener("click", () => {
+      const url = getReferralLink();
+      if (tg && tg.openTelegramLink) {
+        tg.openTelegramLink(url);
+      } else {
+        window.open(url, "_blank", "noopener,noreferrer");
+      }
+      state.refInvited += 1;
+      saveState();
+      renderProfileAll();
+      haptic("light");
+    });
+
+    document.getElementById("copyRefLinkBtn").addEventListener("click", async () => {
+      const linkText = tgUser && tgUser.id ? `https://t.me/devMikhail?start=ref_${tgUser.id}` : "https://t.me/devMikhail?start=ref_demo_molly";
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(linkText);
+        }
+      } catch (_) {}
+      document.getElementById("refCopyStatus").textContent = `Ссылка скопирована: ${linkText}`;
+      haptic("light");
+    });
+
+    // Settings Modal
+    const settingsModal = document.getElementById("settingsModal");
+    const toggleSoundVibBtn = document.getElementById("toggleSoundVibBtn");
+    const togglePerfModeBtn = document.getElementById("togglePerfModeBtn");
+    const perfBadgeTag = document.getElementById("perfBadgeTag");
+
+    function applyLanguageUi() {
+      const isEn = state.settings.lang === "en";
+      document.getElementById("hubHeroTitle").textContent = isEn ? "Hit Stop in Time" : "Успей нажать Стоп";
+      document.getElementById("hubHeroDesc").textContent = isEn
+        ? "Rocket launches from x0.00. Cash out stars before it crashes."
+        : "Ракета стартует с x0.00. Забирай множитель в звёздах до того, как она взорвётся.";
+      document.getElementById("hubModesTitle").textContent = isEn ? "Modes" : "Режимы";
+      document.getElementById("hubModesMeta").textContent = isEn ? "Unified ★ Balance" : "Единый баланс ★";
+      document.getElementById("modeMinesName").textContent = isEn ? "Mines" : "Мины";
+      document.getElementById("modeMinesHint").textContent = isEn ? "Open safe tiles and grow multiplier" : "Открывай ячейки без мин и расти множитель";
+      document.getElementById("modeCasesName").textContent = isEn ? "Cases" : "Кейсы";
+      document.getElementById("modeCasesHint").textContent = isEn ? "Telegram gifts & free 24h case" : "Подарки Telegram и бесплатный кейс 24ч";
+      document.getElementById("modeUpgradeName").textContent = isEn ? "Upgrade" : "Апгрейд";
+      document.getElementById("modeUpgradeHint").textContent = isEn ? "Chance sets wheel fill" : "Шанс задаёт заполненность колеса";
+      document.getElementById("modeArenaName").textContent = isEn ? "Arena" : "Арена";
+      document.getElementById("modeArenaHint").textContent = isEn ? "Field shares by bets and puck flight" : "Доли поля по ставкам и полёт шарика";
+    }
+
+    function applySettingsState() {
+      toggleSoundVibBtn.classList.toggle("on", state.settings.soundAndVib);
+      togglePerfModeBtn.classList.toggle("on", state.settings.perfMode);
+      perfBadgeTag.textContent = state.settings.perfMode ? "TURBO-ECO" : "BADGE";
+      document.body.classList.toggle("perf-mode", state.settings.perfMode);
+      document.querySelectorAll(".lang-choice-btn").forEach(b => {
+        b.classList.toggle("active", b.dataset.lang === state.settings.lang);
+      });
+      applyLanguageUi();
+      saveState();
+    }
+
+    document.getElementById("openSettingsModalBtn").addEventListener("click", () => {
+      applySettingsState();
+      settingsModal.classList.add("open");
+      haptic("light");
+    });
+
+    document.getElementById("closeSettingsModalBtn").addEventListener("click", () => {
+      settingsModal.classList.remove("open");
+    });
+
+    settingsModal.addEventListener("click", e => {
+      if (e.target === settingsModal) settingsModal.classList.remove("open");
+    });
+
+    toggleSoundVibBtn.addEventListener("click", () => {
+      state.settings.soundAndVib = !state.settings.soundAndVib;
+      applySettingsState();
+      haptic("light");
+    });
+
+    togglePerfModeBtn.addEventListener("click", () => {
+      state.settings.perfMode = !state.settings.perfMode;
+      applySettingsState();
+      haptic("light");
+    });
+
+    document.querySelectorAll(".lang-choice-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.settings.lang = btn.dataset.lang === "en" ? "en" : "ru";
+        applySettingsState();
+        haptic("light");
+      });
+    });
+
+    // My Gifts Modal
+    const myGiftsModal = document.getElementById("myGiftsModal");
+    document.getElementById("openMyGiftsModalBtn").addEventListener("click", () => {
+      renderMyGiftsModal();
+      myGiftsModal.classList.add("open");
+      haptic("light");
+    });
+    document.getElementById("closeMyGiftsModalBtn").addEventListener("click", () => {
+      myGiftsModal.classList.remove("open");
+    });
+    myGiftsModal.addEventListener("click", e => {
+      if (e.target === myGiftsModal) myGiftsModal.classList.remove("open");
+    });
+
     // Tasks & Top views
     const tasksListEl = document.getElementById("tasksList");
     const tasksDoneCountEl = document.getElementById("tasksDoneCount");
@@ -3246,6 +4069,7 @@
       if (!task || state.tasksDone.includes(tid)) return;
       state.tasksDone.push(tid);
       state.balance = cleanNumber(state.balance, 5000) + task.reward;
+      registerDeposit(task.reward, "Задание");
       saveState();
       renderBalance();
       renderTasksView();
@@ -3274,26 +4098,21 @@
 
     function switchView(name) {
       views.forEach(v => v.classList.toggle("active", v.id === `view-${name}`));
-      tabBtns.forEach(b => b.classList.toggle("active", b.dataset.nav === name));
+      const navTarget = name === "vip" ? "profile" : name;
+      tabBtns.forEach(b => b.classList.toggle("active", b.dataset.nav === navTarget));
       haptic("light");
       if (name === "crash") resizeCanvas();
       if (name === "mines") renderMinesUI();
       if (name === "cases") renderCasesUI();
       if (name === "upgrade") renderUpgradeUI();
-      if (name === "cascade") renderCascadeGrid();
       if (name === "arena") {
         resizeArenaCanvas();
         renderArenaUI();
       }
       if (name === "tasks") renderTasksView();
       if (name === "top") renderTopView();
-      if (name === "profile") {
-        renderTelegramProfileHeader();
-        renderBalance();
-        renderBankGifts();
-        renderProfileInventory();
-        renderBetHistory();
-        renderLogs();
+      if (name === "profile" || name === "vip") {
+        renderProfileAll();
       }
     }
 
@@ -3326,7 +4145,7 @@
       if (e.target === addGiftDemoModal) addGiftDemoModal.classList.remove("open");
     });
 
-    // Topup Modal: Stars (>= 50 ★) & Gift Deposit to Bank
+    // Topup Modal: Stars (50 .. 100000 ★) & Gift Deposit to Bank
     const topupModal = document.getElementById("topupModal");
     const tabTopupStars = document.getElementById("tabTopupStars");
     const tabTopupGift = document.getElementById("tabTopupGift");
@@ -3336,11 +4155,10 @@
     const confirmStarsTopupBtn = document.getElementById("confirmStarsTopupBtn");
     const giftDepositListEl = document.getElementById("giftDepositList");
 
-    let selectedTopupStars = 50;
-
     function getValidTopupStars() {
       const raw = Math.floor(Number(customTopupInput.value));
-      return Number.isFinite(raw) && raw >= 50 ? raw : 50;
+      if (!Number.isFinite(raw)) return TOPUP_MIN_STARS;
+      return Math.max(TOPUP_MIN_STARS, Math.min(TOPUP_MAX_STARS, raw));
     }
 
     function syncStarsTopupBtn() {
@@ -3353,7 +4171,7 @@
       giftDepositListEl.innerHTML = sampleGifts.map(g => `
         <div class="gift-deposit-row">
           <div style="display:flex;align-items:center;gap:9px;">
-            ${renderGiftSvg(g, 34)}
+            ${renderGiftSvg(g, 36)}
             <div>
               <div style="font-size:13px;font-weight:700;">${g.name}</div>
               <div style="font-size:11px;color:var(--gold);font-weight:800;">Конвертация: +${g.value} ★</div>
@@ -3385,8 +4203,7 @@
 
     document.querySelectorAll("#starsQuickGrid .topup-option").forEach(btn => {
       btn.addEventListener("click", () => {
-        const val = Math.max(50, Number(btn.dataset.sval) || 50);
-        selectedTopupStars = val;
+        const val = Math.max(TOPUP_MIN_STARS, Math.min(TOPUP_MAX_STARS, Number(btn.dataset.sval) || TOPUP_MIN_STARS));
         customTopupInput.value = String(val);
         document.querySelectorAll("#starsQuickGrid .topup-option").forEach(b => b.classList.toggle("active", b === btn));
         syncStarsTopupBtn();
@@ -3406,8 +4223,10 @@
       const val = getValidTopupStars();
       customTopupInput.value = String(val);
       state.balance = cleanNumber(state.balance, 5000) + val;
+      registerDeposit(val, "Пополнение ★");
       saveState();
       renderBalance();
+      renderProfileAll();
       addLog(`Пополнение звёздами: +${val.toLocaleString("ru-RU")} ★`);
       haptic("success");
       topupModal.classList.remove("open");
@@ -3423,9 +4242,10 @@
       });
       state.bankGifts = state.bankGifts.slice(0, 60);
       state.balance = cleanNumber(state.balance, 5000) + g.value;
+      registerDeposit(g.value, `Подарок ${g.name}`);
       saveState();
       renderBalance();
-      renderBankGifts();
+      renderProfileAll();
       addLog(`Подарок ${g.name} внесён в банк → +${g.value} ★ на баланс`);
       haptic("success");
       topupModal.classList.remove("open");
@@ -3440,22 +4260,21 @@
 
     document.getElementById("resetDemoBtn").addEventListener("click", () => {
       state = {
-        balance: 5000,
-        lastFreeCaseAt: 0,
-        inventory: [...defaultState.inventory],
+        ...defaultState,
+        inventory: [],
         bankGifts: [],
         crashHistory: [...defaultState.crashHistory],
         betHistory: [],
+        depositHistory: [],
         tasksDone: [],
+        settings: { ...state.settings },
         logs: [`[${formatTimeNow()}] Демо-данные сброшены`]
       };
       saveState();
+      applySettingsState();
       renderBalance();
       renderCrashHistory();
-      renderBankGifts();
-      renderProfileInventory();
-      renderBetHistory();
-      renderLogs();
+      renderProfileAll();
       renderUpgradeUI();
       renderCasesUI();
       renderTasksView();
@@ -3533,7 +4352,7 @@
       renderUpgradeWheel(0);
 
       if (!state.inventory.length) {
-        upgradeInventoryGrid.innerHTML = `<div class="section-meta" style="grid-column:span 3;">Инвентарь пуст — открой кейс, чтобы получить подарок</div>`;
+        upgradeInventoryGrid.innerHTML = `<div class="section-meta" style="grid-column:span 3;">В инвентаре пока нет подарков — открой кейс, чтобы получить подарок</div>`;
       } else {
         upgradeInventoryGrid.innerHTML = state.inventory.map(item => {
           const g = getGiftById(item.giftId);
@@ -3592,7 +4411,7 @@
       upgradeStatusText.textContent = "Колесо крутится...";
       haptic("medium");
 
-      const duration = upgradeFast ? 320 : 1550;
+      const duration = (upgradeFast || state.settings.perfMode) ? 260 : 1550;
       const start = performance.now();
 
       function step(now) {
@@ -3607,6 +4426,7 @@
 
         state.inventory = state.inventory.filter(i => i.uid !== entry.uid);
         selectedGiftUid = null;
+        registerSpend(baseGift.value);
 
         if (won) {
           const rewardGift = pickRewardGiftForValue(potentialVal);
@@ -3616,6 +4436,7 @@
           });
           state.inventory = state.inventory.slice(0, 60);
           saveState();
+          renderBalance();
           recordBetHistory({
             mode: "Апгрейд",
             amount: baseGift.value,
@@ -3629,6 +4450,7 @@
           haptic("success");
         } else {
           saveState();
+          renderBalance();
           recordBetHistory({
             mode: "Апгрейд",
             amount: baseGift.value,
@@ -3672,7 +4494,7 @@
     let caseFastMode = false;
     let caseSpinning = false;
 
-    freeCaseArtSlot.innerHTML = renderCaseArtSvg("free", 68);
+    freeCaseArtSlot.innerHTML = renderCaseArtSvg("free", 70);
 
     function getFreeCaseRemainingMs() {
       return Math.max(0, FREE_CASE_COOLDOWN_MS - (Date.now() - (Number(state.lastFreeCaseAt) || 0)));
@@ -3713,7 +4535,7 @@
       renderFreeCaseTimer();
       paidCasesGrid.innerHTML = PAID_CASES.map(c => `
         <div class="case-tile" data-open-case="${c.id}">
-          ${renderCaseArtSvg(c.artKind, 74)}
+          ${renderCaseArtSvg(c.artKind, 76)}
           <div class="case-tile-foot">
             <span>${c.title}</span>
             <span class="case-price">${c.price} <span class="star-icon">★</span></span>
@@ -3742,7 +4564,8 @@
           id: `star_${idx + 1}`,
           name: `${idx + 1} ★`,
           value: idx + 1,
-          accent: "#ffd60a"
+          accent: "#ffd60a",
+          badge: `${idx + 1}★`
         }));
         renderReelItems(starPool.concat(starPool, starPool));
 
@@ -3779,7 +4602,7 @@
 
         casePrizesGrid.innerHTML = c.prizes.map(p => `
           <div class="prize-card">
-            ${renderGiftSvg(p, 44)}
+            ${renderGiftSvg(p, 46)}
             <div class="prize-name">${p.name}</div>
             <div class="prize-cost">${p.value} <span class="star-icon">★</span></div>
           </div>
@@ -3839,7 +4662,7 @@
       const cardW = 120;
       const viewportW = caseReelTrack.parentElement.clientWidth || 320;
       const targetX = Math.max(0, winIdx * cardW - (viewportW / 2 - 56));
-      const ms = fast ? 180 : 2100;
+      const ms = (fast || state.settings.perfMode) ? 180 : 2100;
 
       requestAnimationFrame(() => {
         caseReelTrack.style.transition = `transform ${ms}ms cubic-bezier(0.12, 0.85, 0.2, 1)`;
@@ -3870,7 +4693,8 @@
           id: `star_${idx + 1}`,
           name: `${idx + 1} ★`,
           value: idx + 1,
-          accent: "#ffd60a"
+          accent: "#ffd60a",
+          badge: `${idx + 1}★`
         }));
         const strip = Array.from({ length: 28 }, (_, i) => starPool[i % starPool.length]);
         const winIdx = 22;
@@ -3879,8 +4703,10 @@
         animateReelToIndex(strip, winIdx, caseFastMode, () => {
           state.balance = cleanNumber(state.balance, 5000) + rewardStars;
           state.lastFreeCaseAt = Date.now();
+          registerDeposit(rewardStars, "Бесплатный кейс");
           saveState();
           renderBalance();
+          renderProfileAll();
           addLog(`Бесплатный кейс: начислено +${rewardStars} ★ на баланс`);
           caseDropBanner.innerHTML = `<span style="color:var(--green);font-weight:800;">+${rewardStars} ★ зачислено на баланс!</span>`;
           caseSpinning = false;
@@ -3899,6 +4725,7 @@
       }
 
       state.balance -= totalCost;
+      registerSpend(totalCost);
       saveState();
       renderBalance();
       caseSpinning = true;
@@ -3936,6 +4763,7 @@
         caseSpinning = false;
         haptic("success");
         renderCasesUI();
+        renderProfileAll();
       });
     });
 
@@ -4117,6 +4945,7 @@
       }
 
       state.balance -= amount;
+      registerSpend(amount);
       saveState();
       renderBalance();
 
@@ -4144,6 +4973,7 @@
       minesActive = false;
       minesOutcome = "won";
       state.balance = cleanNumber(state.balance, 5000) + payout;
+      registerDeposit(payout, "Выигрыш Мины", true);
       renderBalance();
       recordBetHistory({ mode: "Мины", amount: minesBetAmount, status: "cashed", mult, payout, note: `${minesCount} мин • ${openedSafe.size} ячеек` });
       addLog(`Мины (${minesCount} мин, ${mult.toFixed(2)}x): забрано +${payout.toLocaleString("ru-RU")} ★`);
@@ -4176,6 +5006,7 @@
         minesActive = false;
         minesOutcome = "won";
         state.balance = cleanNumber(state.balance, 5000) + payout;
+        registerDeposit(payout, "Выигрыш Мины", true);
         renderBalance();
         recordBetHistory({ mode: "Мины", amount: minesBetAmount, status: "cashed", mult: nextMult, payout, note: `Все ${safeTotal} ячеек` });
         addLog(`Мины (полное поле ${nextMult.toFixed(2)}x): забрано +${payout.toLocaleString("ru-RU")} ★`);
@@ -4195,328 +5026,6 @@
         startMinesRound();
       }
     });
-
-    // ================= CASCADE GAME =================
-    const CASCADE_COLS = 7;
-    const CASCADE_ROWS = 7;
-    const CASCADE_SYMBOLS = [
-      { id: "drop", glyph: "💧", pay: 0.25 },
-      { id: "orb", glyph: "🟣", pay: 0.3 },
-      { id: "hex", glyph: "⬡", pay: 0.35 },
-      { id: "sq", glyph: "🟦", pay: 0.4 },
-      { id: "gem", glyph: "💎", pay: 0.55 },
-      { id: "heart", glyph: "🩷", pay: 0.7 },
-      { id: "star", glyph: "⭐", pay: 1.0 }
-    ];
-    const SCATTER_SYMBOL = { id: "medal", glyph: "🏅", isScatter: true };
-
-    const cascadeGridEl = document.getElementById("cascadeGrid");
-    const cascadeWinText = document.getElementById("cascadeWinText");
-    const cascadeSpinsInfo = document.getElementById("cascadeSpinsInfo");
-    const cascadeStatusText = document.getElementById("cascadeStatusText");
-    const cascadeBonusPriceText = document.getElementById("cascadeBonusPriceText");
-    const cascadeBetVal = document.getElementById("cascadeBetVal");
-    const cascadeSpinBtn = document.getElementById("cascadeSpinBtn");
-    const cascadeTurboBtn = document.getElementById("cascadeTurboBtn");
-    const cascadeAutoBtn = document.getElementById("cascadeAutoBtn");
-    const cascadeModal = document.getElementById("cascadeModal");
-    const cascadeModalTitle = document.getElementById("cascadeModalTitle");
-    const cascadeModalBody = document.getElementById("cascadeModalBody");
-    const cascadeModalConfirmBtn = document.getElementById("cascadeModalConfirmBtn");
-
-    let cascadeBet = 10;
-    let cascadeTurbo = false;
-    let cascadeAuto = false;
-    let cascadeSpinning = false;
-    let cascadeFreeSpinsLeft = 0;
-    let cascadeCellBoosts = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => 1);
-    let cascadeBoard = [];
-    let pendingCascadeBonusConfirm = false;
-
-    function randomCascadeCell(allowScatter = true) {
-      if (allowScatter && Math.random() < 0.06) return { ...SCATTER_SYMBOL };
-      const sym = CASCADE_SYMBOLS[Math.floor(Math.random() * CASCADE_SYMBOLS.length)];
-      return { ...sym, isScatter: false };
-    }
-
-    function initCascadeBoard() {
-      cascadeBoard = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => randomCascadeCell(true));
-    }
-
-    function renderCascadeGrid(winSet = new Set()) {
-      cascadeBonusPriceText.textContent = `${(cascadeBet * 10).toLocaleString("ru-RU")} ★`;
-      cascadeBetVal.textContent = String(cascadeBet);
-      cascadeTurboBtn.classList.toggle("active", cascadeTurbo);
-      cascadeAutoBtn.classList.toggle("active", cascadeAuto);
-      cascadeSpinsInfo.textContent = cascadeFreeSpinsLeft > 0
-        ? `Фриспинов: ${cascadeFreeSpinsLeft}`
-        : "Обычный раунд";
-
-      cascadeGridEl.innerHTML = cascadeBoard.map((cell, idx) => {
-        const boost = cascadeCellBoosts[idx] || 1;
-        const isHit = winSet.has(idx);
-        return `
-          <div class="cascade-cell ${boost > 1 ? "boosted" : ""} ${isHit ? "win-hit" : ""}">
-            <span>${cell.glyph}</span>
-            ${boost > 1 ? `<span class="cascade-cell-mult">x${boost}</span>` : ""}
-          </div>
-        `;
-      }).join("");
-    }
-
-    function findClusters5Plus() {
-      const visited = new Set();
-      const clusters = [];
-      const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-
-      for (let r = 0; r < CASCADE_ROWS; r++) {
-        for (let c = 0; c < CASCADE_COLS; c++) {
-          const startIdx = r * CASCADE_COLS + c;
-          const sym = cascadeBoard[startIdx];
-          if (!sym || sym.isScatter || visited.has(startIdx)) continue;
-
-          const queue = [[r, c]];
-          const group = [startIdx];
-          visited.add(startIdx);
-
-          while (queue.length) {
-            const [cr, cc] = queue.shift();
-            for (const [dr, dc] of dirs) {
-              const nr = cr + dr;
-              const nc = cc + dc;
-              if (nr < 0 || nr >= CASCADE_ROWS || nc < 0 || nc >= CASCADE_COLS) continue;
-              const nIdx = nr * CASCADE_COLS + nc;
-              if (visited.has(nIdx)) continue;
-              if (cascadeBoard[nIdx].id === sym.id) {
-                visited.add(nIdx);
-                group.push(nIdx);
-                queue.push([nr, nc]);
-              }
-            }
-          }
-
-          if (group.length >= 5) {
-            clusters.push({ sym, cells: group });
-          }
-        }
-      }
-      return clusters;
-    }
-
-    function applyGravityToBoard() {
-      for (let c = 0; c < CASCADE_COLS; c++) {
-        const colItems = [];
-        for (let r = CASCADE_ROWS - 1; r >= 0; r--) {
-          const idx = r * CASCADE_COLS + c;
-          if (cascadeBoard[idx]) colItems.push(cascadeBoard[idx]);
-        }
-        for (let r = CASCADE_ROWS - 1; r >= 0; r--) {
-          const idx = r * CASCADE_COLS + c;
-          if (colItems.length) {
-            cascadeBoard[idx] = colItems.shift();
-          } else {
-            cascadeBoard[idx] = randomCascadeCell(true);
-          }
-        }
-      }
-    }
-
-    function openCascadeModal(title, body, isBonusConfirm = false) {
-      pendingCascadeBonusConfirm = isBonusConfirm;
-      cascadeModalTitle.textContent = title;
-      cascadeModalBody.textContent = body;
-      cascadeModalConfirmBtn.textContent = isBonusConfirm
-        ? `Купить бонус за ${(cascadeBet * 10).toLocaleString("ru-RU")} ★`
-        : "Понятно";
-      cascadeModal.classList.add("open");
-    }
-
-    document.getElementById("cascadeRulesBtn").addEventListener("click", () => {
-      openCascadeModal(
-        "Правила Каскада",
-        "5+ одинаковых символов рядом (без диагоналей) дают выигрыш. Символы исчезают, верхние падают вниз, а клетки выигрыша усиливаются (x2 → x4 → до x128). 3+ медальона со звездой дают 3+ фриспинов."
-      );
-    });
-
-    document.getElementById("closeCascadeModalBtn").addEventListener("click", () => {
-      pendingCascadeBonusConfirm = false;
-      cascadeModal.classList.remove("open");
-    });
-
-    cascadeModalConfirmBtn.addEventListener("click", () => {
-      const wasConfirm = pendingCascadeBonusConfirm;
-      pendingCascadeBonusConfirm = false;
-      cascadeModal.classList.remove("open");
-      if (wasConfirm) executeCascadeSpin(true);
-    });
-
-    document.getElementById("cascadeBuyBonusBtn").addEventListener("click", () => {
-      if (cascadeSpinning) return;
-      const cost = cascadeBet * 10;
-      if (state.balance < cost) {
-        cascadeStatusText.textContent = `Недостаточно ★ для бонуса (${cost} ★)`;
-        haptic("error");
-        return;
-      }
-      openCascadeModal(
-        "Сразу к бонусу",
-        `Покупка раунда со скаттерами за x10 от ставки (${cost.toLocaleString("ru-RU")} ★). Подтверждаешь списание?`,
-        true
-      );
-    });
-
-    document.getElementById("cascadeBetMinus").addEventListener("click", () => {
-      if (cascadeSpinning) return;
-      cascadeBet = Math.max(5, cascadeBet - 5);
-      renderCascadeGrid();
-    });
-
-    document.getElementById("cascadeBetPlus").addEventListener("click", () => {
-      if (cascadeSpinning) return;
-      cascadeBet = Math.min(5000, cascadeBet + 5);
-      renderCascadeGrid();
-    });
-
-    cascadeTurboBtn.addEventListener("click", () => {
-      cascadeTurbo = !cascadeTurbo;
-      renderCascadeGrid();
-    });
-
-    cascadeAutoBtn.addEventListener("click", () => {
-      cascadeAuto = !cascadeAuto;
-      renderCascadeGrid();
-      if (cascadeAuto && !cascadeSpinning) executeCascadeSpin(false);
-    });
-
-    function sleepMs(ms) {
-      return new Promise(res => setTimeout(res, ms));
-    }
-
-    async function executeCascadeSpin(forceScatters = false) {
-      if (cascadeSpinning) return;
-      const isFree = cascadeFreeSpinsLeft > 0;
-      const cost = forceScatters ? cascadeBet * 10 : (isFree ? 0 : cascadeBet);
-
-      if (state.balance < cost) {
-        cascadeAuto = false;
-        cascadeStatusText.textContent = "Недостаточно ★ — пополни через + сверху";
-        haptic("error");
-        renderCascadeGrid();
-        return;
-      }
-
-      if (cost > 0) {
-        state.balance -= cost;
-        saveState();
-        renderBalance();
-      }
-      if (isFree && !forceScatters) {
-        cascadeFreeSpinsLeft -= 1;
-        if (cascadeFreeSpinsLeft === 0) {
-          cascadeCellBoosts = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => 1);
-        }
-      } else if (!isFree) {
-        cascadeCellBoosts = Array.from({ length: CASCADE_ROWS * CASCADE_COLS }, () => 1);
-      }
-
-      cascadeSpinning = true;
-      cascadeSpinBtn.disabled = true;
-      let totalSpinWin = 0;
-      cascadeWinText.textContent = "0 ★";
-      cascadeStatusText.textContent = "Вращение...";
-
-      initCascadeBoard();
-      if (forceScatters) {
-        [2, 18, 34].forEach(pos => { cascadeBoard[pos] = { ...SCATTER_SYMBOL }; });
-      }
-      renderCascadeGrid();
-      await sleepMs(cascadeTurbo ? 120 : 280);
-
-      let cascadeStep = 0;
-      while (true) {
-        const clusters = findClusters5Plus();
-        if (!clusters.length) break;
-        cascadeStep += 1;
-
-        const hitIndices = new Set();
-        let stepWin = 0;
-
-        clusters.forEach(cl => {
-          let maxBoost = 1;
-          cl.cells.forEach(idx => {
-            hitIndices.add(idx);
-            const cur = cascadeCellBoosts[idx] || 1;
-            if (cur > maxBoost) maxBoost = cur;
-          });
-          const sizeBonus = 1 + (cl.cells.length - 5) * 0.15;
-          stepWin += Math.round(cascadeBet * cl.sym.pay * sizeBonus * maxBoost);
-        });
-
-        totalSpinWin += stepWin;
-        cascadeWinText.textContent = `${totalSpinWin.toLocaleString("ru-RU")} ★`;
-        cascadeStatusText.textContent = `Каскад #${cascadeStep}: +${stepWin} ★`;
-        renderCascadeGrid(hitIndices);
-        await sleepMs(cascadeTurbo ? 140 : 340);
-
-        hitIndices.forEach(idx => {
-          const cur = cascadeCellBoosts[idx] || 1;
-          cascadeCellBoosts[idx] = cur === 1 ? 2 : Math.min(128, cur * 2);
-          cascadeBoard[idx] = null;
-        });
-        applyGravityToBoard();
-        renderCascadeGrid();
-        await sleepMs(cascadeTurbo ? 120 : 280);
-      }
-
-      const scatterCount = cascadeBoard.filter(c => c && c.isScatter).length;
-      if (scatterCount >= 3) {
-        const addedSpins = Math.min(30, 3 + (scatterCount - 3));
-        cascadeFreeSpinsLeft = Math.min(30, cascadeFreeSpinsLeft + addedSpins);
-        cascadeStatusText.textContent = `Бонусные звёзды (${scatterCount}): +${addedSpins} фриспинов!`;
-      } else if (totalSpinWin > 0) {
-        cascadeStatusText.textContent = `Итог вращения: +${totalSpinWin.toLocaleString("ru-RU")} ★`;
-      } else {
-        cascadeStatusText.textContent = "Нет кластеров от 5 символов";
-      }
-
-      if (totalSpinWin > 0) {
-        state.balance = cleanNumber(state.balance, 5000) + totalSpinWin;
-        saveState();
-        renderBalance();
-        recordBetHistory({
-          mode: "Каскад",
-          amount: cost,
-          status: "cashed",
-          mult: +(totalSpinWin / Math.max(1, cost || cascadeBet)).toFixed(2),
-          payout: totalSpinWin,
-          note: cascadeStep ? `${cascadeStep} каскад(ов)` : "Бонус"
-        });
-        addLog(`Каскад: выигрыш +${totalSpinWin.toLocaleString("ru-RU")} ★`);
-        haptic("success");
-      } else if (cost > 0) {
-        recordBetHistory({
-          mode: "Каскад",
-          amount: cost,
-          status: "lost",
-          mult: null,
-          payout: 0,
-          note: "Без выигрышных кластеров"
-        });
-      }
-
-      cascadeSpinning = false;
-      cascadeSpinBtn.disabled = false;
-      renderCascadeGrid();
-
-      if (cascadeAuto || cascadeFreeSpinsLeft > 0) {
-        await sleepMs(cascadeTurbo ? 220 : 500);
-        if ((cascadeAuto || cascadeFreeSpinsLeft > 0) && !cascadeSpinning) {
-          executeCascadeSpin(false);
-        }
-      }
-    }
-
-    cascadeSpinBtn.addEventListener("click", () => executeCascadeSpin(false));
 
     // ================= ARENA GAME =================
     const arenaCanvas = document.getElementById("arenaCanvas");
@@ -4548,7 +5057,7 @@
     function resizeArenaCanvas() {
       const wrap = arenaCanvas.parentElement;
       if (!wrap || !wrap.clientWidth) return;
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = state.settings.perfMode ? 1 : (window.devicePixelRatio || 1);
       arenaCanvas.width = wrap.clientWidth * dpr;
       arenaCanvas.height = wrap.clientHeight * dpr;
       arenaCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -4683,6 +5192,7 @@
       const bank = getArenaBank();
       if (arenaWinner && arenaWinner.isUser) {
         state.balance = cleanNumber(state.balance, 5000) + bank;
+        registerDeposit(bank, "Победа Арена", true);
         saveState();
         renderBalance();
         recordBetHistory({
@@ -4731,6 +5241,7 @@
         return;
       }
       state.balance -= safe;
+      registerSpend(safe);
       saveState();
       renderBalance();
 
@@ -4935,7 +5446,7 @@
     function resizeCanvas() {
       const rect = crashStage.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = state.settings.perfMode ? 1 : (window.devicePixelRatio || 1);
       canvas.width = rect.width * dpr;
       canvas.height = rect.height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -4948,8 +5459,9 @@
 
     function spawnExplosion(x, y) {
       explosionPos = { x, y };
-      sparks = Array.from({ length: 24 }, (_, idx) => {
-        const angle = (Math.PI * 2 * idx) / 24 + (Math.random() - 0.5) * 0.25;
+      const count = state.settings.perfMode ? 10 : 24;
+      sparks = Array.from({ length: count }, (_, idx) => {
+        const angle = (Math.PI * 2 * idx) / count + (Math.random() - 0.5) * 0.25;
         const speed = 45 + Math.random() * 115;
         return {
           vx: Math.cos(angle) * speed,
@@ -4977,12 +5489,14 @@
       if (!w || !h) return;
       ctx.clearRect(0, 0, w, h);
 
-      starsBg.forEach(s => {
-        ctx.beginPath();
-        ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${s.a})`;
-        ctx.fill();
-      });
+      if (!state.settings.perfMode) {
+        starsBg.forEach(s => {
+          ctx.beginPath();
+          ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${s.a})`;
+          ctx.fill();
+        });
+      }
 
       const t = Math.max(0, Math.min(1, progress));
       const startX = 36;
@@ -5132,6 +5646,7 @@
       currentRoundBet.winMult = safeMult;
       currentRoundBet.payout = payout;
       state.balance = cleanNumber(state.balance, 5000) + payout;
+      registerDeposit(payout, "Выигрыш Crash", true);
       renderBalance();
       recordBetHistory({ mode: "Crash", amount: currentRoundBet.amount, status: "cashed", mult: safeMult, payout, note: isAuto ? `Авто x${safeMult.toFixed(2)}` : "" });
       addLog(`Crash: стоп на ${safeMult.toFixed(2)}x → +${payout.toLocaleString("ru-RU")} ★`);
@@ -5189,30 +5704,37 @@
         drawScene(0.08, null);
         if (remMs <= 0) beginFlight();
       } else if (phase === "flying") {
-        const sec = (now - phaseStart) / 1000;
-        currentMult = +(sec * 0.55 + Math.pow(sec, 1.55) * 0.15).toFixed(2);
-        demoBots.forEach(b => {
-          if (b.status === "active" && currentMult >= b.target && currentMult < crashPoint) {
-            b.status = "cashed";
-            b.cashedAt = currentMult;
+        const elapsedSec = (now - phaseStart) / 1000;
+        currentMult = +(elapsedSec * 0.45 + Math.pow(elapsedSec, 1.38) * 0.14).toFixed(2);
+        crashMult.textContent = `x${currentMult.toFixed(2)}`;
+        drawScene(Math.min(1, currentMult / 4.2), null);
+
+        demoBots.forEach(bot => {
+          if (bot.status === "active" && currentMult >= bot.target) {
+            bot.status = "cashed";
+            bot.cashedAt = bot.target;
+            renderPlayers();
           }
         });
-        if (currentRoundBet && currentRoundBet.status === "active" && currentRoundBet.autoTarget && currentMult >= currentRoundBet.autoTarget && currentMult < crashPoint) {
-          settleCashout(Math.max(currentRoundBet.autoTarget, currentMult), true);
+
+        if (currentRoundBet && currentRoundBet.status === "active") {
+          const targetAuto = currentRoundBet.autoTarget ?? autoCashoutTarget;
+          if (targetAuto !== null && currentMult >= targetAuto && currentMult < crashPoint) {
+            settleCashout(targetAuto, true);
+          } else {
+            updateActionButton();
+          }
         }
+
         if (currentMult >= crashPoint) {
           currentMult = crashPoint;
+          crashMult.textContent = `${crashPoint.toFixed(2)}x`;
           startCrashExplosion();
-        } else {
-          crashMult.textContent = `${currentMult.toFixed(2)}x`;
-          drawScene(Math.min(1, currentMult / 4.2), null);
-          renderPlayers();
-          updateActionButton();
         }
       } else if (phase === "exploding") {
-        const p = Math.min(1, (now - phaseStart) / 1200);
-        drawScene(Math.min(1, crashPoint / 4.2), p);
-        if (p >= 1) startCountdownPhase();
+        const explP = Math.min(1, (now - phaseStart) / 700);
+        drawScene(Math.min(1, crashPoint / 4.2), explP);
+        if (explP >= 1) startCountdownPhase();
       }
 
       requestAnimationFrame(loop);
@@ -5223,81 +5745,91 @@
         settleCashout(currentMult, false);
         return;
       }
+
       const amount = getBetAmount();
+      if ((phase === "countdown" || phase === "launch") && currentRoundBet) {
+        crashSubnote.textContent = `Ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ уже поставлена на этот раунд`;
+        haptic("light");
+        return;
+      }
+      if ((phase === "flying" || phase === "exploding") && nextRoundBet) {
+        crashSubnote.textContent = `Ставка ${nextRoundBet.amount.toLocaleString("ru-RU")} ★ уже стоит на следующий раунд`;
+        haptic("light");
+        return;
+      }
+
       if (state.balance < amount) {
-        crashSubnote.textContent = "Недостаточно ★ — нажми + сверху";
+        crashSubnote.textContent = "Недостаточно ★ — пополни баланс через + сверху";
         haptic("error");
         return;
       }
-      if (phase === "countdown" || phase === "launch") {
-        if (currentRoundBet) return;
-        state.balance -= amount;
-        saveState();
-        renderBalance();
-        currentRoundBet = { amount, autoTarget: autoCashoutTarget, status: "pending", winMult: 0, payout: 0 };
-      } else {
-        if (nextRoundBet) return;
-        state.balance -= amount;
-        saveState();
-        renderBalance();
-        nextRoundBet = { amount, autoTarget: autoCashoutTarget };
-      }
+
+      state.balance -= amount;
+      registerSpend(amount);
+      saveState();
+      renderBalance();
       haptic("medium");
+
+      if (phase === "countdown" || phase === "launch") {
+        currentRoundBet = { amount, autoTarget: autoCashoutTarget, status: "pending", winMult: 0, payout: 0 };
+        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ принята на этот раунд`;
+      } else {
+        nextRoundBet = { amount, autoTarget: autoCashoutTarget, status: "queued", winMult: 0, payout: 0 };
+        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ поставлена на следующий раунд`;
+      }
       renderPlayers();
       updateActionButton();
     });
 
+    // Splash Loader Sequence
     function runSplashSequence() {
-      const splashScreen = document.getElementById("splashScreen");
-      const splashPct = document.getElementById("splashPct");
-      const splashStatus = document.getElementById("splashStatus");
-      const splashProgressBar = document.getElementById("splashProgressBar");
+      const splash = document.getElementById("splashScreen");
       const mainApp = document.getElementById("mainApp");
+      const pctEl = document.getElementById("splashPct");
+      const barEl = document.getElementById("splashProgressBar");
+      const statusEl = document.getElementById("splashStatus");
 
-      const steps = [
-        { pct: 24, text: "Синхронизация профиля и звёзд ★...", delay: 90 },
-        { pct: 58, text: "Загрузка подарков и кейсов...", delay: 380 },
-        { pct: 88, text: "Подготовка Crash, Каскада и Арены...", delay: 720 },
-        { pct: 100, text: "Добро пожаловать в MOLLY GIFTS", delay: 1020 }
+      const stages = [
+        { pct: 24, label: "Проверка демо-баланса и прогресса..." },
+        { pct: 56, label: "Загрузка кейсов, подарков и апгрейда..." },
+        { pct: 84, label: "Подготовка Crash, Мин и Арены..." },
+        { pct: 100, label: "Готово!" }
       ];
 
-      steps.forEach(s => {
-        setTimeout(() => {
-          splashPct.textContent = `${s.pct}%`;
-          splashProgressBar.style.width = `${s.pct}%`;
-          splashStatus.textContent = s.text;
-          haptic("light");
-        }, s.delay);
-      });
+      let idx = 0;
+      function nextStep() {
+        if (idx >= stages.length) {
+          setTimeout(() => {
+            splash.classList.add("hide");
+            mainApp.classList.add("ready");
+            resizeCanvas();
+            resizeArenaCanvas();
+          }, 180);
+          return;
+        }
+        const st = stages[idx++];
+        pctEl.textContent = `${st.pct}%`;
+        barEl.style.width = `${st.pct}%`;
+        statusEl.textContent = st.label;
+        setTimeout(nextStep, state.settings.perfMode ? 90 : 210);
+      }
 
-      setTimeout(() => {
-        splashScreen.classList.add("hide");
-        mainApp.classList.add("ready");
-        resizeCanvas();
-        resizeArenaCanvas();
-      }, 1360);
+      setTimeout(nextStep, 90);
     }
 
-    renderTelegramProfileHeader();
+    applySettingsState();
     renderBalance();
     renderCrashHistory();
-    renderBankGifts();
-    renderProfileInventory();
-    renderBetHistory();
-    renderLogs();
-    renderMinesUI();
-    renderCasesUI();
+    renderProfileAll();
     renderUpgradeUI();
-    initCascadeBoard();
-    renderCascadeGrid();
+    renderCasesUI();
+    renderMinesUI();
     renderArenaUI();
     renderTasksView();
     renderTopView();
-    resizeCanvas();
-    resizeArenaCanvas();
     startCountdownPhase();
-    requestAnimationFrame(loop);
     runSplashSequence();
+    requestAnimationFrame(loop);
   </script>
 </body>
 </html>
