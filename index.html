@@ -20,7 +20,7 @@
       --pink-soft: rgba(228, 0, 124, 0.16);
       --pink-glow: rgba(255, 42, 133, 0.35);
       --green: #30d158;
-      --red: #ff453a;
+      --red: #ff3b30;
       --gold: #ffd60a;
       --radius-xl: 24px;
       --radius-lg: 20px;
@@ -164,6 +164,14 @@
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes stageShake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-5px, 3px); }
+      40% { transform: translate(5px, -3px); }
+      60% { transform: translate(-4px, -2px); }
+      80% { transform: translate(4px, 2px); }
     }
 
     /* Hero Banner Card */
@@ -397,13 +405,14 @@
     }
 
     .crash-stage.crashed {
-      border-color: rgba(255, 69, 58, 0.55);
-      box-shadow: inset 0 0 45px rgba(255, 69, 58, 0.18);
+      border-color: rgba(255, 59, 48, 0.75);
+      box-shadow: inset 0 0 54px rgba(255, 59, 48, 0.25);
+      animation: stageShake 0.38s ease;
     }
 
     .crash-stage.cashed {
-      border-color: rgba(48, 209, 88, 0.5);
-      box-shadow: inset 0 0 40px rgba(48, 209, 88, 0.14);
+      border-color: rgba(48, 209, 88, 0.55);
+      box-shadow: inset 0 0 40px rgba(48, 209, 88, 0.16);
     }
 
     #crashCanvas {
@@ -423,29 +432,40 @@
 
     .crash-status {
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
       margin-bottom: 4px;
     }
 
+    .crash-stage.crashed .crash-status {
+      color: var(--red);
+    }
+
+    .crash-stage.cashed .crash-status {
+      color: var(--green);
+    }
+
     .crash-mult {
-      font-size: 46px;
+      font-size: 48px;
       font-weight: 800;
       letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
       line-height: 1.05;
       color: #fff;
-      text-shadow: 0 6px 24px rgba(0, 0, 0, 0.7);
+      text-shadow: 0 6px 24px rgba(0, 0, 0, 0.75);
+      transition: color 0.12s ease;
     }
 
     .crash-stage.crashed .crash-mult {
       color: var(--red);
+      text-shadow: 0 0 28px rgba(255, 59, 48, 0.55);
     }
 
     .crash-stage.cashed .crash-mult {
       color: var(--green);
+      text-shadow: 0 0 24px rgba(48, 209, 88, 0.45);
     }
 
     .crash-subnote {
@@ -456,6 +476,10 @@
       min-height: 16px;
     }
 
+    .crash-stage.crashed .crash-subnote {
+      color: #ff8a80;
+    }
+
     .generating-box {
       position: relative;
       z-index: 3;
@@ -464,7 +488,7 @@
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      background: rgba(17, 17, 22, 0.86);
+      background: rgba(17, 17, 22, 0.88);
       border: 1px solid var(--border-strong);
       border-radius: 16px;
       padding: 12px 18px;
@@ -1012,7 +1036,7 @@
       return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v3";
+    const STORAGE_KEY = "molly_gifts_demo_v4";
     const defaultState = {
       balance: 500,
       crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
@@ -1160,11 +1184,13 @@
     const canvas = document.getElementById("crashCanvas");
     const ctx = canvas.getContext("2d");
 
-    // phases: 'betting' | 'flying' | 'generating'
+    // phases: 'betting' | 'flying' | 'exploding' | 'generating'
     let phase = "betting";
     let currentMult = 0.0;
     let crashPoint = 1.6;
     let phaseStart = performance.now();
+    let explosionPos = { x: 80, y: 160 };
+    let sparks = [];
     let rafId = null;
 
     // Player bet state: null | { amount, status: 'active' | 'cashed' | 'lost', winMult, payout }
@@ -1221,7 +1247,7 @@
         return;
       }
 
-      if (phase === "flying") {
+      if (phase === "flying" || phase === "exploding" || phase === "generating") {
         crashActionBtn.textContent = `На следующий раунд (${amount} ★)`;
       } else {
         crashActionBtn.textContent = `Поставить ${amount} ★`;
@@ -1237,7 +1263,7 @@
           badge = `+${currentBet.payout} ★ (${currentBet.winMult.toFixed(2)}x)`;
           cls = "win";
         } else if (currentBet.status === "lost") {
-          badge = `-${currentBet.amount} ★`;
+          badge = `Сгорела (-${currentBet.amount} ★)`;
           cls = "lose";
         }
         rows.push(`
@@ -1300,7 +1326,6 @@
       ctx.strokeStyle = "rgba(255, 42, 133, 0.55)";
       ctx.stroke();
 
-      // TON-like diamond mark
       ctx.beginPath();
       ctx.moveTo(x - radius * 0.45, y - radius * 0.25);
       ctx.lineTo(x + radius * 0.45, y - radius * 0.25);
@@ -1312,28 +1337,68 @@
       ctx.restore();
     }
 
-    function drawRocket(x, y, angleRad, exploded = false) {
+    function spawnExplosion(x, y) {
+      explosionPos = { x, y };
+      sparks = Array.from({ length: 24 }, (_, idx) => {
+        const angle = (Math.PI * 2 * idx) / 24 + (Math.random() - 0.5) * 0.25;
+        const speed = 45 + Math.random() * 115;
+        return {
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: 2.5 + Math.random() * 3.5,
+          color: idx % 3 === 0 ? "#ffd60a" : (idx % 2 === 0 ? "#ff3b30" : "#ff2a85")
+        };
+      });
+    }
+
+    function drawExplosionAnim(progress) {
+      const { x, y } = explosionPos;
+      const t = Math.min(1, Math.max(0, progress));
+      const inv = 1 - t;
+
+      ctx.save();
+
+      // Flash glow
+      const flashRadius = 18 + t * 56;
+      const radGrad = ctx.createRadialGradient(x, y, 2, x, y, flashRadius);
+      radGrad.addColorStop(0, `rgba(255, 220, 120, ${0.85 * inv})`);
+      radGrad.addColorStop(0.45, `rgba(255, 59, 48, ${0.65 * inv})`);
+      radGrad.addColorStop(1, "rgba(255, 59, 48, 0)");
+      ctx.beginPath();
+      ctx.arc(x, y, flashRadius, 0, Math.PI * 2);
+      ctx.fillStyle = radGrad;
+      ctx.fill();
+
+      // Shockwave ring
+      ctx.beginPath();
+      ctx.arc(x, y, 10 + t * 52, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255, 59, 48, ${0.9 * inv})`;
+      ctx.lineWidth = Math.max(1, 4 * inv);
+      ctx.stroke();
+
+      // Flying sparks & fragments
+      sparks.forEach(sp => {
+        const px = x + sp.vx * t;
+        const py = y + sp.vy * t + 35 * t * t;
+        ctx.globalAlpha = inv;
+        ctx.beginPath();
+        ctx.arc(px, py, sp.size * (0.4 + 0.6 * inv), 0, Math.PI * 2);
+        ctx.fillStyle = sp.color;
+        ctx.fill();
+      });
+
+      ctx.globalAlpha = Math.max(0.2, inv);
+      ctx.font = `${Math.round(28 + t * 10)}px sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("💥", x, y);
+
+      ctx.restore();
+    }
+
+    function drawRocket(x, y, angleRad) {
       ctx.save();
       ctx.translate(x, y);
-
-      if (exploded) {
-        // Explosion burst
-        for (let i = 0; i < 10; i++) {
-          const a = (Math.PI * 2 * i) / 10;
-          const dist = 10 + (i % 2) * 8;
-          ctx.beginPath();
-          ctx.arc(Math.cos(a) * dist, Math.sin(a) * dist, 3.2, 0, Math.PI * 2);
-          ctx.fillStyle = i % 2 === 0 ? "#ff2a85" : "#ff453a";
-          ctx.fill();
-        }
-        ctx.font = "28px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("💥", 0, 0);
-        ctx.restore();
-        return;
-      }
-
       ctx.rotate(angleRad);
 
       // Flame trail
@@ -1391,7 +1456,21 @@
       ctx.restore();
     }
 
-    function drawScene(progress, isCrashed) {
+    function getRocketCoords(progress, w, h) {
+      const t = Math.max(0, Math.min(1, progress));
+      const startX = 36;
+      const startY = h - 38;
+      const endX = startX + (w - 86) * t;
+      const endY = startY - (h - 116) * Math.pow(t, 1.25);
+      const bob = Math.sin(performance.now() * 0.008) * 3;
+      return {
+        x: t > 0 ? endX : startX,
+        y: (t > 0 ? endY : startY) + bob,
+        angle: -0.52 - t * 0.22
+      };
+    }
+
+    function drawScene(progress, explProgress = null) {
       const w = crashStage.clientWidth;
       const h = crashStage.clientHeight;
       if (!w || !h) return;
@@ -1416,26 +1495,23 @@
       const t = Math.max(0, Math.min(1, progress));
       const startX = 36;
       const startY = h - 38;
-      const endX = startX + (w - 86) * t;
-      const endY = startY - (h - 116) * Math.pow(t, 1.25);
+      const coords = getRocketCoords(t, w, h);
 
-      // Trajectory curve
       if (t > 0.01) {
         ctx.beginPath();
         ctx.moveTo(startX, startY);
-        ctx.quadraticCurveTo(startX + (endX - startX) * 0.5, startY, endX, endY);
-        ctx.strokeStyle = isCrashed ? "#ff453a" : "#ff2a85";
+        ctx.quadraticCurveTo(startX + (coords.x - startX) * 0.5, startY, coords.x, coords.y);
+        ctx.strokeStyle = explProgress !== null ? "#ff3b30" : "#ff2a85";
         ctx.lineWidth = 3;
         ctx.lineCap = "round";
         ctx.stroke();
       }
 
-      const bob = Math.sin(performance.now() * 0.008) * 3;
-      const rocketX = t > 0 ? endX : startX;
-      const rocketY = (t > 0 ? endY : startY) + bob;
-      const angle = isCrashed ? 0 : -0.52 - t * 0.22;
-
-      drawRocket(rocketX, rocketY, angle, isCrashed);
+      if (explProgress !== null) {
+        drawExplosionAnim(explProgress);
+      } else {
+        drawRocket(coords.x, coords.y, coords.angle);
+      }
     }
 
     function beginFlight() {
@@ -1445,7 +1521,6 @@
       phaseStart = performance.now();
       generatingBox.classList.remove("visible");
 
-      // Activate queued bet if user placed one
       if (queuedBet) {
         currentBet = {
           amount: queuedBet.amount,
@@ -1471,13 +1546,16 @@
 
       renderPlayers();
       updateActionButton();
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(loop);
     }
 
-    function triggerCrash() {
-      phase = "generating";
+    function startCrashExplosion() {
+      phase = "exploding";
       phaseStart = performance.now();
+
+      const w = crashStage.clientWidth || 320;
+      const h = crashStage.clientHeight || 280;
+      const coords = getRocketCoords(Math.min(1, crashPoint / 4.2), w, h);
+      spawnExplosion(coords.x, coords.y);
 
       state.crashHistory.unshift(crashPoint);
       state.crashHistory = state.crashHistory.slice(0, 10);
@@ -1488,6 +1566,8 @@
         currentBet.status = "lost";
         addLog(`Crash: взрыв на ${crashPoint.toFixed(2)}x (-${currentBet.amount} ★)`);
         haptic("error");
+      } else {
+        haptic("warning");
       }
 
       demoBots.forEach(b => {
@@ -1495,15 +1575,12 @@
       });
 
       crashStage.className = "crash-stage crashed";
-      crashStatus.textContent = "Взрыв";
+      crashStatus.textContent = "КРАШ! Ракета взорвалась";
       crashMult.textContent = `${crashPoint.toFixed(2)}x`;
       crashSubnote.textContent = currentBet && currentBet.status === "lost"
-        ? `Ставка ${currentBet.amount} ★ сгорела`
-        : "Ракета взорвалась";
+        ? `Не успел нажать Стоп — ставка ${currentBet.amount} ★ сгорела`
+        : `Ракета взорвалась на ${crashPoint.toFixed(2)}x`;
 
-      generatingBox.classList.add("visible");
-      genBarFill.style.width = "0%";
-      drawScene(Math.min(1, crashPoint / 4), true);
       renderPlayers();
       updateActionButton();
     }
@@ -1513,7 +1590,6 @@
         const sec = (now - phaseStart) / 1000;
         currentMult = +(sec * 0.55 + Math.pow(sec, 1.55) * 0.15).toFixed(2);
 
-        // Bot cashouts
         demoBots.forEach(b => {
           if (b.status === "active" && currentMult >= b.target && currentMult < crashPoint) {
             b.status = "cashed";
@@ -1523,31 +1599,39 @@
 
         if (currentMult >= crashPoint) {
           currentMult = crashPoint;
-          triggerCrash();
-          rafId = requestAnimationFrame(loop);
-          return;
+          startCrashExplosion();
+        } else {
+          crashMult.textContent = `${currentMult.toFixed(2)}x`;
+          if (currentBet && currentBet.status === "active") {
+            const winNow = Math.floor(currentBet.amount * currentMult);
+            crashSubnote.textContent = `Текущий выигрыш: ${winNow} ★`;
+          }
+          drawScene(Math.min(1, currentMult / 4.2), null);
+          renderPlayers();
+          updateActionButton();
         }
+      } else if (phase === "exploding") {
+        const explDuration = 1150;
+        const p = Math.min(1, (now - phaseStart) / explDuration);
+        drawScene(Math.min(1, crashPoint / 4.2), p);
 
-        crashMult.textContent = `${currentMult.toFixed(2)}x`;
-        if (currentBet && currentBet.status === "active") {
-          const winNow = Math.floor(currentBet.amount * currentMult);
-          crashSubnote.textContent = `Текущий выигрыш: ${winNow} ★`;
+        if (p >= 1) {
+          phase = "generating";
+          phaseStart = performance.now();
+          generatingBox.classList.add("visible");
+          genBarFill.style.width = "0%";
         }
-
-        drawScene(Math.min(1, currentMult / 4.2), false);
-        renderPlayers();
-        updateActionButton();
-        rafId = requestAnimationFrame(loop);
       } else if (phase === "generating") {
-        const genDuration = 2400;
+        const genDuration = 2200;
         const p = Math.min(1, (now - phaseStart) / genDuration);
         genBarFill.style.width = `${Math.round(p * 100)}%`;
 
         if (p >= 1) {
           beginFlight();
         }
-        rafId = requestAnimationFrame(loop);
       }
+
+      rafId = requestAnimationFrame(loop);
     }
 
     function handleCashout() {
@@ -1564,7 +1648,7 @@
       renderBalance();
 
       crashStage.className = "crash-stage cashed";
-      crashStatus.textContent = "Забрал выигрыш";
+      crashStatus.textContent = "Победа • Выигрыш забран";
       crashSubnote.textContent = `Выплата: +${payout} ★ на ${mult.toFixed(2)}x`;
       addLog(`Crash: стоп на ${mult.toFixed(2)}x → +${payout} ★`);
 
@@ -1612,7 +1696,7 @@
     renderPlayers();
     updateActionButton();
     resizeCanvas();
-    drawScene(0.12, false);
+    drawScene(0.12, null);
     rafId = requestAnimationFrame(loop);
   </script>
 </body>
