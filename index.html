@@ -46,85 +46,137 @@
       overflow-x: hidden;
     }
 
-    /* Splash / Entry Loader */
+    /* Upgraded Splash / Entry Loader */
     .splash-screen {
       position: fixed;
       inset: 0;
       z-index: 100;
       background:
-        radial-gradient(circle at 50% 34%, rgba(255, 42, 133, 0.28) 0%, rgba(228, 0, 124, 0.1) 38%, transparent 72%),
-        linear-gradient(180deg, #0d0910 0%, var(--bg) 65%);
+        radial-gradient(circle at 50% 30%, rgba(255, 42, 133, 0.34) 0%, rgba(228, 0, 124, 0.13) 36%, transparent 72%),
+        radial-gradient(circle at 82% 78%, rgba(255, 214, 10, 0.08) 0%, transparent 45%),
+        linear-gradient(180deg, #100914 0%, #09090d 55%, var(--bg) 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 24px;
-      transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1), transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.42s ease;
+      overflow: hidden;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s ease;
     }
 
     .splash-screen.hide {
       opacity: 0;
-      transform: scale(1.04);
+      transform: scale(1.06);
       visibility: hidden;
       pointer-events: none;
     }
 
+    .splash-ambient-ring {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 42, 133, 0.18);
+      box-shadow: 0 0 80px rgba(255, 42, 133, 0.14);
+      animation: splashRingSpin 14s linear infinite;
+      pointer-events: none;
+    }
+
+    .splash-ambient-ring::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--pink-bright);
+      box-shadow: 0 0 14px var(--pink-bright);
+      transform: translateX(-50%);
+    }
+
+    @keyframes splashRingSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     .splash-portal {
       position: relative;
-      width: 112px;
-      height: 132px;
-      border-radius: 56px 56px 24px 24px;
-      background: linear-gradient(180deg, rgba(255, 42, 133, 0.18), rgba(18, 18, 25, 0.96));
-      border: 1.5px solid rgba(255, 42, 133, 0.48);
+      width: 118px;
+      height: 138px;
+      border-radius: 59px 59px 26px 26px;
+      background: linear-gradient(165deg, rgba(255, 42, 133, 0.24), rgba(22, 20, 32, 0.96) 55%, rgba(12, 12, 18, 0.98));
+      border: 1.5px solid rgba(255, 42, 133, 0.56);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      box-shadow: 0 0 48px rgba(255, 42, 133, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-      animation: splashFloat 1.8s ease-in-out infinite;
+      box-shadow: 0 0 56px rgba(255, 42, 133, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      animation: splashFloat 2s ease-in-out infinite;
     }
 
     .splash-portal::before {
       content: "";
       position: absolute;
-      inset: -8px;
-      border-radius: 62px 62px 30px 30px;
-      border: 1.5px dashed rgba(255, 42, 133, 0.45);
-      animation: splashPulseBorder 1.5s ease-in-out infinite;
+      inset: -9px;
+      border-radius: 66px 66px 32px 32px;
+      border: 1.5px dashed rgba(255, 133, 186, 0.52);
+      animation: splashPulseBorder 1.6s ease-in-out infinite;
+    }
+
+    .splash-sparkle {
+      position: absolute;
+      font-size: 13px;
+      color: var(--gold);
+      filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.65));
+      animation: splashSpark 1.8s ease-in-out infinite;
+    }
+
+    .splash-sparkle.s1 { top: -8px; right: 8px; animation-delay: 0s; }
+    .splash-sparkle.s2 { bottom: 14px; left: -10px; color: #ff85ba; animation-delay: 0.45s; }
+    .splash-sparkle.s3 { top: 26px; left: -12px; animation-delay: 0.9s; }
+
+    @keyframes splashSpark {
+      0%, 100% { transform: scale(0.85) rotate(0deg); opacity: 0.55; }
+      50% { transform: scale(1.2) rotate(22deg); opacity: 1; }
     }
 
     @keyframes splashFloat {
       0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-6px); }
     }
 
     @keyframes splashPulseBorder {
       0%, 100% { opacity: 0.45; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.02); }
+      50% { opacity: 1; transform: scale(1.025); }
     }
 
     .splash-pct {
-      font-size: 28px;
+      position: relative;
+      font-size: 32px;
       font-weight: 900;
       letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
-      margin-top: 18px;
+      margin-top: 20px;
       color: #fff;
+      text-shadow: 0 0 24px rgba(255, 42, 133, 0.35);
     }
 
     .splash-brand {
+      position: relative;
       margin-top: 6px;
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 900;
-      letter-spacing: 0.1em;
-      background: linear-gradient(90deg, #ffffff 0%, #ff85ba 55%, #ff2a85 100%);
+      letter-spacing: 0.11em;
+      background: linear-gradient(90deg, #ffffff 0%, #ff85ba 52%, #ff2a85 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .splash-status {
-      margin-top: 4px;
+      position: relative;
+      margin-top: 5px;
       font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
@@ -132,22 +184,56 @@
     }
 
     .splash-progress-wrap {
+      position: relative;
       margin-top: 16px;
-      width: 212px;
-      height: 6px;
+      width: 224px;
+      height: 7px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.09);
+      background: rgba(255, 255, 255, 0.08);
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .splash-progress-bar {
+      position: relative;
       width: 0%;
       height: 100%;
       border-radius: 999px;
-      background: linear-gradient(90deg, var(--pink), var(--pink-bright));
-      box-shadow: 0 0 16px var(--pink-glow);
-      transition: width 0.22s ease;
+      background: linear-gradient(90deg, var(--pink), var(--pink-bright), #ff85ba);
+      box-shadow: 0 0 18px var(--pink-glow);
+      transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .splash-progress-bar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 26px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7));
+      filter: blur(2px);
+    }
+
+    .splash-pills {
+      position: relative;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .splash-mini-chip {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #ffb3d4;
+      background: rgba(255, 42, 133, 0.12);
+      border: 1px solid rgba(255, 42, 133, 0.28);
+      border-radius: 999px;
+      padding: 4px 9px;
     }
 
     .app {
@@ -2068,10 +2154,14 @@
   </style>
 </head>
 <body>
-  <!-- Splash Loader -->
+  <!-- Upgraded Splash Loader -->
   <div class="splash-screen" id="splashScreen" aria-hidden="true">
+    <div class="splash-ambient-ring"></div>
     <div class="splash-portal">
-      <svg width="42" height="42" viewBox="0 0 24 24" fill="none">
+      <span class="splash-sparkle s1">✦</span>
+      <span class="splash-sparkle s2">★</span>
+      <span class="splash-sparkle s3">✦</span>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
         <path d="M12 2L14.9 8.2L21.7 9.1L16.7 13.8L17.9 20.6L12 17.3L6.1 20.6L7.3 13.8L2.3 9.1L9.1 8.2L12 2Z" fill="url(#mgSplash)"/>
         <defs>
           <linearGradient id="mgSplash" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
@@ -2080,13 +2170,18 @@
           </linearGradient>
         </defs>
       </svg>
-      <span style="font-size:11px;font-weight:800;color:#ff85ba;letter-spacing:0.06em;">GIFTS</span>
+      <span style="font-size:11px;font-weight:800;color:#ff85ba;letter-spacing:0.08em;">GIFTS</span>
     </div>
     <div class="splash-pct" id="splashPct">0%</div>
     <div class="splash-brand">MOLLY GIFTS</div>
-    <div class="splash-status" id="splashStatus">Вход в приложение...</div>
+    <div class="splash-status" id="splashStatus">Запуск портала подарков...</div>
     <div class="splash-progress-wrap">
       <div class="splash-progress-bar" id="splashProgressBar"></div>
+    </div>
+    <div class="splash-pills">
+      <span class="splash-mini-chip">★ Звёзды</span>
+      <span class="splash-mini-chip">🎁 Подарки</span>
+      <span class="splash-mini-chip">6 режимов</span>
     </div>
   </div>
 
@@ -2912,7 +3007,7 @@
       `;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v20";
+    const STORAGE_KEY = "molly_gifts_demo_v21";
     const defaultState = {
       balance: 5000,
       lastFreeCaseAt: 0,
@@ -4444,7 +4539,7 @@
       { id: "bot_mira", name: "Mira", bet: 40, color: ARENA_COLORS[0], isUser: false },
       { id: "bot_leo", name: "Leo", bet: 20, color: ARENA_COLORS[1], isUser: false }
     ];
-    let arenaPhase = "betting"; // waiting | betting | spinning | finished
+    let arenaPhase = "betting";
     let arenaTimerSec = 10;
     let arenaLastTick = performance.now();
     let puckPos = { x: 0.5, y: 0.5, vx: 0.008, vy: 0.006 };
@@ -4524,7 +4619,6 @@
         return;
       }
 
-      // Vertical proportional territory bands across arena
       let cursorX = 0;
       arenaEntries.forEach(p => {
         const ratio = p.bet / bank;
@@ -4548,7 +4642,6 @@
         cursorX += bandW;
       });
 
-      // Puck
       const px = puckPos.x * w;
       const py = puckPos.y * h;
       arenaCtx.beginPath();
@@ -5057,7 +5150,6 @@
         else if (rem > 0) caseSpinBtn.innerHTML = `<span>Доступен через ${formatHms(rem)}</span>`;
       }
 
-      // Arena loop
       if (arenaPhase === "betting" && arenaEntries.length >= 2) {
         if (now - arenaLastTick >= 1000) {
           arenaLastTick = now;
@@ -5082,7 +5174,6 @@
         drawArenaScene();
       }
 
-      // Crash loop
       if (phase === "countdown") {
         const remMs = Math.max(0, ROUND_BREAK_MS - (now - phaseStart));
         countdownText.textContent = `До следующего раунда: ${Math.ceil(remMs / 1000)} сек`;
@@ -5163,15 +5254,19 @@
       const splashProgressBar = document.getElementById("splashProgressBar");
       const mainApp = document.getElementById("mainApp");
 
-      [
-        { pct: 32, text: "Загрузка MOLLY GIFTS...", delay: 80 },
-        { pct: 74, text: "Подключение режимов и баланса ★...", delay: 420 },
-        { pct: 100, text: "Готово", delay: 820 }
-      ].forEach(s => {
+      const steps = [
+        { pct: 24, text: "Синхронизация профиля и звёзд ★...", delay: 90 },
+        { pct: 58, text: "Загрузка подарков и кейсов...", delay: 380 },
+        { pct: 88, text: "Подготовка Crash, Каскада и Арены...", delay: 720 },
+        { pct: 100, text: "Добро пожаловать в MOLLY GIFTS", delay: 1020 }
+      ];
+
+      steps.forEach(s => {
         setTimeout(() => {
           splashPct.textContent = `${s.pct}%`;
           splashProgressBar.style.width = `${s.pct}%`;
           splashStatus.textContent = s.text;
+          haptic("light");
         }, s.delay);
       });
 
@@ -5180,7 +5275,7 @@
         mainApp.classList.add("ready");
         resizeCanvas();
         resizeArenaCanvas();
-      }, 1220);
+      }, 1360);
     }
 
     renderTelegramProfileHeader();
