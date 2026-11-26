@@ -921,37 +921,15 @@
       color: #fff;
     }
 
-    .mines-bottom-line {
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 8px;
-    }
-
-    .mines-select-wrap {
+    .mines-count-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 8px;
       background: var(--surface-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 8px 12px;
-    }
-
-    .mines-select {
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .mines-select option {
-      background: #14141c;
-      color: #f5f5f7;
+      padding: 7px 10px;
     }
 
     .mines-quick-count {
@@ -967,16 +945,17 @@
     }
 
     .mine-cnt-btn {
-      background: var(--surface-elevated);
+      background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
       color: var(--text-muted);
       font-size: 12px;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
-      padding: 6px 10px;
+      padding: 6px 11px;
       cursor: pointer;
       flex-shrink: 0;
+      transition: all 0.14s ease;
     }
 
     .mine-cnt-btn.active {
@@ -1310,7 +1289,6 @@
           </div>
         </div>
 
-        <!-- Строка 1: быстрый выбор суммы в один ряд с прокруткой -->
         <div class="preset-scroll" id="presetScroll">
           <button class="preset-btn active" data-bet="25">25 ★</button>
           <button class="preset-btn" data-bet="50">50 ★</button>
@@ -1323,7 +1301,6 @@
           <button class="preset-btn" data-bet="10000">10000 ★</button>
         </div>
 
-        <!-- Строка 2: авто по множителю -->
         <div class="autocash-row">
           <span class="autocash-label">Авто</span>
           <div class="autocash-pills" id="autoCashPills">
@@ -1387,20 +1364,8 @@
         </div>
 
         <!-- Внизу выбор количества мин -->
-        <div class="mines-bottom-line">
-          <div class="mines-select-wrap">
-            <span class="bet-label">Количество мин</span>
-            <select id="minesCountSelect" class="mines-select" aria-label="Количество мин">
-              <option value="2">💣 2</option>
-              <option value="3" selected>💣 3</option>
-              <option value="4">💣 4</option>
-              <option value="5">💣 5</option>
-              <option value="7">💣 7</option>
-              <option value="10">💣 10</option>
-              <option value="15">💣 15</option>
-            </select>
-          </div>
-
+        <div class="mines-count-row">
+          <span class="bet-label">💣 Мин</span>
           <div class="mines-quick-count" id="minesQuickCount">
             <button class="mine-cnt-btn" data-mcnt="2">2</button>
             <button class="mine-cnt-btn active" data-mcnt="3">3</button>
@@ -1806,13 +1771,13 @@
     const minesStatusText = document.getElementById("minesStatusText");
     const minesLiveReturn = document.getElementById("minesLiveReturn");
     const minesBetInput = document.getElementById("minesBetInput");
-    const minesCountSelect = document.getElementById("minesCountSelect");
     const minesActionBtn = document.getElementById("minesActionBtn");
 
     let minesActive = false;
     let minesOutcome = "idle"; // 'idle' | 'playing' | 'won' | 'lost'
     let minesBetAmount = 25;
     let minesCount = 3;
+    let selectedMinesCount = 3;
     let mineIndices = new Set();
     let openedSafe = new Set();
     let hitMineIndex = -1;
@@ -1822,8 +1787,6 @@
       return Number.isFinite(n) && n >= 1 ? n : 25;
     }
 
-    // Множитель на k-м безопасном шаге при m минах на поле 25 клеток:
-    // Чем больше мин, тем выше рост коэффициента на каждом открытии.
     function calcMinesMultiplier(safeOpenedCount, totalMines) {
       if (safeOpenedCount <= 0) return 1.0;
       const safeTotal = MINES_TOTAL_TILES - totalMines;
@@ -1837,13 +1800,16 @@
       return +mult.toFixed(2);
     }
 
+    function getActiveMinesCount() {
+      return minesActive || minesOutcome !== "idle" ? minesCount : selectedMinesCount;
+    }
+
     function getCurrentMinesMult() {
-      const activeMines = minesActive || minesOutcome !== "idle" ? minesCount : Number(minesCountSelect.value);
-      return calcMinesMultiplier(openedSafe.size, activeMines);
+      return calcMinesMultiplier(openedSafe.size, getActiveMinesCount());
     }
 
     function renderMinesMultStrip() {
-      const activeMines = minesActive || minesOutcome !== "idle" ? minesCount : Number(minesCountSelect.value);
+      const activeMines = getActiveMinesCount();
       const maxSteps = Math.min(10, MINES_TOTAL_TILES - activeMines);
       const pills = [];
 
@@ -1905,7 +1871,7 @@
       renderMinesMultStrip();
       renderMinesGrid();
 
-      const activeMines = minesActive || minesOutcome !== "idle" ? minesCount : Number(minesCountSelect.value);
+      const activeMines = getActiveMinesCount();
       const mult = getCurrentMinesMult();
       const baseBet = minesActive || minesOutcome !== "idle" ? minesBetAmount : getMinesBetInput();
       const currentReturn = openedSafe.size > 0
@@ -1960,7 +1926,7 @@
 
     function syncMinesCountUI(newCount) {
       const clamped = Math.max(2, Math.min(15, Number(newCount) || 3));
-      minesCountSelect.value = String(clamped);
+      selectedMinesCount = clamped;
       document.querySelectorAll(".mine-cnt-btn").forEach(btn => {
         btn.classList.toggle("active", Number(btn.dataset.mcnt) === clamped);
       });
@@ -1973,11 +1939,6 @@
       }
       renderMinesUI();
     }
-
-    minesCountSelect.addEventListener("change", () => {
-      syncMinesCountUI(minesCountSelect.value);
-      haptic("light");
-    });
 
     document.querySelectorAll(".mine-cnt-btn").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -2003,7 +1964,7 @@
 
     function startMinesRound() {
       const amount = getMinesBetInput();
-      const count = Math.max(2, Math.min(15, Number(minesCountSelect.value) || 3));
+      const count = Math.max(2, Math.min(15, selectedMinesCount || 3));
 
       if (state.balance < amount) {
         minesStatusText.textContent = "Недостаточно ★ — пополни через + сверху";
