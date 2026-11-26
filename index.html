@@ -907,9 +907,9 @@
 
         <div class="preset-row">
           <button class="preset-btn active" data-bet="25">25 ★</button>
-          <button class="preset-btn" data-bet="50">50 ★</button>
           <button class="preset-btn" data-bet="100">100 ★</button>
-          <button class="preset-btn" data-bet="250">250 ★</button>
+          <button class="preset-btn" data-bet="500">500 ★</button>
+          <button class="preset-btn" data-bet="1000">1000 ★</button>
         </div>
 
         <button class="action-btn" id="crashActionBtn">Поставить ставку • 25 ★</button>
@@ -1052,7 +1052,7 @@
       return Number.isFinite(n) && n >= 0 ? Math.floor(n) : fallback;
     }
 
-    const STORAGE_KEY = "molly_gifts_demo_v6";
+    const STORAGE_KEY = "molly_gifts_demo_v7";
     const defaultState = {
       balance: 500,
       crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
@@ -1187,11 +1187,6 @@
     };
 
     // ================= CRASH GAME =================
-    // Независимый цикл раунда:
-    // 1. countdown (30 сек) -> приём ставок
-    // 2. launch (3 сек: 3... 2... 1...) -> отсчёт до начала полёта
-    // 3. flying -> полёт с x0.00 и рост множителя
-    // 4. exploding -> взрыв ракеты
     const ROUND_BREAK_MS = 30000;
     const PRE_LAUNCH_MS = 3000;
 
@@ -1217,9 +1212,7 @@
     let sparks = [];
     let rafId = null;
 
-    // Ставка на текущий предстоящий/идущий раунд: { amount, status: 'pending' | 'active' | 'cashed' | 'lost', winMult, payout }
     let currentRoundBet = null;
-    // Ставка, поставленная во время полёта на следующий раунд: { amount }
     let nextRoundBet = null;
 
     const demoBots = [
@@ -1237,6 +1230,11 @@
     function getBetAmount() {
       const n = Math.floor(Number(betInput.value));
       return Number.isFinite(n) && n >= 1 ? n : 25;
+    }
+
+    function calcReturnAmount(amount, mult) {
+      // Возвращает полную сумму выплаты: ставка * множитель (включая саму ставку)
+      return Math.max(0, Math.round(amount * mult));
     }
 
     betInput.addEventListener("input", () => {
@@ -1259,9 +1257,9 @@
       const amount = getBetAmount();
 
       if (phase === "flying" && currentRoundBet && currentRoundBet.status === "active") {
-        const winNow = Math.floor(currentRoundBet.amount * currentMult);
+        const retNow = calcReturnAmount(currentRoundBet.amount, currentMult);
         crashActionBtn.classList.add("stop");
-        crashActionBtn.textContent = `Стоп • Забрать ${winNow} ★`;
+        crashActionBtn.textContent = `Стоп • Забрать ${retNow} ★`;
         return;
       }
 
@@ -1288,7 +1286,7 @@
       const rows = [];
 
       const myDisplayBet = nextRoundBet
-        ? { amount: nextRoundBet.amount, text: `${nextRoundBet.amount} ★ (след. раунд)`, cls: "" }
+        ? { text: `${nextRoundBet.amount} ★ (след. раунд)`, cls: "" }
         : currentRoundBet
           ? (currentRoundBet.status === "cashed"
             ? { text: `+${currentRoundBet.payout} ★ (${currentRoundBet.winMult.toFixed(2)}x)`, cls: "win" }
@@ -1541,7 +1539,6 @@
       phaseStart = performance.now();
       currentMult = 0.0;
 
-      // Переводим ставку со следующего раунда в текущий раунд
       if (nextRoundBet) {
         currentRoundBet = {
           amount: nextRoundBet.amount,
@@ -1702,8 +1699,8 @@
         } else {
           crashMult.textContent = `${currentMult.toFixed(2)}x`;
           if (currentRoundBet && currentRoundBet.status === "active") {
-            const winNow = Math.floor(currentRoundBet.amount * currentMult);
-            crashSubnote.textContent = `Текущий выигрыш: ${winNow} ★`;
+            const retNow = calcReturnAmount(currentRoundBet.amount, currentMult);
+            crashSubnote.textContent = `К возврату на баланс: ${retNow} ★`;
           }
           drawScene(Math.min(1, currentMult / 4.2), null);
           renderPlayers();
@@ -1725,7 +1722,8 @@
     function handleCashout() {
       if (phase !== "flying" || !currentRoundBet || currentRoundBet.status !== "active") return;
       const mult = Math.max(0.01, currentMult);
-      const payout = Math.floor(currentRoundBet.amount * mult);
+      const payout = calcReturnAmount(currentRoundBet.amount, mult);
+      const profit = payout - currentRoundBet.amount;
 
       currentRoundBet.status = "cashed";
       currentRoundBet.winMult = mult;
@@ -1736,9 +1734,9 @@
       renderBalance();
 
       crashStage.className = "crash-stage cashed";
-      crashStatus.textContent = "Победа • Выигрыш забран";
-      crashSubnote.textContent = `Выплата: +${payout} ★ на ${mult.toFixed(2)}x`;
-      addLog(`Crash: стоп на ${mult.toFixed(2)}x → +${payout} ★`);
+      crashStatus.textContent = "Победа • Выплата зачислена";
+      crashSubnote.textContent = `Возвращено ${payout} ★ (ставка ${currentRoundBet.amount} ★ + ${profit} ★)`;
+      addLog(`Crash: стоп на ${mult.toFixed(2)}x → получено ${payout} ★`);
 
       haptic("success");
       renderPlayers();
@@ -1765,7 +1763,7 @@
           winMult: 0,
           payout: 0
         };
-        crashSubnote.textContent = `Ставка ${amount} ★ принята — ждём таймер раунда`;
+        crashSubnote.textContent = `Ставка ${amount} ★ списана в раунд — ждём старт`;
       } else {
         if (nextRoundBet) return;
         state.balance -= amount;
@@ -1773,7 +1771,7 @@
         renderBalance();
 
         nextRoundBet = { amount };
-        crashSubnote.textContent = `Ставка ${amount} ★ поставлена на следующий раунд`;
+        crashSubnote.textContent = `Ставка ${amount} ★ списана на следующий раунд`;
       }
 
       haptic("medium");
