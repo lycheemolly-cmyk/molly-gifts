@@ -783,6 +783,208 @@
       color: var(--pink-bright);
     }
 
+    /* ================= MINES GAME ================= */
+    .mines-mult-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .mines-mult-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mines-step-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 11px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .mines-step-pill.passed {
+      color: var(--green);
+      border-color: rgba(48, 209, 88, 0.35);
+      background: rgba(48, 209, 88, 0.12);
+    }
+
+    .mines-step-pill.current {
+      color: #fff;
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      box-shadow: 0 4px 14px rgba(255, 42, 133, 0.22);
+    }
+
+    .mines-board-wrap {
+      background: radial-gradient(circle at 50% 15%, rgba(255, 42, 133, 0.12), transparent 65%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mines-board-wrap.lost {
+      border-color: rgba(255, 59, 48, 0.65);
+      animation: stageShake 0.35s ease;
+    }
+
+    .mines-board-wrap.won {
+      border-color: rgba(48, 209, 88, 0.55);
+    }
+
+    .mines-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .mine-tile {
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(155deg, #1f1f2b, #14141c);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07), 0 4px 10px rgba(0, 0, 0, 0.35);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.14s ease, border-color 0.16s ease, background 0.18s ease, opacity 0.18s ease;
+    }
+
+    .mine-tile:active:not(:disabled) {
+      transform: scale(0.93);
+    }
+
+    .mine-tile .tile-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.26);
+    }
+
+    .mine-tile.safe {
+      background: linear-gradient(155deg, rgba(48, 209, 88, 0.24), rgba(228, 0, 124, 0.18));
+      border-color: rgba(48, 209, 88, 0.7);
+      box-shadow: 0 0 18px rgba(48, 209, 88, 0.22);
+      font-size: 22px;
+      color: var(--gold);
+    }
+
+    .mine-tile.bomb {
+      background: linear-gradient(155deg, rgba(255, 59, 48, 0.34), rgba(45, 10, 14, 0.9));
+      border-color: var(--red);
+      box-shadow: 0 0 22px rgba(255, 59, 48, 0.38);
+      font-size: 22px;
+    }
+
+    .mine-tile.revealed-dim {
+      opacity: 0.42;
+      cursor: default;
+    }
+
+    .mines-live-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .mines-live-left {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .mines-live-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: #fff;
+    }
+
+    .mines-bottom-line {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 8px;
+    }
+
+    .mines-select-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+    }
+
+    .mines-select {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .mines-select option {
+      background: #14141c;
+      color: #f5f5f7;
+    }
+
+    .mines-quick-count {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .mines-quick-count::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mine-cnt-btn {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      padding: 6px 10px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .mine-cnt-btn.active {
+      border-color: var(--pink-bright);
+      background: var(--pink-soft);
+      color: #fff;
+    }
+
     /* Players list inside Crash */
     .players-card {
       background: var(--surface);
@@ -1042,6 +1244,17 @@
           </div>
         </div>
 
+        <div class="mode-card" data-nav="mines">
+          <div class="mode-top">
+            <div class="mode-icon">💣</div>
+            <span class="mode-tag pink">New</span>
+          </div>
+          <div>
+            <div class="mode-name">Мины</div>
+            <div class="mode-hint">Открывай ячейки без мин и расти множитель</div>
+          </div>
+        </div>
+
         <div class="mode-card" data-nav="cases">
           <div class="mode-top">
             <div class="mode-icon">🎁</div>
@@ -1061,17 +1274,6 @@
           <div>
             <div class="mode-name">Битва за лот</div>
             <div class="mode-hint">Борьба за редкий подарок в раунде</div>
-          </div>
-        </div>
-
-        <div class="mode-card" data-nav="upgrade">
-          <div class="mode-top">
-            <div class="mode-icon">💎</div>
-            <span class="mode-tag">x2–x10</span>
-          </div>
-          <div>
-            <div class="mode-name">Апгрейд</div>
-            <div class="mode-hint">Повышение номинала подарка колесом</div>
           </div>
         </div>
       </section>
@@ -1121,9 +1323,9 @@
           <button class="preset-btn" data-bet="10000">10000 ★</button>
         </div>
 
-        <!-- Строка 2: автозабор ставки по множителю -->
+        <!-- Строка 2: авто по множителю -->
         <div class="autocash-row">
-          <span class="autocash-label">Автозабор</span>
+          <span class="autocash-label">Авто</span>
           <div class="autocash-pills" id="autoCashPills">
             <button class="auto-btn" data-auto="2">x2</button>
             <button class="auto-btn" data-auto="5">x5</button>
@@ -1140,6 +1342,75 @@
           <span class="section-meta" id="playersCount">0</span>
         </div>
         <div id="playersList" style="display:flex;flex-direction:column;gap:6px;"></div>
+      </div>
+    </section>
+
+    <!-- MINES -->
+    <section class="view" id="view-mines">
+      <div class="back-row">
+        <button class="back-btn" data-nav="hub">← Назад</button>
+        <span class="section-title" style="font-size:16px;">Мины</span>
+      </div>
+
+      <div class="mines-mult-strip" id="minesMultStrip"></div>
+
+      <div class="mines-board-wrap" id="minesBoardWrap">
+        <div class="mines-grid" id="minesGrid"></div>
+
+        <div class="mines-live-bar">
+          <span class="mines-live-left" id="minesStatusText">Выбери ставку и число мин</span>
+          <span class="mines-live-right" id="minesLiveReturn">
+            <span class="star-icon">★</span>
+            <span>0</span>
+            <span style="color:var(--pink-bright);">• 1.00x</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="control-card">
+        <!-- Линия выбора суммы ставки -->
+        <div class="bet-row">
+          <div class="bet-label">Сумма ставки</div>
+          <div class="bet-input-wrap">
+            <input type="number" id="minesBetInput" class="bet-input" value="25" min="1" max="10000000" />
+            <span class="star-icon">★</span>
+          </div>
+        </div>
+
+        <div class="preset-scroll" id="minesPresetScroll">
+          <button class="preset-btn active" data-mbet="25">25 ★</button>
+          <button class="preset-btn" data-mbet="50">50 ★</button>
+          <button class="preset-btn" data-mbet="100">100 ★</button>
+          <button class="preset-btn" data-mbet="250">250 ★</button>
+          <button class="preset-btn" data-mbet="500">500 ★</button>
+          <button class="preset-btn" data-mbet="1000">1000 ★</button>
+        </div>
+
+        <!-- Внизу выбор количества мин -->
+        <div class="mines-bottom-line">
+          <div class="mines-select-wrap">
+            <span class="bet-label">Количество мин</span>
+            <select id="minesCountSelect" class="mines-select" aria-label="Количество мин">
+              <option value="2">💣 2</option>
+              <option value="3" selected>💣 3</option>
+              <option value="4">💣 4</option>
+              <option value="5">💣 5</option>
+              <option value="7">💣 7</option>
+              <option value="10">💣 10</option>
+              <option value="15">💣 15</option>
+            </select>
+          </div>
+
+          <div class="mines-quick-count" id="minesQuickCount">
+            <button class="mine-cnt-btn" data-mcnt="2">2</button>
+            <button class="mine-cnt-btn active" data-mcnt="3">3</button>
+            <button class="mine-cnt-btn" data-mcnt="5">5</button>
+            <button class="mine-cnt-btn" data-mcnt="10">10</button>
+            <button class="mine-cnt-btn" data-mcnt="15">15</button>
+          </div>
+        </div>
+
+        <button class="action-btn" id="minesActionBtn">Начать игру</button>
       </div>
     </section>
 
@@ -1176,18 +1447,6 @@
           <span style="color:var(--pink-bright);font-weight:700;">Банк: 450 ★</span>
         </div>
         <div class="section-meta">Механика очереди ставок и таймера раунда будет подключена на следующем шаге.</div>
-      </div>
-    </section>
-
-    <!-- UPGRADE -->
-    <section class="view" id="view-upgrade">
-      <div class="back-row">
-        <button class="back-btn" data-nav="hub">← Назад</button>
-        <span class="section-meta">Апгрейд</span>
-      </div>
-      <div class="info-card">
-        <div class="section-title">Колесо апгрейда</div>
-        <div class="section-meta">Сектор шанса и множитель x2 / x5 / x10 на общем балансе звёзд.</div>
       </div>
     </section>
 
@@ -1229,9 +1488,9 @@
       <span class="ico">🚀</span>
       <span>Crash</span>
     </button>
-    <button class="tab-btn" data-nav="cases">
-      <span class="ico">🎁</span>
-      <span>Кейсы</span>
+    <button class="tab-btn" data-nav="mines">
+      <span class="ico">💣</span>
+      <span>Мины</span>
     </button>
     <button class="tab-btn" data-nav="profile">
       <span class="ico">◉</span>
@@ -1409,7 +1668,7 @@
     function renderBetHistory() {
       betHistoryCountEl.textContent = String(state.betHistory.length);
       if (!state.betHistory.length) {
-        betHistoryListEl.innerHTML = `<div class="section-meta">Ставок пока не было — сделай первую ставку в Crash или Кейсах</div>`;
+        betHistoryListEl.innerHTML = `<div class="section-meta">Ставок пока не было — сделай первую ставку в Crash, Минах или Кейсах</div>`;
         return;
       }
 
@@ -1421,7 +1680,7 @@
           : `-${item.amount.toLocaleString("ru-RU")} ★`;
         const profitText = isWin
           ? `${item.note ? item.note + " • " : ""}Ставка ${item.amount.toLocaleString("ru-RU")} ★ + множитель (${item.profit >= 0 ? "+" : ""}${item.profit.toLocaleString("ru-RU")} ★)`
-          : `Ракета взорвалась • ставка сгорела`;
+          : `${item.note ? item.note + " • " : ""}Ставка сгорела`;
 
         return `
           <div class="history-item">
@@ -1465,6 +1724,7 @@
       tabBtns.forEach(b => b.classList.toggle("active", b.dataset.nav === name));
       haptic("light");
       if (name === "crash") resizeCanvas();
+      if (name === "mines") renderMinesUI();
       if (name === "profile") {
         renderBetHistory();
         renderLogs();
@@ -1538,6 +1798,333 @@
       haptic("success");
     };
 
+    // ================= MINES GAME =================
+    const MINES_TOTAL_TILES = 25;
+    const minesMultStrip = document.getElementById("minesMultStrip");
+    const minesBoardWrap = document.getElementById("minesBoardWrap");
+    const minesGridEl = document.getElementById("minesGrid");
+    const minesStatusText = document.getElementById("minesStatusText");
+    const minesLiveReturn = document.getElementById("minesLiveReturn");
+    const minesBetInput = document.getElementById("minesBetInput");
+    const minesCountSelect = document.getElementById("minesCountSelect");
+    const minesActionBtn = document.getElementById("minesActionBtn");
+
+    let minesActive = false;
+    let minesOutcome = "idle"; // 'idle' | 'playing' | 'won' | 'lost'
+    let minesBetAmount = 25;
+    let minesCount = 3;
+    let mineIndices = new Set();
+    let openedSafe = new Set();
+    let hitMineIndex = -1;
+
+    function getMinesBetInput() {
+      const n = Math.floor(Number(minesBetInput.value));
+      return Number.isFinite(n) && n >= 1 ? n : 25;
+    }
+
+    // Множитель на k-м безопасном шаге при m минах на поле 25 клеток:
+    // Чем больше мин, тем выше рост коэффициента на каждом открытии.
+    function calcMinesMultiplier(safeOpenedCount, totalMines) {
+      if (safeOpenedCount <= 0) return 1.0;
+      const safeTotal = MINES_TOTAL_TILES - totalMines;
+      let mult = 1.0;
+      for (let i = 0; i < safeOpenedCount; i++) {
+        const remainingTotal = MINES_TOTAL_TILES - i;
+        const remainingSafe = safeTotal - i;
+        const stepFactor = (remainingTotal / remainingSafe) * (1 + totalMines * 0.022);
+        mult *= stepFactor;
+      }
+      return +mult.toFixed(2);
+    }
+
+    function getCurrentMinesMult() {
+      const activeMines = minesActive || minesOutcome !== "idle" ? minesCount : Number(minesCountSelect.value);
+      return calcMinesMultiplier(openedSafe.size, activeMines);
+    }
+
+    function renderMinesMultStrip() {
+      const activeMines = minesActive || minesOutcome !== "idle" ? minesCount : Number(minesCountSelect.value);
+      const maxSteps = Math.min(10, MINES_TOTAL_TILES - activeMines);
+      const pills = [];
+
+      for (let step = 1; step <= maxSteps; step++) {
+        const m = calcMinesMultiplier(step, activeMines);
+        let cls = "mines-step-pill";
+        if (step <= openedSafe.size) {
+          cls += " passed";
+        } else if (step === openedSafe.size + 1 && (minesActive || minesOutcome === "idle")) {
+          cls += " current";
+        }
+        pills.push(`<span class="${cls}">${m.toFixed(2)}x</span>`);
+      }
+
+      minesMultStrip.innerHTML = pills.join("");
+    }
+
+    function renderMinesGrid() {
+      const showAll = minesOutcome === "lost" || minesOutcome === "won";
+      const tiles = [];
+
+      for (let idx = 0; idx < MINES_TOTAL_TILES; idx++) {
+        const isOpened = openedSafe.has(idx);
+        const isMine = mineIndices.has(idx);
+        const isHitMine = idx === hitMineIndex;
+
+        let cls = "mine-tile";
+        let content = `<span class="tile-dot"></span>`;
+        let disabled = !minesActive || isOpened;
+
+        if (isOpened) {
+          cls += " safe";
+          content = "★";
+          disabled = true;
+        } else if (isHitMine) {
+          cls += " bomb";
+          content = "💣";
+          disabled = true;
+        } else if (showAll && isMine) {
+          cls += " bomb revealed-dim";
+          content = "💣";
+          disabled = true;
+        } else if (showAll) {
+          cls += " revealed-dim";
+          disabled = true;
+        }
+
+        tiles.push(`
+          <button type="button" class="${cls}" data-tile="${idx}" ${disabled ? "disabled" : ""}>
+            ${content}
+          </button>
+        `);
+      }
+
+      minesGridEl.innerHTML = tiles.join("");
+    }
+
+    function renderMinesUI() {
+      renderMinesMultStrip();
+      renderMinesGrid();
+
+      const activeMines = minesActive || minesOutcome !== "idle" ? minesCount : Number(minesCountSelect.value);
+      const mult = getCurrentMinesMult();
+      const baseBet = minesActive || minesOutcome !== "idle" ? minesBetAmount : getMinesBetInput();
+      const currentReturn = openedSafe.size > 0
+        ? Math.max(baseBet, Math.round(baseBet * mult))
+        : baseBet;
+
+      minesBoardWrap.classList.remove("lost", "won");
+      if (minesOutcome === "lost") minesBoardWrap.classList.add("lost");
+      if (minesOutcome === "won") minesBoardWrap.classList.add("won");
+
+      if (minesActive) {
+        minesStatusText.textContent = `Открыто ${openedSafe.size} • Мин: ${activeMines}`;
+        minesLiveReturn.innerHTML = `
+          <span class="star-icon">★</span>
+          <span>${currentReturn.toLocaleString("ru-RU")}</span>
+          <span style="color:var(--green);">• ${mult.toFixed(2)}x</span>
+        `;
+      } else if (minesOutcome === "lost") {
+        minesStatusText.textContent = `Попал на мину • ставка сгорела`;
+        minesLiveReturn.innerHTML = `
+          <span style="color:var(--red);">-${baseBet.toLocaleString("ru-RU")} ★</span>
+          <span style="color:var(--text-muted);">• ${mult.toFixed(2)}x</span>
+        `;
+      } else if (minesOutcome === "won") {
+        minesStatusText.textContent = `Выигрыш забран (${mult.toFixed(2)}x)`;
+        minesLiveReturn.innerHTML = `
+          <span style="color:var(--green);">+${currentReturn.toLocaleString("ru-RU")} ★</span>
+          <span style="color:var(--green);">• ${mult.toFixed(2)}x</span>
+        `;
+      } else {
+        minesStatusText.textContent = `Мин на поле: ${activeMines} из 25`;
+        minesLiveReturn.innerHTML = `
+          <span class="star-icon">★</span>
+          <span>${baseBet.toLocaleString("ru-RU")}</span>
+          <span style="color:var(--pink-bright);">• 1.00x</span>
+        `;
+      }
+
+      minesActionBtn.classList.remove("stop", "queued");
+      if (minesActive) {
+        if (openedSafe.size > 0) {
+          minesActionBtn.classList.add("stop");
+          minesActionBtn.textContent = `Забрать ${currentReturn.toLocaleString("ru-RU")} ★ (${mult.toFixed(2)}x)`;
+        } else {
+          minesActionBtn.classList.add("queued");
+          minesActionBtn.textContent = `Открой клетку • Ставка ${baseBet.toLocaleString("ru-RU")} ★`;
+        }
+      } else {
+        minesActionBtn.textContent = "Начать игру";
+      }
+    }
+
+    function syncMinesCountUI(newCount) {
+      const clamped = Math.max(2, Math.min(15, Number(newCount) || 3));
+      minesCountSelect.value = String(clamped);
+      document.querySelectorAll(".mine-cnt-btn").forEach(btn => {
+        btn.classList.toggle("active", Number(btn.dataset.mcnt) === clamped);
+      });
+      if (!minesActive) {
+        minesCount = clamped;
+        minesOutcome = "idle";
+        openedSafe = new Set();
+        mineIndices = new Set();
+        hitMineIndex = -1;
+      }
+      renderMinesUI();
+    }
+
+    minesCountSelect.addEventListener("change", () => {
+      syncMinesCountUI(minesCountSelect.value);
+      haptic("light");
+    });
+
+    document.querySelectorAll(".mine-cnt-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        syncMinesCountUI(btn.dataset.mcnt);
+        haptic("light");
+      });
+    });
+
+    minesBetInput.addEventListener("input", () => {
+      document.querySelectorAll("#minesPresetScroll .preset-btn").forEach(b => b.classList.remove("active"));
+      if (!minesActive) renderMinesUI();
+    });
+
+    document.querySelectorAll("#minesPresetScroll .preset-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#minesPresetScroll .preset-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        minesBetInput.value = btn.dataset.mbet;
+        if (!minesActive) renderMinesUI();
+        haptic("light");
+      });
+    });
+
+    function startMinesRound() {
+      const amount = getMinesBetInput();
+      const count = Math.max(2, Math.min(15, Number(minesCountSelect.value) || 3));
+
+      if (state.balance < amount) {
+        minesStatusText.textContent = "Недостаточно ★ — пополни через + сверху";
+        haptic("error");
+        return;
+      }
+
+      state.balance -= amount;
+      saveState();
+      renderBalance();
+
+      minesBetAmount = amount;
+      minesCount = count;
+      minesActive = true;
+      minesOutcome = "playing";
+      openedSafe = new Set();
+      hitMineIndex = -1;
+
+      const pool = Array.from({ length: MINES_TOTAL_TILES }, (_, i) => i);
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+      mineIndices = new Set(pool.slice(0, minesCount));
+
+      haptic("medium");
+      renderMinesUI();
+    }
+
+    function cashoutMinesRound() {
+      if (!minesActive || openedSafe.size <= 0) return;
+      const mult = calcMinesMultiplier(openedSafe.size, minesCount);
+      const payout = Math.max(minesBetAmount, Math.round(minesBetAmount * mult));
+      const bonus = Math.max(0, payout - minesBetAmount);
+
+      minesActive = false;
+      minesOutcome = "won";
+
+      state.balance = cleanNumber(state.balance, 5000) + payout;
+      renderBalance();
+
+      recordBetHistory({
+        mode: "Мины",
+        amount: minesBetAmount,
+        status: "cashed",
+        mult,
+        payout,
+        note: `${minesCount} мин • ${openedSafe.size} ячеек`
+      });
+
+      addLog(`Мины (${minesCount} мин, ${mult.toFixed(2)}x): забрано +${payout.toLocaleString("ru-RU")} ★ (ставка ${minesBetAmount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`);
+      haptic("success");
+      renderMinesUI();
+    }
+
+    minesGridEl.addEventListener("click", e => {
+      const tileBtn = e.target.closest("[data-tile]");
+      if (!tileBtn || !minesActive) return;
+      const idx = Number(tileBtn.dataset.tile);
+      if (!Number.isInteger(idx) || openedSafe.has(idx)) return;
+
+      if (mineIndices.has(idx)) {
+        hitMineIndex = idx;
+        minesActive = false;
+        minesOutcome = "lost";
+        const lostMult = calcMinesMultiplier(openedSafe.size, minesCount);
+
+        recordBetHistory({
+          mode: "Мины",
+          amount: minesBetAmount,
+          status: "lost",
+          mult: lostMult,
+          payout: 0,
+          note: `${minesCount} мин • мина на ${openedSafe.size + 1}-м шаге`
+        });
+
+        addLog(`Мины (${minesCount} мин): взрыв на ${openedSafe.size + 1}-м шаге (-${minesBetAmount.toLocaleString("ru-RU")} ★)`);
+        haptic("error");
+        renderMinesUI();
+        return;
+      }
+
+      openedSafe.add(idx);
+      const nextMult = calcMinesMultiplier(openedSafe.size, minesCount);
+      const safeTotal = MINES_TOTAL_TILES - minesCount;
+
+      if (openedSafe.size >= safeTotal) {
+        const payout = Math.max(minesBetAmount, Math.round(minesBetAmount * nextMult));
+        const bonus = Math.max(0, payout - minesBetAmount);
+        minesActive = false;
+        minesOutcome = "won";
+        state.balance = cleanNumber(state.balance, 5000) + payout;
+        renderBalance();
+
+        recordBetHistory({
+          mode: "Мины",
+          amount: minesBetAmount,
+          status: "cashed",
+          mult: nextMult,
+          payout,
+          note: `Все ${safeTotal} ячеек • ${minesCount} мин`
+        });
+
+        addLog(`Мины (полное поле ${nextMult.toFixed(2)}x): забрано +${payout.toLocaleString("ru-RU")} ★ (ставка ${minesBetAmount.toLocaleString("ru-RU")} ★ + ${bonus.toLocaleString("ru-RU")} ★)`);
+        haptic("success");
+        renderMinesUI();
+        return;
+      }
+
+      haptic("light");
+      renderMinesUI();
+    });
+
+    minesActionBtn.addEventListener("click", () => {
+      if (minesActive) {
+        if (openedSafe.size > 0) cashoutMinesRound();
+      } else {
+        startMinesRound();
+      }
+    });
+
     // ================= CRASH GAME =================
     const ROUND_BREAK_MS = 30000;
     const PRE_LAUNCH_MS = 3000;
@@ -1564,9 +2151,7 @@
     let sparks = [];
     let rafId = null;
 
-    // null | 2 | 5 | 10
     let autoCashoutTarget = null;
-
     let currentRoundBet = null;
     let nextRoundBet = null;
 
@@ -1595,13 +2180,13 @@
     }
 
     betInput.addEventListener("input", () => {
-      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#presetScroll .preset-btn").forEach(b => b.classList.remove("active"));
       updateActionButton();
     });
 
-    document.querySelectorAll(".preset-btn").forEach(btn => {
+    document.querySelectorAll("#presetScroll .preset-btn").forEach(btn => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll("#presetScroll .preset-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         betInput.value = btn.dataset.bet;
         updateActionButton();
@@ -1609,7 +2194,6 @@
       });
     });
 
-    // Автозабор x2 / x5 / x10 (повторное нажатие по активной кнопке выключает автозабор)
     document.querySelectorAll(".auto-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         const val = Number(btn.dataset.auto);
@@ -1998,7 +2582,7 @@
       crashStatus.textContent = "Полёт • Успей нажать Стоп";
       crashMult.textContent = "x0.00";
       crashSubnote.textContent = currentRoundBet
-        ? `Твоя ставка: ${currentRoundBet.amount.toLocaleString("ru-RU")} ★${currentRoundBet.autoTarget ? ` • автозабор на x${currentRoundBet.autoTarget}` : ""}`
+        ? `Твоя ставка: ${currentRoundBet.amount.toLocaleString("ru-RU")} ★${currentRoundBet.autoTarget ? ` • авто на x${currentRoundBet.autoTarget}` : ""}`
         : "Ракета летит — можно поставить на след. раунд";
 
       renderPlayers();
@@ -2080,7 +2664,7 @@
 
       crashStage.className = "crash-stage cashed";
       crashStatus.textContent = isAuto
-        ? `Автозабор на ${safeMult.toFixed(2)}x • Победа зафиксирована`
+        ? `Авто на ${safeMult.toFixed(2)}x • Победа зафиксирована`
         : "Стоп нажат • Ставка и умножение начислены";
       crashSubnote.textContent = isAuto
         ? `Победа зафиксирована: +${payout.toLocaleString("ru-RU")} ★ — ракета летит дальше`
@@ -2130,7 +2714,6 @@
           }
         });
 
-        // Проверяем автозабор до проверки взрыва
         if (
           currentRoundBet &&
           currentRoundBet.status === "active" &&
@@ -2254,6 +2837,7 @@
     renderCrashHistory();
     renderBetHistory();
     renderLogs();
+    renderMinesUI();
     resizeCanvas();
     startCountdownPhase();
     rafId = requestAnimationFrame(loop);
