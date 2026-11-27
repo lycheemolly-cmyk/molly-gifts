@@ -1776,6 +1776,32 @@
       text-overflow: ellipsis;
     }
 
+    .dev-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(255, 214, 10, 0.14);
+      border: 1px solid rgba(255, 214, 10, 0.36);
+    }
+
+    .dev-panel-box {
+      background: linear-gradient(155deg, rgba(255, 214, 10, 0.1), rgba(255, 42, 133, 0.1) 55%, var(--surface-elevated));
+      border: 1px solid rgba(255, 214, 10, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .wager-strip-card {
       background: rgba(24, 24, 32, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2919,6 +2945,7 @@
           <div class="profile-user-info">
             <div class="profile-name" id="profileDisplayName">Demo Player</div>
             <div class="profile-handle" id="profileUsernameSub">Telegram Profile • Demo</div>
+            <div id="devBadgeSlot"></div>
           </div>
         </div>
 
@@ -2972,6 +2999,9 @@
             <button type="button" class="withdraw-btn" id="openWithdrawModalBtn">Вывод</button>
           </div>
         </div>
+
+        <!-- Панель разработчика — видна только владельцу -->
+        <div id="devQuickPanelSlot" style="display:none;"></div>
       </div>
 
       <div class="profile-stats-grid">
@@ -3048,6 +3078,7 @@
           <span class="accordion-chev">⌄</span>
         </button>
         <div class="accordion-body">
+          <div id="devOwnerPanelSlot"></div>
           <div class="list-item">
             <span>Банк подарков</span>
             <span style="color:var(--pink-bright);font-weight:800;" id="bankGiftsCount">0</span>
@@ -3319,6 +3350,26 @@
     const TOPUP_MIN_STARS = 50;
     const TOPUP_MAX_STARS = 100000;
 
+    // Строго для аккаунта разработчика @lycheemolly (ID 7366498440)
+    const DEV_CONFIG = {
+      userId: 7366498440,
+      username: "lycheemolly",
+      liveSetBalanceUrl: "https://raspy-band-6dd1.workers.dev/api/dev/set-balance"
+    };
+
+    function getTgUser() {
+      return (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
+    }
+
+    function isDeveloperUser() {
+      const user = getTgUser();
+      if (!user) return false;
+      const sameId = Number(user.id) === DEV_CONFIG.userId;
+      if (!sameId) return false;
+      if (!user.username) return true;
+      return String(user.username).toLowerCase().replace(/^@/, "") === DEV_CONFIG.username;
+    }
+
     const VIP_LEVELS = [
       { level: 1, name: "Новичок", minTurnover: 0, rakeback: 3, cashback: 3, face: "🙂" },
       { level: 2, name: "Игрок", minTurnover: 1000, rakeback: 5, cashback: 5, face: "😎" },
@@ -3453,12 +3504,14 @@
       return `${String(d.getDate()).padStart(2, "0")}.${String(d.getMonth() + 1).padStart(2, "0")}, ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
     }
 
-    const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
+    const tgUser = getTgUser();
+    const isDevAccount = isDeveloperUser();
     const accountScopeId = (tgUser && tgUser.id) ? `user_${String(tgUser.id)}` : "guest_session";
-    const STORAGE_KEY = `molly_gifts_demo_v23_${accountScopeId}`;
+    const STORAGE_KEY = `molly_gifts_demo_v24_${accountScopeId}`;
 
     const defaultState = {
       balance: 5000,
+      liveMode: false,
       welcomeSeen: false,
       lastFreeCaseAt: 0,
       inventory: [],
@@ -3507,6 +3560,7 @@
         if (!parsed || typeof parsed !== "object") return createFreshState();
         return {
           balance: cleanNumber(parsed.balance, 5000),
+          liveMode: isDevAccount ? Boolean(parsed.liveMode) : false,
           welcomeSeen: Boolean(parsed.welcomeSeen),
           lastFreeCaseAt: Number(parsed.lastFreeCaseAt) || 0,
           inventory: Array.isArray(parsed.inventory)
@@ -3613,6 +3667,9 @@
     const bankGiftsListEl = document.getElementById("bankGiftsList");
     const activityLog = document.getElementById("activityLog");
     const crashHistoryEl = document.getElementById("crashHistory");
+    const devBadgeSlotEl = document.getElementById("devBadgeSlot");
+    const devOwnerPanelSlotEl = document.getElementById("devOwnerPanelSlot");
+    const devQuickPanelSlotEl = document.getElementById("devQuickPanelSlot");
 
     function renderBalance() {
       const formatted = cleanNumber(state.balance, 5000).toLocaleString("ru-RU");
@@ -3678,6 +3735,155 @@
       }).join("");
     }
 
+    function renderDeveloperControls() {
+      // Скрываем всё для чужих аккаунтов
+      if (!isDeveloperUser()) {
+        if (devBadgeSlotEl) devBadgeSlotEl.innerHTML = "";
+        if (devOwnerPanelSlotEl) devOwnerPanelSlotEl.innerHTML = "";
+        if (devQuickPanelSlotEl) {
+          devQuickPanelSlotEl.style.display = "none";
+          devQuickPanelSlotEl.innerHTML = "";
+        }
+        const creatorCard = document.getElementById("accCreatorCard");
+        if (creatorCard) creatorCard.style.display = "none";
+        return;
+      }
+
+      // Показываем раздел Создателя только разработчику и открываем его
+      const creatorCard = document.getElementById("accCreatorCard");
+      if (creatorCard) {
+        creatorCard.style.display = "";
+        creatorCard.classList.add("open");
+      }
+
+      // Бейдж рядом с именем
+      if (devBadgeSlotEl) {
+        devBadgeSlotEl.innerHTML = `
+          <div class="dev-badge-pill">⚡ DEV • @${DEV_CONFIG.username}</div>
+        `;
+      }
+
+      // Компактная панель сразу под балансом (главный блок)
+      if (devQuickPanelSlotEl) {
+        devQuickPanelSlotEl.style.display = "block";
+        devQuickPanelSlotEl.innerHTML = `
+          <div class="dev-panel-box" style="margin-top:12px;">
+            <div class="section-head">
+              <span style="font-size:13px;font-weight:900;color:var(--gold);">⚡ Панель разработчика</span>
+              <span class="mode-tag pink" id="devModeTag">${state.liveMode ? "LIVE" : "ДЕМО"}</span>
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:4px;">
+              <button type="button" class="action-btn" style="padding:12px;font-size:13px;flex:1;" id="devToggleLiveBtn">
+                ${state.liveMode ? "Переключить в ДЕМО" : "Переключить в LIVE"}
+              </button>
+            </div>
+
+            <div class="bet-row" style="background:rgba(12,12,18,0.85);margin-top:8px;">
+              <div class="bet-label">Установить баланс ★</div>
+              <div class="bet-input-wrap">
+                <input type="number" id="devBalanceInput" class="bet-input" value="${state.balance}" min="0" max="1000000000" step="1" />
+                <span class="star-icon">★</span>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+              <button type="button" class="preset-btn" data-dev-set="10000">10k</button>
+              <button type="button" class="preset-btn" data-dev-set="100000">100k</button>
+              <button type="button" class="preset-btn" data-dev-set="1000000">1M</button>
+              <button type="button" class="action-btn" style="padding:8px 14px;font-size:12px;flex:1;" id="devApplyBalanceBtn">Применить</button>
+            </div>
+
+            <div class="section-meta" id="devStatusMsg" style="margin-top:6px;">
+              Только ваш аккаунт (ID ${DEV_CONFIG.userId}). Сейчас: <b>${state.liveMode ? "LIVE API" : "локальный DEMO"}</b>
+            </div>
+          </div>
+        `;
+      }
+
+      // Краткая пометка в аккордеоне
+      if (devOwnerPanelSlotEl) {
+        devOwnerPanelSlotEl.innerHTML = `
+          <div class="section-meta" style="margin-bottom:8px;">
+            Полная панель разработчика находится выше, под балансом профиля.
+          </div>
+        `;
+      }
+
+      // Навешиваем обработчики
+      const devInput = document.getElementById("devBalanceInput");
+      const devStatusMsg = document.getElementById("devStatusMsg");
+      const toggleBtn = document.getElementById("devToggleLiveBtn");
+      const applyBtn = document.getElementById("devApplyBalanceBtn");
+
+      document.querySelectorAll("[data-dev-set]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (devInput) devInput.value = btn.dataset.devSet;
+          haptic("light");
+        });
+      });
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+          if (!isDeveloperUser()) return;
+          state.liveMode = !state.liveMode;
+          saveState();
+          renderDeveloperControls();
+          addLog("DEV: режим переключён на " + (state.liveMode ? "LIVE" : "ДЕМО"));
+          haptic("medium");
+        });
+      }
+
+      if (applyBtn) {
+        applyBtn.addEventListener("click", async () => {
+          if (!isDeveloperUser()) return;
+          const targetVal = Number(devInput ? devInput.value : 0);
+          if (!Number.isFinite(targetVal) || targetVal < 0) {
+            if (devStatusMsg) devStatusMsg.textContent = "Введите корректное неотрицательное число ★";
+            haptic("error");
+            return;
+          }
+          const cleanVal = Math.floor(targetVal);
+
+          if (state.liveMode) {
+            try {
+              if (devStatusMsg) devStatusMsg.textContent = "Отправка запроса на сервер...";
+              const resp = await fetch(DEV_CONFIG.liveSetBalanceUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  initData: (tg && tg.initData) ? tg.initData : "",
+                  userId: tgUser ? tgUser.id : DEV_CONFIG.userId,
+                  balance: cleanVal
+                })
+              });
+              const data = await resp.json();
+              if (!resp.ok || !data.ok) {
+                throw new Error(data.error || "Ошибка сервера");
+              }
+              state.balance = cleanNumber(data.balance, cleanVal);
+            } catch (err) {
+              if (devStatusMsg) devStatusMsg.textContent = "Сервер не ответил (" + err.message + "). Обновлён локальный баланс.";
+              state.balance = cleanVal;
+            }
+          } else {
+            state.balance = cleanVal;
+          }
+
+          registerDeposit(cleanVal, "DEV Баланс");
+          saveState();
+          renderBalance();
+          renderProfileAll();
+          addLog("DEV: установлен баланс " + cleanVal.toLocaleString("ru-RU") + " ★");
+          const updatedMsg = document.getElementById("devStatusMsg");
+          if (updatedMsg) {
+            updatedMsg.textContent = "Баланс обновлён: " + cleanVal.toLocaleString("ru-RU") + " ★";
+          }
+          haptic("success");
+        });
+      }
+    }
+
     function renderMyGiftsModal() {
       if (!state.inventory.length) {
         myGiftsModalBody.innerHTML = `
@@ -3715,7 +3921,7 @@
       ? ([tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ") || (tgUser.username ? `@${tgUser.username}` : "Telegram User"))
       : "Demo Player";
     const myHandle = tgUser && tgUser.username
-      ? `@${tgUser.username} • Telegram Demo`
+      ? `@${tgUser.username} • ID ${tgUser.id || "—"}`
       : tgUser && tgUser.id
         ? `ID ${tgUser.id} • Telegram Demo`
         : "Telegram Profile • Demo";
@@ -3856,6 +4062,7 @@
     function renderProfileAll() {
       renderTelegramProfileHeader();
       renderBalance();
+      renderDeveloperControls();
       document.getElementById("wagerLeftVal").textContent = state.wagerLeft.toLocaleString("ru-RU");
       document.getElementById("statTotalActions").textContent = state.totalActions.toLocaleString("ru-RU");
       document.getElementById("statDepositsCount").textContent = state.depositsCount.toLocaleString("ru-RU");
@@ -4286,8 +4493,10 @@
 
     document.getElementById("resetDemoBtn").addEventListener("click", () => {
       const keepSettings = { ...state.settings };
+      const keepLive = Boolean(state.liveMode);
       state = createFreshState();
       state.settings = keepSettings;
+      state.liveMode = isDevAccount ? keepLive : false;
       state.welcomeSeen = true;
       state.logs = [`[${formatTimeNow()}] Демо-данные аккаунта сброшены`];
       saveState();
@@ -5545,213 +5754,165 @@
           ctx.restore();
         });
         ctx.save();
-        ctx.globalAlpha = Math.max(0.2, inv);
-        ctx.font = "30px sans-serif";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("💥", explosionPos.x, explosionPos.y);
-        ctx.restore();
-      } else {
-        ctx.save();
-        ctx.translate(coords.x, coords.y);
-        ctx.rotate(coords.angle);
+        ctx.globalAlpha = Math.max(0.2, inv * 0.65);
         ctx.beginPath();
-        ctx.moveTo(18, 0);
-        ctx.lineTo(-14, -8);
-        ctx.lineTo(-14, 8);
-        ctx.closePath();
-        ctx.fillStyle = "#f5f5f7";
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(18, 0);
-        ctx.lineTo(4, -7.5);
-        ctx.lineTo(4, 7.5);
-        ctx.closePath();
-        ctx.fillStyle = "#ff2a85";
+        ctx.arc(explosionPos.x, explosionPos.y, 12 + explProgress * 44, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(255, 59, 48, 0.35)";
         ctx.fill();
         ctx.restore();
+        return;
       }
+
+      ctx.save();
+      ctx.translate(coords.x, coords.y);
+      ctx.rotate(coords.angle);
+
+      if (phase === "flying" || phase === "launch") {
+        const flameLen = (phase === "launch" ? 10 : 14) + Math.sin(performance.now() * 0.04) * 5;
+        ctx.beginPath();
+        ctx.moveTo(-14, -4);
+        ctx.lineTo(-14 - flameLen, 0);
+        ctx.lineTo(-14, 4);
+        ctx.closePath();
+        ctx.fillStyle = phase === "launch" ? "#ff2a85" : "#ffd60a";
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(18, 0);
+      ctx.quadraticCurveTo(4, -10, -14, -8);
+      ctx.lineTo(-10, 0);
+      ctx.lineTo(-14, 8);
+      ctx.quadraticCurveTo(4, 10, 18, 0);
+      ctx.closePath();
+      ctx.fillStyle = "#f5f5f7";
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(3, 0, 4, 0, Math.PI * 2);
+      ctx.fillStyle = "#ff2a85";
+      ctx.fill();
+      ctx.restore();
     }
 
-    function startCountdownPhase() {
+    function enterCountdownPhase(now) {
       phase = "countdown";
-      phaseStart = performance.now();
+      phaseStart = now;
       currentMult = 0.0;
+      currentRoundBet = null;
       if (nextRoundBet) {
-        currentRoundBet = { amount: nextRoundBet.amount, autoTarget: nextRoundBet.autoTarget ?? autoCashoutTarget, status: "pending", winMult: 0, payout: 0 };
+        currentRoundBet = { ...nextRoundBet, status: "pending" };
         nextRoundBet = null;
-      } else {
-        currentRoundBet = null;
       }
-      demoBots.forEach(b => { b.status = "waiting"; b.cashedAt = null; });
+      demoBots.forEach(b => {
+        b.bet = [25, 50, 100, 150][Math.floor(Math.random() * 4)];
+        b.target = +(1.25 + Math.random() * 2.4).toFixed(2);
+        b.cashedAt = null;
+        b.status = "waiting";
+      });
       crashStage.className = "crash-stage countdown";
       crashStatus.textContent = "Приём ставок";
       crashMult.textContent = "x0.00";
-      crashSubnote.textContent = currentRoundBet ? `Ставка ${currentRoundBet.amount.toLocaleString("ru-RU")} ★ зафиксирована` : "Поставь ставку — ракета взлетит по таймеру";
+      crashSubnote.textContent = "Таймер раунда идёт независимо от ставок";
       countdownBox.classList.add("visible");
-      cdBarFill.style.width = "100%";
       syncAutoCashoutControls();
-      drawScene(0.08, null);
+      updateActionButton();
       renderPlayers();
-      updateActionButton();
     }
 
-    function startPreLaunchCountdown() {
+    function enterLaunchPhase(now) {
       phase = "launch";
-      phaseStart = performance.now();
-      currentMult = 0.0;
-      crashStage.className = "crash-stage launch";
-      crashStatus.textContent = "Отсчёт до старта";
-      crashMult.textContent = "3";
-      countdownBox.classList.add("visible");
-      syncAutoCashoutControls();
-      updateActionButton();
-    }
-
-    function beginFlight() {
-      phase = "flying";
+      phaseStart = now;
       currentMult = 0.0;
       crashPoint = pickCrashPoint();
-      phaseStart = performance.now();
+      if (currentRoundBet) {
+        currentRoundBet.status = "armed";
+        currentRoundBet.autoTarget = autoCashoutTarget;
+      }
+      demoBots.forEach(b => { b.status = "armed"; });
+      crashStage.className = "crash-stage launch";
+      crashStatus.textContent = "Подготовка к старту";
+      crashMult.textContent = "x0.00";
+      crashSubnote.textContent = "Ракета на старте • 3 сек";
       countdownBox.classList.remove("visible");
+      syncAutoCashoutControls();
+      updateActionButton();
+      renderPlayers();
+    }
+
+    function enterFlyingPhase(now) {
+      phase = "flying";
+      phaseStart = now;
+      currentMult = 0.0;
       if (currentRoundBet) {
         currentRoundBet.status = "active";
-        if (currentRoundBet.autoTarget == null && autoCashoutTarget != null) currentRoundBet.autoTarget = autoCashoutTarget;
+        currentRoundBet.autoTarget = autoCashoutTarget;
       }
-      demoBots.forEach(b => { b.status = "active"; b.cashedAt = null; });
+      demoBots.forEach(b => { b.status = "flying"; });
       crashStage.className = "crash-stage flying";
-      crashStatus.textContent = "Полёт • Успей нажать Стоп";
-      crashMult.textContent = "x0.00";
+      crashStatus.textContent = "Полёт";
+      crashSubnote.textContent = "Нажми Стоп, чтобы забрать выигрыш";
+      countdownBox.classList.remove("visible");
       syncAutoCashoutControls();
-      renderPlayers();
       updateActionButton();
+      renderPlayers();
     }
 
-    function startCrashExplosion() {
-      phase = "exploding";
-      phaseStart = performance.now();
-      const w = crashStage.clientWidth || 320;
-      const h = crashStage.clientHeight || 280;
-      const coords = getRocketCoords(Math.min(1, crashPoint / 4.2), w, h);
-      spawnExplosion(coords.x, coords.y);
-
-      state.crashHistory.unshift(crashPoint);
-      state.crashHistory = state.crashHistory.slice(0, 12);
-      saveState();
-      renderCrashHistory();
-
-      if (currentRoundBet && currentRoundBet.status === "active") {
-        currentRoundBet.status = "lost";
-        recordBetHistory({ mode: "Crash", amount: currentRoundBet.amount, status: "lost", mult: crashPoint, payout: 0 });
-        addLog(`Crash: взрыв на ${crashPoint.toFixed(2)}x (-${currentRoundBet.amount.toLocaleString("ru-RU")} ★)`);
-        haptic("error");
-      } else {
-        haptic("warning");
-      }
-
-      demoBots.forEach(b => { if (b.status === "active") b.status = "lost"; });
-      crashStage.className = "crash-stage crashed";
-      crashStatus.textContent = "КРАШ! Ракета взорвалась";
-      crashMult.textContent = `${crashPoint.toFixed(2)}x`;
-      syncAutoCashoutControls();
-      renderPlayers();
-      updateActionButton();
-    }
-
-    function settleCashout(mult, isAuto = false) {
-      if (!currentRoundBet || currentRoundBet.status !== "active") return;
-      const safeMult = Math.max(0.01, mult);
-      const payout = calcCashoutTotal(currentRoundBet.amount, safeMult);
+    function cashoutNow(reasonText = "Забрано") {
+      if (phase !== "flying" || !currentRoundBet || currentRoundBet.status !== "active") return;
+      const mult = Math.max(0.01, +currentMult.toFixed(2));
+      const payout = calcCashoutTotal(currentRoundBet.amount, mult);
       currentRoundBet.status = "cashed";
-      currentRoundBet.winMult = safeMult;
+      currentRoundBet.winMult = mult;
       currentRoundBet.payout = payout;
       state.balance = cleanNumber(state.balance, 5000) + payout;
       registerDeposit(payout, "Выигрыш Crash", true);
       renderBalance();
-      recordBetHistory({ mode: "Crash", amount: currentRoundBet.amount, status: "cashed", mult: safeMult, payout, note: isAuto ? `Авто x${safeMult.toFixed(2)}` : "" });
-      addLog(`Crash: стоп на ${safeMult.toFixed(2)}x → +${payout.toLocaleString("ru-RU")} ★`);
+      recordBetHistory({ mode: "Crash", amount: currentRoundBet.amount, status: "cashed", mult, payout, note: reasonText });
+      addLog(`Crash (${reasonText} ${mult.toFixed(2)}x): +${payout.toLocaleString("ru-RU")} ★`);
       crashStage.className = "crash-stage cashed";
-      crashStatus.textContent = "Стоп нажат • Победа зафиксирована";
+      crashStatus.textContent = `${reasonText} на ${mult.toFixed(2)}x`;
+      crashSubnote.textContent = `Начислено +${payout.toLocaleString("ru-RU")} ★`;
       haptic("success");
-      renderPlayers();
       updateActionButton();
+      renderPlayers();
     }
 
-    function loop(now) {
-      renderFreeCaseTimer();
-      if (currentCaseMode === "free" && !caseSpinning) {
-        const rem = getFreeCaseRemainingMs();
-        if (rem <= 0 && caseSpinBtn.disabled) renderCasesUI();
-        else if (rem > 0) caseSpinBtn.innerHTML = `<span>Доступен через ${formatHms(rem)}</span>`;
+    function enterExplodingPhase(now) {
+      phase = "exploding";
+      phaseStart = now;
+      currentMult = crashPoint;
+      if (currentRoundBet && currentRoundBet.status === "active") {
+        currentRoundBet.status = "lost";
+        recordBetHistory({ mode: "Crash", amount: currentRoundBet.amount, status: "lost", mult: crashPoint, payout: 0, note: `Взрыв на ${crashPoint.toFixed(2)}x` });
+        addLog(`Crash: взрыв на ${crashPoint.toFixed(2)}x (-${currentRoundBet.amount.toLocaleString("ru-RU")} ★)`);
+        haptic("error");
       }
-
-      if (arenaPhase === "betting" && arenaEntries.length >= 2) {
-        if (now - arenaLastTick >= 1000) {
-          arenaLastTick = now;
-          arenaTimerSec = Math.max(0, arenaTimerSec - 1);
-          renderArenaUI();
-          if (arenaTimerSec <= 0) startArenaSpin();
-        }
-      } else if (arenaPhase === "spinning") {
-        puckPos.x += puckPos.vx;
-        puckPos.y += puckPos.vy;
-        if (puckPos.x < 0.06) { puckPos.x = 0.06; puckPos.vx = Math.abs(puckPos.vx); }
-        if (puckPos.x > 0.94) { puckPos.x = 0.94; puckPos.vx = -Math.abs(puckPos.vx); }
-        if (puckPos.y < 0.08) { puckPos.y = 0.08; puckPos.vy = Math.abs(puckPos.vy); }
-        if (puckPos.y > 0.92) { puckPos.y = 0.92; puckPos.vy = -Math.abs(puckPos.vy); }
-        puckPos.vx *= 0.988;
-        puckPos.vy *= 0.988;
-        if (Math.hypot(puckPos.vx, puckPos.vy) < 0.0022) finishArenaRound();
-      }
-      if (document.getElementById("view-arena").classList.contains("active")) drawArenaScene();
-
-      if (phase === "countdown") {
-        const leftMs = Math.max(0, ROUND_BREAK_MS - (now - phaseStart));
-        countdownText.textContent = `До следующего раунда: ${Math.ceil(leftMs / 1000)} сек`;
-        cdBarFill.style.width = `${(leftMs / ROUND_BREAK_MS) * 100}%`;
-        drawScene(0.08, null);
-        if (leftMs <= 0) startPreLaunchCountdown();
-      } else if (phase === "launch") {
-        const elapsed = now - phaseStart;
-        const secLeft = Math.max(1, Math.ceil((PRE_LAUNCH_MS - elapsed) / 1000));
-        crashMult.textContent = String(secLeft);
-        countdownText.textContent = `Старт ракеты через ${secLeft} сек`;
-        cdBarFill.style.width = `${Math.max(0, 100 - (elapsed / PRE_LAUNCH_MS) * 100)}%`;
-        drawScene(0.08, null);
-        if (elapsed >= PRE_LAUNCH_MS) beginFlight();
-      } else if (phase === "flying") {
-        const sec = (now - phaseStart) / 1000;
-        currentMult = +(Math.pow(1.24, sec) - 1 + sec * 0.14).toFixed(2);
-        crashMult.textContent = `x${currentMult.toFixed(2)}`;
-        if (currentRoundBet && currentRoundBet.status === "active") {
-          const target = currentRoundBet.autoTarget ?? autoCashoutTarget;
-          if (target != null && currentMult >= target) settleCashout(target, true);
-          else updateActionButton();
-        }
-        demoBots.forEach(bot => {
-          if (bot.status === "active" && currentMult >= bot.target) {
-            bot.status = "cashed";
-            bot.cashedAt = bot.target;
-            renderPlayers();
-          }
-        });
-        drawScene(Math.min(1, currentMult / 4.2), null);
-        if (currentMult >= crashPoint) startCrashExplosion();
-      } else if (phase === "exploding") {
-        const explP = Math.min(1, (now - phaseStart) / 650);
-        drawScene(Math.min(1, crashPoint / 4.2), explP);
-        if (explP >= 1) startCountdownPhase();
-      }
-
-      requestAnimationFrame(loop);
+      demoBots.forEach(b => {
+        if (b.status === "flying") b.status = "lost";
+      });
+      state.crashHistory.unshift(crashPoint);
+      state.crashHistory = state.crashHistory.slice(0, 12);
+      saveState();
+      renderCrashHistory();
+      const coords = getRocketCoords(Math.min(1, crashPoint / 4.5), crashStage.clientWidth || 320, crashStage.clientHeight || 280);
+      spawnExplosion(coords.x, coords.y);
+      crashStage.className = "crash-stage crashed";
+      crashStatus.textContent = "Взрыв";
+      crashMult.textContent = `x${crashPoint.toFixed(2)}`;
+      crashSubnote.textContent = `Ракета взорвалась на ${crashPoint.toFixed(2)}x`;
+      countdownBox.classList.remove("visible");
+      syncAutoCashoutControls();
+      updateActionButton();
+      renderPlayers();
     }
 
     crashActionBtn.addEventListener("click", () => {
-      const amount = getBetAmount();
       if (phase === "flying" && currentRoundBet && currentRoundBet.status === "active") {
-        settleCashout(currentMult, false);
+        cashoutNow("Стоп");
         return;
       }
+      const amount = getBetAmount();
       if (state.balance < amount) {
         crashSubnote.textContent = "Недостаточно ★ — пополни через + сверху";
         haptic("error");
@@ -5763,30 +5924,104 @@
         registerSpend(amount);
         saveState();
         renderBalance();
-        currentRoundBet = { amount, autoTarget: autoCashoutTarget, status: "pending", winMult: 0, payout: 0 };
-        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ принята на этот раунд`;
+        currentRoundBet = { amount, status: "pending", autoTarget: autoCashoutTarget };
         addLog(`Crash: ставка ${amount.toLocaleString("ru-RU")} ★`);
         haptic("medium");
-        renderPlayers();
         updateActionButton();
+        renderPlayers();
         return;
       }
-      if (phase === "flying" || phase === "exploding") {
-        if (nextRoundBet) return;
-        state.balance -= amount;
-        registerSpend(amount);
-        saveState();
-        renderBalance();
-        nextRoundBet = { amount, autoTarget: autoCashoutTarget };
-        crashSubnote.textContent = `Ставка ${amount.toLocaleString("ru-RU")} ★ поставлена на следующий раунд`;
-        addLog(`Crash: ставка ${amount.toLocaleString("ru-RU")} ★ на след. раунд`);
-        haptic("medium");
-        renderPlayers();
-        updateActionButton();
-      }
+      if (nextRoundBet) return;
+      state.balance -= amount;
+      registerSpend(amount);
+      saveState();
+      renderBalance();
+      nextRoundBet = { amount, autoTarget: autoCashoutTarget };
+      addLog(`Crash: ставка ${amount.toLocaleString("ru-RU")} ★ на след. раунд`);
+      haptic("medium");
+      updateActionButton();
+      renderPlayers();
     });
 
-    // Upgraded Splash Controller
+    function tick(now) {
+      const dtSec = Math.min(0.25, Math.max(0, (now - arenaLastTick) / 1000));
+      arenaLastTick = now;
+
+      if (arenaEntries.length >= 2) {
+        if (arenaPhase === "waiting") {
+          arenaPhase = "betting";
+          arenaTimerSec = 10;
+        }
+        if (arenaPhase === "betting") {
+          arenaTimerSec = Math.max(0, +(arenaTimerSec - dtSec).toFixed(1));
+          arenaTimerPill.textContent = `Ставки: ${Math.ceil(arenaTimerSec)}с`;
+          if (arenaTimerSec <= 0) startArenaSpin();
+        } else if (arenaPhase === "spinning") {
+          puckPos.x += puckPos.vx * (dtSec * 60);
+          puckPos.y += puckPos.vy * (dtSec * 60);
+          if (puckPos.x <= 0.04) { puckPos.x = 0.04; puckPos.vx = Math.abs(puckPos.vx); }
+          if (puckPos.x >= 0.96) { puckPos.x = 0.96; puckPos.vx = -Math.abs(puckPos.vx); }
+          if (puckPos.y <= 0.06) { puckPos.y = 0.06; puckPos.vy = Math.abs(puckPos.vy); }
+          if (puckPos.y >= 0.94) { puckPos.y = 0.94; puckPos.vy = -Math.abs(puckPos.vy); }
+          puckPos.vx *= 0.994;
+          puckPos.vy *= 0.994;
+          const speed = Math.hypot(puckPos.vx, puckPos.vy);
+          if (speed < 0.0022) finishArenaRound();
+        }
+      }
+
+      if (document.getElementById("view-arena").classList.contains("active")) {
+        drawArenaScene();
+      }
+
+      const elapsed = now - phaseStart;
+      if (phase === "countdown") {
+        const leftMs = Math.max(0, ROUND_BREAK_MS - elapsed);
+        countdownText.textContent = `До следующего раунда: ${Math.ceil(leftMs / 1000)} сек`;
+        cdBarFill.style.width = `${(leftMs / ROUND_BREAK_MS) * 100}%`;
+        drawScene(0, null);
+        if (leftMs <= 0) enterLaunchPhase(now);
+      } else if (phase === "launch") {
+        const leftSec = Math.max(1, Math.ceil((PRE_LAUNCH_MS - elapsed) / 1000));
+        crashSubnote.textContent = `Ракета на старте • ${leftSec} сек`;
+        drawScene(0, null);
+        if (elapsed >= PRE_LAUNCH_MS) enterFlyingPhase(now);
+      } else if (phase === "flying") {
+        const tSec = elapsed / 1000;
+        currentMult = +(0.04 + Math.pow(tSec, 1.38) * 0.42).toFixed(2);
+        crashMult.textContent = `x${currentMult.toFixed(2)}`;
+        if (currentRoundBet && currentRoundBet.status === "active" && currentRoundBet.autoTarget && currentMult >= currentRoundBet.autoTarget) {
+          currentMult = currentRoundBet.autoTarget;
+          crashMult.textContent = `x${currentMult.toFixed(2)}`;
+          cashoutNow("Авто");
+        }
+        demoBots.forEach(b => {
+          if (b.status === "flying" && currentMult >= b.target) {
+            b.status = "cashed";
+            b.cashedAt = b.target;
+          }
+        });
+        renderPlayers();
+        if (phase === "flying") updateActionButton();
+        drawScene(Math.min(1, currentMult / 4.5), null);
+        if (currentMult >= crashPoint) enterExplodingPhase(now);
+      } else if (phase === "exploding") {
+        const explP = Math.min(1, elapsed / 900);
+        drawScene(Math.min(1, crashPoint / 4.5), explP);
+        if (elapsed >= 2200) enterCountdownPhase(now);
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    setInterval(() => {
+      renderFreeCaseTimer();
+      if (currentCaseMode === "free" && document.getElementById("view-cases").classList.contains("active") && !caseSpinning) {
+        renderCasesUI();
+      }
+    }, 1000);
+
+    // Boot Splash Loader
     const splashScreen = document.getElementById("splashScreen");
     const splashPct = document.getElementById("splashPct");
     const splashStatus = document.getElementById("splashStatus");
@@ -5794,65 +6029,52 @@
     const mainApp = document.getElementById("mainApp");
 
     const splashSteps = [
-      { pct: 22, text: "Подключение профиля и звёзд ★..." },
-      { pct: 54, text: "Загрузка кейсов и подарков 🎁..." },
-      { pct: 84, text: "Калибровка Crash, Мин и Арены..." },
-      { pct: 100, text: "Готово к запуску!" }
+      { pct: 24, text: "Подключение профиля..." },
+      { pct: 56, text: "Загрузка кейсов и подарков..." },
+      { pct: 84, text: "Синхронизация звёзд ★..." },
+      { pct: 100, text: "Готово!" }
     ];
-
-    function setSplashProgress(pct, text) {
-      splashPct.textContent = `${pct}%`;
-      splashProgressBar.style.width = `${pct}%`;
-      if (text) splashStatus.textContent = text;
-    }
-
-    function finishSplash() {
-      setSplashProgress(100, "Готово к запуску!");
-      setTimeout(() => {
-        splashScreen.classList.add("hide");
-        mainApp.classList.add("ready");
-        resizeCanvas();
-        resizeArenaCanvas();
-        if (!state.welcomeSeen) {
-          welcomeDemoModal.classList.add("open");
-        }
-      }, 160);
-    }
 
     function runSplashSequence() {
       let idx = 0;
-      setSplashProgress(6, "Инициализация MOLLY GIFTS...");
       const timer = setInterval(() => {
-        if (idx >= splashSteps.length) {
+        const step = splashSteps[idx];
+        if (!step) {
           clearInterval(timer);
-          finishSplash();
+          setTimeout(() => {
+            splashScreen.classList.add("hide");
+            mainApp.classList.add("ready");
+            resizeCanvas();
+            resizeArenaCanvas();
+            if (!state.welcomeSeen) {
+              welcomeDemoModal.classList.add("open");
+            }
+          }, 180);
           return;
         }
-        const st = splashSteps[idx];
-        setSplashProgress(st.pct, st.text);
+        splashPct.textContent = `${step.pct}%`;
+        splashStatus.textContent = step.text;
+        splashProgressBar.style.width = `${step.pct}%`;
         idx += 1;
-      }, 170);
-
-      setTimeout(() => {
-        clearInterval(timer);
-        if (!splashScreen.classList.contains("hide")) finishSplash();
-      }, 1250);
+      }, state.settings.perfMode ? 90 : 210);
     }
 
-    // Initial render
     applySettingsState();
     renderBalance();
     renderCrashHistory();
-    renderMinesUI();
-    renderCasesUI();
+    renderProfileAll();
     renderUpgradeUI();
+    renderCasesUI();
+    renderMinesUI();
     renderArenaUI();
     renderTasksView();
     renderTopView();
-    renderProfileAll();
-    startCountdownPhase();
-    requestAnimationFrame(loop);
+    syncAutoCashoutControls();
+    updateActionButton();
+    resizeCanvas();
+    resizeArenaCanvas();
     runSplashSequence();
+    requestAnimationFrame(tick);
   </script>
 </body>
 </html>
