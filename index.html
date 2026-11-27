@@ -2999,6 +2999,8 @@
             <button type="button" class="withdraw-btn" id="openWithdrawModalBtn">Вывод</button>
           </div>
         </div>
+
+        <div id="devQuickPanelSlot" style="display:none;"></div>
       </div>
 
       <div class="profile-stats-grid">
@@ -3504,23 +3506,19 @@
     const tgUser = getTgUser();
     const isDevAccount = isDeveloperUser();
     const accountScopeId = (tgUser && tgUser.id) ? `user_${String(tgUser.id)}` : "guest_session";
-
-    // Отдельные хранилища для Демо и Live
     function getStorageKey(isLive) {
       return isLive
         ? `molly_gifts_live_v1_${accountScopeId}`
         : `molly_gifts_demo_v24_${accountScopeId}`;
     }
 
-    // Глобальный флаг режима (для разработчика). Обычные пользователи всегда в Демо.
+    // Обычные пользователи всегда в ДЕМО. Разработчик может переключать.
     let appIsLive = false;
     if (isDevAccount) {
       try {
-        const savedMode = localStorage.getItem("molly_gifts_dev_mode_v1");
-        appIsLive = savedMode === "live";
-      } catch (_) {}
+        appIsLive = localStorage.getItem("molly_gifts_dev_mode_v1") === "live";
+      } catch (e) {}
     }
-
     let STORAGE_KEY = getStorageKey(appIsLive);
 
     const defaultState = {
@@ -3530,7 +3528,7 @@
       lastFreeCaseAt: 0,
       inventory: [],
       bankGifts: [],
-      crashHistory: appIsLive ? [] : [1.42, 3.18, 0.74, 2.05, 5.12],
+      crashHistory: [1.42, 3.18, 0.74, 2.05, 5.12],
       betHistory: [],
       depositHistory: [],
       tasksDone: [],
@@ -3549,35 +3547,29 @@
         perfMode: false,
         lang: "ru"
       },
-      logs: appIsLive
-        ? [`[${formatTimeNow()}] LIVE-режим: баланс с сервера`]
-        : [`[${formatTimeNow()}] Стартовый демо-баланс: +5000 ★`]
+      logs: [`[${formatTimeNow()}] ` + (appIsLive ? 'LIVE-режим' : 'Стартовый демо-баланс: +5000 ★')]
     };
 
-    function createFreshState(forLive = appIsLive) {
+    function createFreshState() {
       return {
         ...defaultState,
-        balance: forLive ? 0 : 5000,
-        liveMode: forLive,
         inventory: [],
         bankGifts: [],
-        crashHistory: forLive ? [] : [1.42, 3.18, 0.74, 2.05, 5.12],
+        crashHistory: [...defaultState.crashHistory],
         betHistory: [],
         depositHistory: [],
         tasksDone: [],
         settings: { ...defaultState.settings },
-        logs: forLive
-          ? [`[${formatTimeNow()}] LIVE-режим: баланс с сервера`]
-          : [`[${formatTimeNow()}] Стартовый демо-баланс: +5000 ★`]
+        logs: [...defaultState.logs]
       };
     }
 
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return createFreshState(appIsLive);
+        if (!raw) return createFreshState();
         const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== "object") return createFreshState(appIsLive);
+        if (!parsed || typeof parsed !== "object") return createFreshState();
         return {
           balance: cleanNumber(parsed.balance, appIsLive ? 0 : 5000),
           liveMode: appIsLive,
@@ -3591,7 +3583,7 @@
             : [],
           crashHistory: Array.isArray(parsed.crashHistory) && parsed.crashHistory.length
             ? parsed.crashHistory.map(x => Number(x) || 1.0).slice(0, 12)
-            : [...(appIsLive ? [] : [1.42, 3.18, 0.74, 2.05, 5.12])],
+            : [...defaultState.crashHistory],
           betHistory: Array.isArray(parsed.betHistory) ? parsed.betHistory.slice(0, 50) : [],
           depositHistory: Array.isArray(parsed.depositHistory) ? parsed.depositHistory.slice(0, 50) : [],
           tasksDone: Array.isArray(parsed.tasksDone) ? parsed.tasksDone : [],
@@ -3613,7 +3605,7 @@
           logs: Array.isArray(parsed.logs) && parsed.logs.length ? parsed.logs.slice(0, 25) : [...defaultState.logs]
         };
       } catch (_) {
-        return createFreshState(appIsLive);
+        return createFreshState();
       }
     }
 
@@ -3627,48 +3619,39 @@
       } catch (_) {}
     }
 
-    // Переключение Демо ↔ Live (только для разработчика)
-    function switchAppMode(toLive) {
-      if (!isDevAccount) return;
-      // Сохраняем текущее состояние
-      saveState();
-      // Меняем режим
-      appIsLive = Boolean(toLive);
+    function applyModeToUi() {
       try {
-        localStorage.setItem("molly_gifts_dev_mode_v1", appIsLive ? "live" : "demo");
-      } catch (_) {}
-      STORAGE_KEY = getStorageKey(appIsLive);
-      // Загружаем состояние другого режима
-      state = loadState();
-      state.liveMode = appIsLive;
-      // Обновляем весь UI
-      applyModeToUi();
-      renderBalance();
-      renderCrashHistory();
-      renderProfileAll();
-      renderUpgradeUI();
-      renderCasesUI();
-      renderMinesUI();
-      renderArenaUI();
-      renderTasksView();
-      renderTopView();
-      updateActionButton();
-      addLog(appIsLive ? "DEV: включён LIVE-режим" : "DEV: включён ДЕМО-режим");
+        const brandSub = document.querySelector(".brand-sub");
+        if (brandSub) {
+          brandSub.innerHTML = appIsLive
+            ? '<span class="live-dot" style="background:var(--green);"></span> LIVE • Stars &amp; Gifts'
+            : '<span class="live-dot"></span> Demo • Stars &amp; Gifts';
+        }
+        const resetBtn = document.getElementById("resetDemoBtn");
+        if (resetBtn) resetBtn.style.display = appIsLive ? "none" : "";
+      } catch (e) {}
     }
 
-    function applyModeToUi() {
-      const brandSub = document.querySelector(".brand-sub");
-      if (brandSub) {
-        brandSub.innerHTML = appIsLive
-          ? '<span class="live-dot" style="background:var(--green);"></span> LIVE • Stars &amp; Gifts'
-          : '<span class="live-dot"></span> Demo • Stars &amp; Gifts';
-      }
-      // В Live скрываем/меняем фейковые элементы
-      const resetBtn = document.getElementById("resetDemoBtn");
-      if (resetBtn) {
-        resetBtn.style.display = appIsLive ? "none" : "";
-        resetBtn.textContent = appIsLive ? "" : "Сброс 5000 ★";
-      }
+    function switchAppMode(toLive) {
+      if (!isDevAccount) return;
+      try { saveState(); } catch (e) {}
+      appIsLive = !!toLive;
+      try { localStorage.setItem("molly_gifts_dev_mode_v1", appIsLive ? "live" : "demo"); } catch (e) {}
+      STORAGE_KEY = getStorageKey(appIsLive);
+      state = loadState();
+      state.liveMode = appIsLive;
+      applyModeToUi();
+      try { renderBalance(); } catch (e) {}
+      try { renderProfileAll(); } catch (e) {}
+      try { renderCrashHistory(); } catch (e) {}
+      try { if (typeof renderCasesUI === "function") renderCasesUI(); } catch (e) {}
+      try { if (typeof renderUpgradeUI === "function") renderUpgradeUI(); } catch (e) {}
+      try { if (typeof renderMinesUI === "function") renderMinesUI(); } catch (e) {}
+      try { if (typeof renderArenaUI === "function") renderArenaUI(); } catch (e) {}
+      try { if (typeof renderTasksView === "function") renderTasksView(); } catch (e) {}
+      try { if (typeof renderTopView === "function") renderTopView(); } catch (e) {}
+      try { if (typeof updateActionButton === "function") updateActionButton(); } catch (e) {}
+      try { addLog(appIsLive ? "DEV: LIVE включён" : "DEV: ДЕМО включён"); } catch (e) {}
     }
 
     function haptic(type = "light") {
@@ -3735,6 +3718,7 @@
     const crashHistoryEl = document.getElementById("crashHistory");
     const devBadgeSlotEl = document.getElementById("devBadgeSlot");
     const devOwnerPanelSlotEl = document.getElementById("devOwnerPanelSlot");
+    const devQuickPanelSlotEl = document.getElementById("devQuickPanelSlot");
 
     function renderBalance() {
       const formatted = cleanNumber(state.balance, 5000).toLocaleString("ru-RU");
@@ -3801,129 +3785,130 @@
     }
 
     function renderDeveloperControls() {
-      if (!isDeveloperUser()) {
-        if (devBadgeSlotEl) devBadgeSlotEl.innerHTML = "";
-        if (devOwnerPanelSlotEl) devOwnerPanelSlotEl.innerHTML = "";
-        if (devQuickPanelSlotEl) {
-          devQuickPanelSlotEl.style.display = "none";
-          devQuickPanelSlotEl.innerHTML = "";
-        }
-        const creatorCard = document.getElementById("accCreatorCard");
-        if (creatorCard) creatorCard.style.display = "none";
-        return;
-      }
-
-      const creatorCard = document.getElementById("accCreatorCard");
-      if (creatorCard) {
-        creatorCard.style.display = "";
-        creatorCard.classList.add("open");
-      }
-
-      if (devBadgeSlotEl) {
-        devBadgeSlotEl.innerHTML = `<div class="dev-badge-pill">⚡ DEV • @${DEV_CONFIG.username}</div>`;
-      }
-
-      if (devQuickPanelSlotEl) {
-        devQuickPanelSlotEl.style.display = "block";
-        devQuickPanelSlotEl.innerHTML = `
-          <div class="dev-panel-box" style="margin-top:12px;">
-            <div class="section-head">
-              <span style="font-size:13px;font-weight:900;color:var(--gold);">⚡ Панель разработчика</span>
-              <span class="mode-tag pink">${appIsLive ? "LIVE" : "ДЕМО"}</span>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:4px;">
-              <button type="button" class="action-btn" style="padding:12px;font-size:13px;flex:1;" id="devToggleLiveBtn">
-                ${appIsLive ? "Переключить в ДЕМО" : "Переключить в LIVE"}
-              </button>
-            </div>
-            <div class="bet-row" style="background:rgba(12,12,18,0.85);margin-top:8px;">
-              <div class="bet-label">Установить баланс ★</div>
-              <div class="bet-input-wrap">
-                <input type="number" id="devBalanceInput" class="bet-input" value="${state.balance}" min="0" max="1000000000" step="1" />
-                <span class="star-icon">★</span>
-              </div>
-            </div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
-              <button type="button" class="preset-btn" data-dev-set="10000">10k</button>
-              <button type="button" class="preset-btn" data-dev-set="100000">100k</button>
-              <button type="button" class="preset-btn" data-dev-set="1000000">1M</button>
-              <button type="button" class="action-btn" style="padding:8px 14px;font-size:12px;flex:1;" id="devApplyBalanceBtn">Применить</button>
-            </div>
-            <div class="section-meta" id="devStatusMsg" style="margin-top:6px;">
-              ${appIsLive
-                ? "LIVE: отдельные данные, без фейковых пополнений. Нужен бэкенд для реальных Stars."
-                : "ДЕМО: локальный баланс +5000 ★, фейковые пополнения. Только ваш ID видит эту панель."}
-            </div>
-          </div>
-        `;
-      }
-
-      if (devOwnerPanelSlotEl) {
-        devOwnerPanelSlotEl.innerHTML = `<div class="section-meta">Панель режима находится выше, под балансом.</div>`;
-      }
-
-      const devInput = document.getElementById("devBalanceInput");
-      const devStatusMsg = document.getElementById("devStatusMsg");
-      const toggleBtn = document.getElementById("devToggleLiveBtn");
-      const applyBtn = document.getElementById("devApplyBalanceBtn");
-
-      document.querySelectorAll("[data-dev-set]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          if (devInput) devInput.value = btn.dataset.devSet;
-          haptic("light");
-        });
-      });
-
-      if (toggleBtn) {
-        toggleBtn.addEventListener("click", () => {
-          if (!isDeveloperUser()) return;
-          switchAppMode(!appIsLive);
-          haptic("medium");
-        });
-      }
-
-      if (applyBtn) {
-        applyBtn.addEventListener("click", async () => {
-          if (!isDeveloperUser()) return;
-          const targetVal = Number(devInput ? devInput.value : 0);
-          if (!Number.isFinite(targetVal) || targetVal < 0) {
-            if (devStatusMsg) devStatusMsg.textContent = "Введите корректное число ★";
-            haptic("error");
-            return;
+      try {
+        if (!isDeveloperUser()) {
+          if (devBadgeSlotEl) devBadgeSlotEl.innerHTML = "";
+          if (devOwnerPanelSlotEl) devOwnerPanelSlotEl.innerHTML = "";
+          if (devQuickPanelSlotEl) {
+            devQuickPanelSlotEl.style.display = "none";
+            devQuickPanelSlotEl.innerHTML = "";
           }
-          const cleanVal = Math.floor(targetVal);
+          var creatorCard = document.getElementById("accCreatorCard");
+          if (creatorCard) creatorCard.style.display = "none";
+          return;
+        }
 
-          if (appIsLive) {
-            try {
-              if (devStatusMsg) devStatusMsg.textContent = "Отправка на сервер...";
-              const resp = await fetch(DEV_CONFIG.liveSetBalanceUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  initData: (tg && tg.initData) ? tg.initData : "",
-                  userId: tgUser ? tgUser.id : DEV_CONFIG.userId,
-                  balance: cleanVal
-                })
-              });
-              const data = await resp.json();
-              if (!resp.ok || !data.ok) throw new Error(data.error || "Ошибка сервера");
-              state.balance = cleanNumber(data.balance, cleanVal);
-            } catch (err) {
-              if (devStatusMsg) devStatusMsg.textContent = "Сервер не ответил. Баланс обновлён локально.";
+        var creatorCard2 = document.getElementById("accCreatorCard");
+        if (creatorCard2) {
+          creatorCard2.style.display = "";
+          creatorCard2.classList.add("open");
+        }
+
+        if (devBadgeSlotEl) {
+          devBadgeSlotEl.innerHTML = '<div class="dev-badge-pill">⚡ DEV • @' + DEV_CONFIG.username + "</div>";
+        }
+
+        if (devQuickPanelSlotEl) {
+          devQuickPanelSlotEl.style.display = "block";
+          devQuickPanelSlotEl.innerHTML =
+            '<div class="dev-panel-box" style="margin-top:12px;">' +
+              '<div class="section-head">' +
+                '<span style="font-size:13px;font-weight:900;color:var(--gold);">⚡ Панель разработчика</span>' +
+                '<span class="mode-tag pink">' + (appIsLive ? "LIVE" : "ДЕМО") + "</span>" +
+              "</div>" +
+              '<div style="display:flex;gap:8px;margin-top:4px;">' +
+                '<button type="button" class="action-btn" style="padding:12px;font-size:13px;flex:1;" id="devToggleLiveBtn">' +
+                  (appIsLive ? "Переключить в ДЕМО" : "Переключить в LIVE") +
+                "</button>" +
+              "</div>" +
+              '<div class="bet-row" style="background:rgba(12,12,18,0.85);margin-top:8px;">' +
+                '<div class="bet-label">Установить баланс ★</div>' +
+                '<div class="bet-input-wrap">' +
+                  '<input type="number" id="devBalanceInput" class="bet-input" value="' + state.balance + '" min="0" max="1000000000" step="1" />' +
+                  '<span class="star-icon">★</span>' +
+                "</div>" +
+              "</div>" +
+              '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">' +
+                '<button type="button" class="preset-btn" data-dev-set="10000">10k</button>' +
+                '<button type="button" class="preset-btn" data-dev-set="100000">100k</button>' +
+                '<button type="button" class="preset-btn" data-dev-set="1000000">1M</button>' +
+                '<button type="button" class="action-btn" style="padding:8px 14px;font-size:12px;flex:1;" id="devApplyBalanceBtn">Применить</button>' +
+              "</div>" +
+              '<div class="section-meta" id="devStatusMsg" style="margin-top:6px;">' +
+                (appIsLive
+                  ? "LIVE: отдельные данные. Фейковые пополнения отключены."
+                  : "ДЕМО: локальный баланс. Панель видна только вам.") +
+              "</div>" +
+            "</div>";
+        }
+
+        if (devOwnerPanelSlotEl) {
+          devOwnerPanelSlotEl.innerHTML = '<div class="section-meta">Панель режима — под балансом выше.</div>';
+        }
+
+        var devInput = document.getElementById("devBalanceInput");
+        var devStatusMsg = document.getElementById("devStatusMsg");
+        var toggleBtn = document.getElementById("devToggleLiveBtn");
+        var applyBtn = document.getElementById("devApplyBalanceBtn");
+
+        document.querySelectorAll("[data-dev-set]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            if (devInput) devInput.value = btn.dataset.devSet;
+            haptic("light");
+          });
+        });
+
+        if (toggleBtn) {
+          toggleBtn.addEventListener("click", function () {
+            if (!isDeveloperUser()) return;
+            switchAppMode(!appIsLive);
+            haptic("medium");
+          });
+        }
+
+        if (applyBtn) {
+          applyBtn.addEventListener("click", async function () {
+            if (!isDeveloperUser()) return;
+            var targetVal = Number(devInput ? devInput.value : 0);
+            if (!Number.isFinite(targetVal) || targetVal < 0) {
+              if (devStatusMsg) devStatusMsg.textContent = "Введите корректное число ★";
+              haptic("error");
+              return;
+            }
+            var cleanVal = Math.floor(targetVal);
+            if (appIsLive) {
+              try {
+                if (devStatusMsg) devStatusMsg.textContent = "Отправка на сервер...";
+                var resp = await fetch(DEV_CONFIG.liveSetBalanceUrl, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    initData: tg && tg.initData ? tg.initData : "",
+                    userId: tgUser ? tgUser.id : DEV_CONFIG.userId,
+                    balance: cleanVal
+                  })
+                });
+                var data = await resp.json();
+                if (!resp.ok || !data.ok) throw new Error(data.error || "Ошибка сервера");
+                state.balance = cleanNumber(data.balance, cleanVal);
+              } catch (err) {
+                if (devStatusMsg) devStatusMsg.textContent = "Сервер не ответил. Баланс локально.";
+                state.balance = cleanVal;
+              }
+            } else {
               state.balance = cleanVal;
             }
-          } else {
-            state.balance = cleanVal;
-          }
-
-          registerDeposit(cleanVal, "DEV Баланс");
-          saveState();
-          renderBalance();
-          renderProfileAll();
-          addLog("DEV: баланс = " + cleanVal.toLocaleString("ru-RU") + " ★");
-          if (devStatusMsg) devStatusMsg.textContent = "Баланс: " + cleanVal.toLocaleString("ru-RU") + " ★";
-          haptic("success");
-        });
+            registerDeposit(cleanVal, "DEV Баланс");
+            saveState();
+            renderBalance();
+            renderProfileAll();
+            addLog("DEV: баланс = " + cleanVal.toLocaleString("ru-RU") + " ★");
+            if (devStatusMsg) devStatusMsg.textContent = "Баланс: " + cleanVal.toLocaleString("ru-RU") + " ★";
+            haptic("success");
+          });
+        }
+      } catch (err) {
+        console.error("renderDeveloperControls error", err);
       }
     }
 
@@ -4497,9 +4482,7 @@
 
     confirmStarsTopupBtn.addEventListener("click", () => {
       if (appIsLive) {
-        // В LIVE режиме фейковое пополнение отключено.
-        // Здесь позже будет вызов реального инвойса Telegram Stars.
-        alert("LIVE-режим: реальное пополнение Stars подключается через бэкенд. Сейчас недоступно.");
+        alert("LIVE: реальное пополнение Stars подключается через бэкенд.");
         haptic("error");
         return;
       }
@@ -4518,19 +4501,14 @@
     giftDepositListEl.addEventListener("click", e => {
       const btn = e.target.closest("[data-deposit-gift]");
       if (!btn) return;
-      if (appIsLive) {
-        alert("LIVE-режим: внесение подарков будет через реальный Gift API.");
-        haptic("error");
-        return;
-      }
       const g = getGiftById(btn.dataset.depositGift);
       state.bankGifts.unshift({
         uid: `${Date.now()}_bank_${Math.random().toString(36).slice(2, 6)}`,
         giftId: g.id
       });
       state.bankGifts = state.bankGifts.slice(0, 60);
-      state.balance = cleanNumber(state.balance, 0) + g.value;
-      registerDeposit(g.value, "Подарок " + g.name);
+      state.balance = cleanNumber(state.balance, 5000) + g.value;
+      registerDeposit(g.value, `Подарок ${g.name}`);
       saveState();
       renderBalance();
       renderProfileAll();
