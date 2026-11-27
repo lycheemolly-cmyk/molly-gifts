@@ -1,163 +1,380 @@
-// Замените блок DEV_CONFIG, isDeveloperAccount, renderDeveloperPanel и bindDeveloperControls на этот:
-const DEV_CONFIG = {
-  userId: 7366498440,
-  username: "lycheemolly",
-  // true — локальный/демо режим, false — запрос к вашему серверу / Cloudflare Worker
-  demoMode: true,
-  apiUrl: "https://your-worker.workers.dev/api/dev/set-balance"
-};
-
-function getCurrentTelegramUser() {
-  if (tgUser && tgUser.id) {
-    return tgUser;
-  }
-  try {
-    const params = new URLSearchParams(window.location.search || "");
-    const testUid = params.get("dev_uid");
-    const testUname = (params.get("dev_user") || "").replace(/^@/, "");
-    if (testUid) {
-      return {
-        id: Number(testUid),
-        username: testUname || DEV_CONFIG.username,
-        first_name: "Molly"
-      };
-    }
-  } catch (_) {}
-  return null;
-}
-
-function isDeveloperAccount(user = getCurrentTelegramUser()) {
-  if (!user || Number(user.id) !== Number(DEV_CONFIG.userId)) {
-    return false;
-  }
-  if (!user.username) {
-    return true;
-  }
-  return String(user.username).replace(/^@/, "").toLowerCase() === DEV_CONFIG.username.toLowerCase();
-}
-
-async function applyDeveloperBalanceUpdate(newBalance) {
-  const user = getCurrentTelegramUser();
-  if (!isDeveloperAccount(user)) {
-    throw new Error(`Доступ разрешён только для профиля @${DEV_CONFIG.username} (ID ${DEV_CONFIG.userId})`);
-  }
-
-  const parsed = Math.floor(Number(newBalance));
-  if (!Number.isFinite(parsed) || parsed < 0) {
-    throw new Error("Введите корректное число звёзд (>= 0)");
-  }
-
-  if (!DEV_CONFIG.demoMode) {
-    if (!DEV_CONFIG.apiUrl || DEV_CONFIG.apiUrl.includes("your-worker.workers.dev")) {
-      throw new Error("Укажите реальный URL воркера в DEV_CONFIG.apiUrl перед включением боевого режима");
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>MOLLY GIFTS</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg: #070709;
+      --surface: #111116;
+      --surface-elevated: #181820;
+      --surface-press: #22222e;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f5f5f7;
+      --text-muted: #93939e;
+      --pink: #e4007c;
+      --pink-bright: #ff2a85;
+      --pink-soft: rgba(255, 42, 133, 0.16);
+      --pink-glow: rgba(255, 42, 133, 0.36);
+      --green: #30d158;
+      --red: #ff3b30;
+      --gold: #ffd60a;
+      --radius-xl: 24px;
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --safe-top: env(safe-area-inset-top, 12px);
+      --safe-bottom: env(safe-area-inset-bottom, 16px);
     }
 
-    const initData = (tg && tg.initData) ? tg.initData : "";
-    const resp = await fetch(DEV_CONFIG.apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        initData,
-        targetUserId: DEV_CONFIG.userId,
-        username: DEV_CONFIG.username,
-        balance: parsed
-      })
-    });
-
-    const data = await resp.json().catch(() => ({}));
-    if (!resp.ok || !data.ok) {
-      throw new Error(data.error || `Сервер вернул статус ${resp.status}`);
-    }
-    return typeof data.balance === "number" ? Math.max(0, Math.floor(data.balance)) : parsed;
-  }
-
-  return parsed;
-}
-
-function renderDeveloperPanel() {
-  const panel = document.getElementById("devOwnerPanel");
-  if (!panel) return;
-
-  const isDev = isDeveloperAccount();
-  panel.style.display = isDev ? "flex" : "none";
-  if (!isDev) return;
-
-  // Автоматически раскрываем аккордеон «Раздел Создателя» для владельца
-  const creatorCard = document.getElementById("accCreatorCard");
-  if (creatorCard && !creatorCard.classList.contains("open")) {
-    creatorCard.classList.add("open");
-  }
-
-  const badge = document.getElementById("devModeBadge");
-  const modeBtn = document.getElementById("devToggleLiveBtn");
-  const input = document.getElementById("devBalanceInput");
-
-  if (badge) badge.textContent = DEV_CONFIG.demoMode ? "DEMO" : "LIVE API";
-  if (modeBtn) modeBtn.textContent = DEV_CONFIG.demoMode ? "Режим: Демо" : "Режим: Боевой";
-  if (input && document.activeElement !== input) {
-    input.value = String(cleanNumber(state.balance, 5000));
-  }
-}
-
-(function bindDeveloperControls() {
-  const setBtn = document.getElementById("devSetBalanceBtn");
-  const modeBtn = document.getElementById("devToggleLiveBtn");
-  const input = document.getElementById("devBalanceInput");
-  const statusEl = document.getElementById("devStatusMsg");
-  if (!setBtn || !modeBtn || !input) return;
-
-  modeBtn.addEventListener("click", () => {
-    if (!isDeveloperAccount()) return;
-    DEV_CONFIG.demoMode = !DEV_CONFIG.demoMode;
-    renderDeveloperPanel();
-    if (statusEl) {
-      statusEl.style.color = "var(--text-muted)";
-      statusEl.textContent = DEV_CONFIG.demoMode
-        ? "Включён демо-режим (баланс меняется локально в вашем профиле)"
-        : `Включён боевой режим → ${DEV_CONFIG.apiUrl}`;
-    }
-    haptic("light");
-  });
-
-  setBtn.addEventListener("click", async () => {
-    if (!isDeveloperAccount()) return;
-    setBtn.disabled = true;
-    if (statusEl) {
-      statusEl.style.color = "var(--text-muted)";
-      statusEl.textContent = "Обновление баланса...";
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
 
-    try {
-      const prevBalance = cleanNumber(state.balance, 0);
-      const updatedBalance = await applyDeveloperBalanceUpdate(input.value);
-      const delta = updatedBalance - prevBalance;
-
-      state.balance = updatedBalance;
-      if (delta > 0) {
-        registerDeposit(delta, "DEV начисление ★");
-      } else {
-        saveState();
-      }
-
-      renderBalance();
-      renderProfileAll();
-      renderTopView();
-      renderDeveloperPanel();
-      addLog(`DEV (@${DEV_CONFIG.username}): установлен баланс ${updatedBalance.toLocaleString("ru-RU")} ★`);
-
-      if (statusEl) {
-        statusEl.style.color = "var(--green)";
-        statusEl.textContent = `Баланс обновлён: ${updatedBalance.toLocaleString("ru-RU")} ★`;
-      }
-      haptic("success");
-    } catch (err) {
-      if (statusEl) {
-        statusEl.style.color = "var(--red)";
-        statusEl.textContent = err && err.message ? err.message : "Ошибка изменения баланса";
-      }
-      haptic("error");
-    } finally {
-      setBtn.disabled = false;
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-  });
-})();
+
+    body.perf-mode .splash-ambient-ring,
+    body.perf-mode .splash-sparkle {
+      animation: none !important;
+    }
+
+    body.perf-mode .tabbar,
+    body.perf-mode .modal-backdrop,
+    body.perf-mode .countdown-box {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* Splash / Entry Loader */
+    .splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255, 42, 133, 0.34) 0%, rgba(228, 0, 124, 0.13) 36%, transparent 72%),
+        radial-gradient(circle at 82% 78%, rgba(255, 214, 10, 0.08) 0%, transparent 45%),
+        linear-gradient(180deg, #100914 0%, #09090d 55%, var(--bg) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s ease;
+    }
+
+    .splash-screen.hide {
+      opacity: 0;
+      transform: scale(1.06);
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-ambient-ring {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 42, 133, 0.18);
+      box-shadow: 0 0 80px rgba(255, 42, 133, 0.14);
+      animation: splashRingSpin 14s linear infinite;
+      pointer-events: none;
+    }
+
+    .splash-ambient-ring::before {
+      content: "";
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--pink-bright);
+      box-shadow: 0 0 14px var(--pink-bright);
+      transform: translateX(-50%);
+    }
+
+    @keyframes splashRingSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .splash-portal {
+      position: relative;
+      width: 118px;
+      height: 138px;
+      border-radius: 59px 59px 26px 26px;
+      background: linear-gradient(165deg, rgba(255, 42, 133, 0.24), rgba(22, 20, 32, 0.96) 55%, rgba(12, 12, 18, 0.98));
+      border: 1.5px solid rgba(255, 42, 133, 0.56);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 0 56px rgba(255, 42, 133, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      animation: splashFloat 2s ease-in-out infinite;
+    }
+
+    .splash-portal::before {
+      content: "";
+      position: absolute;
+      inset: -9px;
+      border-radius: 66px 66px 32px 32px;
+      border: 1.5px dashed rgba(255, 133, 186, 0.52);
+      animation: splashPulseBorder 1.6s ease-in-out infinite;
+    }
+
+    .splash-sparkle {
+      position: absolute;
+      font-size: 13px;
+      color: var(--gold);
+      filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.65));
+      animation: splashSpark 1.8s ease-in-out infinite;
+    }
+
+    .splash-sparkle.s1 { top: -8px; right: 8px; animation-delay: 0s; }
+    .splash-sparkle.s2 { bottom: 14px; left: -10px; color: #ff85ba; animation-delay: 0.45s; }
+    .splash-sparkle.s3 { top: 26px; left: -12px; animation-delay: 0.9s; }
+
+    @keyframes splashSpark {
+      0%, 100% { transform: scale(0.85) rotate(0deg); opacity: 0.55; }
+      50% { transform: scale(1.2) rotate(22deg); opacity: 1; }
+    }
+
+    @keyframes splashFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @keyframes splashPulseBorder {
+      0%, 100% { opacity: 0.45; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.025); }
+    }
+
+    .splash-pct {
+      position: relative;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      margin-top: 20px;
+      color: #fff;
+      text-shadow: 0 0 24px rgba(255, 42, 133, 0.35);
+    }
+
+    .splash-brand {
+      position: relative;
+      margin-top: 6px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.11em;
+      background: linear-gradient(90deg, #ffffff 0%, #ff85ba 52%, #ff2a85 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .splash-status {
+      position: relative;
+      margin-top: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      min-height: 16px;
+    }
+
+    .splash-progress-wrap {
+      position: relative;
+      margin-top: 16px;
+      width: 224px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .splash-progress-bar {
+      position: relative;
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--pink), var(--pink-bright), #ff85ba);
+      box-shadow: 0 0 18px var(--pink-glow);
+      transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .splash-progress-bar::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 26px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7));
+      filter: blur(2px);
+    }
+
+    .splash-pills {
+      position: relative;
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .splash-mini-chip {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #ffb3d4;
+      background: rgba(255, 42, 133, 0.12);
+      border: 1px solid rgba(255, 42, 133, 0.28);
+      border-radius: 999px;
+      padding: 4px 9px;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: calc(var(--safe-top) + 10px) 16px calc(var(--safe-bottom) + 98px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+    }
+
+    .app.ready {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Header */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(145deg, #1b1b24, #0f0f15);
+      border: 1px solid rgba(255, 42, 133, 0.32);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 6px 18px rgba(228, 0, 124, 0.2);
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pink-bright);
+      box-shadow: 0 0 8px var(--pink-bright);
+    }
+
+    .balance-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 6px 6px 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .balance-val {
+      font-size: 14px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .star-icon {
+      color: var(--gold);
+      font-size: 14px;
+    }
+
+    .plus-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--pink-glow);
+      transition: transform 0.15s ease;
+    }
+
+    .plus-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Views */
+    .view {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .view.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes stageShake {
+      0%, 100% { transform: translate(0, 0); }
+      20
