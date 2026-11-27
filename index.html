@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>MOLLY GIFTS</title>
+  <title>MOLLY GIFTS — Dev Mode (@lycheemolly)</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
@@ -46,226 +46,21 @@
       overflow-x: hidden;
     }
 
-    body.perf-mode .splash-ambient-ring,
-    body.perf-mode .splash-sparkle {
-      animation: none !important;
-    }
-
     body.perf-mode .tabbar,
-    body.perf-mode .modal-backdrop,
-    body.perf-mode .countdown-box {
+    body.perf-mode .modal-backdrop {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-    }
-
-    /* Splash / Entry Loader */
-    .splash-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background:
-        radial-gradient(circle at 50% 30%, rgba(255, 42, 133, 0.34) 0%, rgba(228, 0, 124, 0.13) 36%, transparent 72%),
-        radial-gradient(circle at 82% 78%, rgba(255, 214, 10, 0.08) 0%, transparent 45%),
-        linear-gradient(180deg, #100914 0%, #09090d 55%, var(--bg) 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      overflow: hidden;
-      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s ease;
-    }
-
-    .splash-screen.hide {
-      opacity: 0;
-      transform: scale(1.06);
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .splash-ambient-ring {
-      position: absolute;
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 42, 133, 0.18);
-      box-shadow: 0 0 80px rgba(255, 42, 133, 0.14);
-      animation: splashRingSpin 14s linear infinite;
-      pointer-events: none;
-    }
-
-    .splash-ambient-ring::before {
-      content: "";
-      position: absolute;
-      top: -4px;
-      left: 50%;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--pink-bright);
-      box-shadow: 0 0 14px var(--pink-bright);
-      transform: translateX(-50%);
-    }
-
-    @keyframes splashRingSpin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .splash-portal {
-      position: relative;
-      width: 118px;
-      height: 138px;
-      border-radius: 59px 59px 26px 26px;
-      background: linear-gradient(165deg, rgba(255, 42, 133, 0.24), rgba(22, 20, 32, 0.96) 55%, rgba(12, 12, 18, 0.98));
-      border: 1.5px solid rgba(255, 42, 133, 0.56);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      box-shadow: 0 0 56px rgba(255, 42, 133, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-      animation: splashFloat 2s ease-in-out infinite;
-    }
-
-    .splash-portal::before {
-      content: "";
-      position: absolute;
-      inset: -9px;
-      border-radius: 66px 66px 32px 32px;
-      border: 1.5px dashed rgba(255, 133, 186, 0.52);
-      animation: splashPulseBorder 1.6s ease-in-out infinite;
-    }
-
-    .splash-sparkle {
-      position: absolute;
-      font-size: 13px;
-      color: var(--gold);
-      filter: drop-shadow(0 0 8px rgba(255, 214, 10, 0.65));
-      animation: splashSpark 1.8s ease-in-out infinite;
-    }
-
-    .splash-sparkle.s1 { top: -8px; right: 8px; animation-delay: 0s; }
-    .splash-sparkle.s2 { bottom: 14px; left: -10px; color: #ff85ba; animation-delay: 0.45s; }
-    .splash-sparkle.s3 { top: 26px; left: -12px; animation-delay: 0.9s; }
-
-    @keyframes splashSpark {
-      0%, 100% { transform: scale(0.85) rotate(0deg); opacity: 0.55; }
-      50% { transform: scale(1.2) rotate(22deg); opacity: 1; }
-    }
-
-    @keyframes splashFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-6px); }
-    }
-
-    @keyframes splashPulseBorder {
-      0%, 100% { opacity: 0.45; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.025); }
-    }
-
-    .splash-pct {
-      position: relative;
-      font-size: 32px;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-      margin-top: 20px;
-      color: #fff;
-      text-shadow: 0 0 24px rgba(255, 42, 133, 0.35);
-    }
-
-    .splash-brand {
-      position: relative;
-      margin-top: 6px;
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 0.11em;
-      background: linear-gradient(90deg, #ffffff 0%, #ff85ba 52%, #ff2a85 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .splash-status {
-      position: relative;
-      margin-top: 5px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      min-height: 16px;
-    }
-
-    .splash-progress-wrap {
-      position: relative;
-      margin-top: 16px;
-      width: 224px;
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .splash-progress-bar {
-      position: relative;
-      width: 0%;
-      height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--pink), var(--pink-bright), #ff85ba);
-      box-shadow: 0 0 18px var(--pink-glow);
-      transition: width 0.24s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .splash-progress-bar::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 26px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7));
-      filter: blur(2px);
-    }
-
-    .splash-pills {
-      position: relative;
-      margin-top: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .splash-mini-chip {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: #ffb3d4;
-      background: rgba(255, 42, 133, 0.12);
-      border: 1px solid rgba(255, 42, 133, 0.28);
-      border-radius: 999px;
-      padding: 4px 9px;
     }
 
     .app {
       max-width: 480px;
       margin: 0 auto;
-      padding: calc(var(--safe-top) + 10px) 16px calc(var(--safe-bottom) + 98px);
+      padding: calc(var(--safe-top) + 12px) 16px calc(var(--safe-bottom) + 92px);
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+      gap: 14px;
     }
 
-    .app.ready {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Header */
     .topbar {
       display: flex;
       align-items: center;
@@ -284,10 +79,11 @@
       height: 38px;
       border-radius: 13px;
       background: linear-gradient(145deg, #1b1b24, #0f0f15);
-      border: 1px solid rgba(255, 42, 133, 0.32);
+      border: 1px solid rgba(255, 42, 133, 0.35);
       display: grid;
       place-items: center;
-      box-shadow: 0 6px 18px rgba(228, 0, 124, 0.2);
+      font-weight: 900;
+      color: var(--pink-bright);
     }
 
     .brand-title {
@@ -301,15 +97,15 @@
       color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .live-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--pink-bright);
-      box-shadow: 0 0 8px var(--pink-bright);
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
     }
 
     .balance-pill {
@@ -319,13 +115,12 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 6px 6px 6px 14px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+      padding: 6px 8px 6px 14px;
     }
 
     .balance-val {
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       font-variant-numeric: tabular-nums;
       display: flex;
       align-items: center;
@@ -334,47 +129,491 @@
 
     .star-icon {
       color: var(--gold);
-      font-size: 14px;
     }
 
-    .plus-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: none;
-      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
-      color: #fff;
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      box-shadow: 0 4px 12px var(--pink-glow);
-      transition: transform 0.15s ease;
-    }
-
-    .plus-btn:active {
-      transform: scale(0.92);
-    }
-
-    /* Views */
-    .view {
-      display: none;
-      flex-direction: column;
-      gap: 14px;
-      animation: fadeIn 0.2s ease;
-    }
-
-    .view.active {
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 16px;
       display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
+    .card.dev-accent {
+      border-color: rgba(255, 42, 133, 0.42);
+      background: radial-gradient(120% 100% at 95% 0%, rgba(255, 42, 133, 0.16) 0%, rgba(17, 17, 22, 0.98) 62%), var(--surface);
     }
 
-    @keyframes stageShake {
-      0%, 100% { transform: translate(0, 0); }
-      20
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--pink-soft);
+      color: var(--pink-bright);
+      border: 1px solid rgba(255, 42, 133, 0.3);
+    }
+
+    .badge.ok {
+      background: rgba(48, 209, 88, 0.15);
+      color: var(--green);
+      border-color: rgba(48, 209, 88, 0.35);
+    }
+
+    .badge.warn {
+      background: rgba(255, 214, 10, 0.14);
+      color: var(--gold);
+      border-color: rgba(255, 214, 10, 0.35);
+    }
+
+    .row-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+
+    .row-info span:first-child {
+      color: var(--text-muted);
+    }
+
+    .row-info span:last-child {
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .field-input {
+      flex: 1;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      outline: none;
+    }
+
+    .field-input:focus {
+      border-color: var(--pink-bright);
+    }
+
+    .presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .preset-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      color: var(--text);
+      border-radius: var(--radius-sm);
+      padding: 9px 6px;
+      font-size: 12px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+    }
+
+    .preset-btn:active {
+      transform: scale(0.97);
+      border-color: var(--pink-bright);
+    }
+
+    .btn-primary {
+      width: 100%;
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 13px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, var(--pink), var(--pink-bright));
+      box-shadow: 0 8px 22px var(--pink-glow);
+      cursor: pointer;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      background: var(--surface-elevated);
+      cursor: pointer;
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .log-time {
+      color: var(--text-muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .note {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-muted);
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="appRoot">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">MG</div>
+        <div>
+          <div class="brand-title">MOLLY GIFTS</div>
+          <div class="brand-sub">
+            <span class="live-dot"></span>
+            <span id="envModeLabel">Проверка профиля...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="balance-pill">
+        <div class="balance-val">
+          <span class="star-icon">★</span>
+          <span id="balanceValue">0</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Блок идентификации текущего пользователя -->
+    <section class="card" id="identityCard">
+      <div class="section-head">
+        <span class="section-title">Профиль и доступ</span>
+        <span class="badge warn" id="accessBadge">Обычный профиль</span>
+      </div>
+      <div class="row-info">
+        <span>Аккаунт</span>
+        <span id="accountDisplay">Гость</span>
+      </div>
+      <div class="row-info">
+        <span>Telegram user_id</span>
+        <span id="userIdDisplay">не определён</span>
+      </div>
+      <p class="note" id="accessHint">
+        Режим разработчика открывается только для разрешённого Telegram <b>user_id</b>. На других аккаунтах панель управления балансом скрыта.
+      </p>
+    </section>
+
+    <!-- Панель режима разработчика (видна только владельцу / разрешённому user_id) -->
+    <section class="card dev-accent" id="devPanelCard" style="display: none;">
+      <div class="section-head">
+        <span class="section-title">🛠 Режим разработчика</span>
+        <span class="badge ok">ONLY OWNER • @lycheemolly</span>
+      </div>
+
+      <p class="note">
+        Управление балансом в звёздах (<b>★</b>) и тестовые действия для аккаунта <b>@lycheemolly</b> (ID: <code>7366498440</code>). В реальном продакшене для защиты от накрутки дублируйте проверку <code>user_id</code> на бэкенде / Worker.
+      </p>
+
+      <div class="input-row">
+        <input
+          type="number"
+          id="devAmountInput"
+          class="field-input"
+          value="10000"
+          min="0"
+          step="1"
+          aria-label="Сумма звёзд"
+        />
+      </div>
+
+      <div class="presets">
+        <button type="button" class="preset-btn" data-set="1000">1 000 ★</button>
+        <button type="button" class="preset-btn" data-set="10000">10 000 ★</button>
+        <button type="button" class="preset-btn" data-set="100000">100 000 ★</button>
+        <button type="button" class="preset-btn" data-set="1000000">1 000 000 ★</button>
+      </div>
+
+      <button type="button" class="btn-primary" id="setExactBalanceBtn">
+        Установить точный баланс ★
+      </button>
+
+      <div class="input-row">
+        <button type="button" class="btn-secondary" id="addBalanceBtn">+ Начислить сумму</button>
+        <button type="button" class="btn-secondary" id="subBalanceBtn">- Списать сумму</button>
+      </div>
+
+      <div class="input-row">
+        <button type="button" class="btn-secondary" id="toggleProdBadgeBtn">Переключить метку: DEMO / LIVE</button>
+        <button type="button" class="btn-secondary" id="clearProfileDataBtn">Сбросить локальный профиль</button>
+      </div>
+    </section>
+
+    <!-- Журнал действий профиля -->
+    <section class="card" id="auditCard">
+      <div class="section-head">
+        <span class="section-title">Журнал действий</span>
+        <span class="badge" id="auditCountBadge">0</span>
+      </div>
+      <div class="log-list" id="auditLogList"></div>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      // Строгий список владельцев: доступ к Dev-панели открывается только при совпадении Telegram user_id
+      const ALLOWED_DEV_USER_IDS = [
+        "7366498440"
+      ];
+      const OWNER_HANDLE_HINT = "@lycheemolly";
+
+      const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+      if (tg) {
+        try {
+          tg.ready();
+          tg.expand();
+        } catch (_) {}
+      }
+
+      const tgUser = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+      const rawUserId = tgUser && tgUser.id ? String(tgUser.id) : "";
+      const isOwner = rawUserId !== "" && ALLOWED_DEV_USER_IDS.map(String).includes(rawUserId);
+
+      const profileKeyId = rawUserId ? `tg_${rawUserId}` : "guest_session";
+      const STORAGE_KEY = `molly_gifts_dev_state_v1_${profileKeyId}`;
+
+      const defaultState = {
+        balance: 5000,
+        isLiveLabel: false,
+        logs: []
+      };
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { ...defaultState, logs: [] };
+          const parsed = JSON.parse(raw);
+          return {
+            balance: typeof parsed.balance === "number" && Number.isFinite(parsed.balance) ? parsed.balance : 5000,
+            isLiveLabel: Boolean(parsed.isLiveLabel),
+            logs: Array.isArray(parsed.logs) ? parsed.logs.slice(0, 30) : []
+          };
+        } catch (_) {
+          return { ...defaultState, logs: [] };
+        }
+      }
+
+      let state = loadState();
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (_) {}
+      }
+
+      function addLog(text) {
+        const now = new Date();
+        const time = now.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        state.logs.unshift({ text, time });
+        state.logs = state.logs.slice(0, 30);
+        saveState();
+        renderLogs();
+      }
+
+      function formatStars(num) {
+        return Math.max(0, Math.floor(Number(num) || 0)).toLocaleString("ru-RU");
+      }
+
+      function renderIdentity() {
+        const accountEl = document.getElementById("accountDisplay");
+        const userIdEl = document.getElementById("userIdDisplay");
+        const accessBadge = document.getElementById("accessBadge");
+        const accessHint = document.getElementById("accessHint");
+        const devPanel = document.getElementById("devPanelCard");
+        const envModeLabel = document.getElementById("envModeLabel");
+
+        if (tgUser) {
+          const fullName = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(" ").trim();
+          const handle = tgUser.username ? ` (@${tgUser.username})` : "";
+          accountEl.textContent = (fullName || "Telegram User") + handle;
+          userIdEl.textContent = String(tgUser.id);
+        } else {
+          accountEl.textContent = `Гость (${OWNER_HANDLE_HINT} в Telegram)`;
+          userIdEl.textContent = "не определён";
+        }
+
+        envModeLabel.textContent = state.isLiveLabel
+          ? (isOwner ? "LIVE • Dev Mode активен" : "LIVE режим")
+          : (isOwner ? "DEMO • Dev Mode активен" : "DEMO режим");
+
+        if (isOwner) {
+          accessBadge.textContent = "Владелец • Dev доступен";
+          accessBadge.className = "badge ok";
+          accessHint.innerHTML = "Ваш <b>user_id</b> (<code>7366498440</code>) подтверждён. Панель управления балансом включена только для вашего профиля.";
+          devPanel.style.display = "flex";
+        } else {
+          accessBadge.textContent = "Обычный профиль";
+          accessBadge.className = "badge warn";
+          accessHint.innerHTML = "Режим разработчика открывается только для разрешённого Telegram <b>user_id</b> (<code>7366498440</code>). На других аккаунтах панель управления балансом скрыта.";
+          devPanel.style.display = "none";
+        }
+      }
+
+      function renderBalance() {
+        document.getElementById("balanceValue").textContent = formatStars(state.balance);
+      }
+
+      function renderLogs() {
+        const listEl = document.getElementById("auditLogList");
+        const countEl = document.getElementById("auditCountBadge");
+        countEl.textContent = String(state.logs.length);
+
+        if (!state.logs.length) {
+          listEl.innerHTML = '<div class="log-item"><span>Действий пока нет</span><span class="log-time">—</span></div>';
+          return;
+        }
+
+        listEl.innerHTML = state.logs
+          .map(
+            (item) =>
+              `<div class="log-item"><span>${escapeHtml(item.text)}</span><span class="log-time">${escapeHtml(item.time)}</span></div>`
+          )
+          .join("");
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function getInputAmount() {
+        const val = Number(document.getElementById("devAmountInput").value);
+        if (!Number.isFinite(val) || val < 0) return 0;
+        return Math.floor(val);
+      }
+
+      function requireOwner() {
+        if (!isOwner) {
+          addLog("Попытка вызова Dev-действия без прав владельца отклонена");
+          return false;
+        }
+        return true;
+      }
+
+      document.querySelectorAll(".preset-btn[data-set]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (!requireOwner()) return;
+          const amount = Number(btn.getAttribute("data-set")) || 0;
+          document.getElementById("devAmountInput").value = String(amount);
+          state.balance = amount;
+          saveState();
+          renderBalance();
+          addLog(`Dev: установлен баланс ${formatStars(amount)} ★`);
+        });
+      });
+
+      document.getElementById("setExactBalanceBtn").addEventListener("click", () => {
+        if (!requireOwner()) return;
+        const amount = getInputAmount();
+        state.balance = amount;
+        saveState();
+        renderBalance();
+        addLog(`Dev: задан точный баланс ${formatStars(amount)} ★`);
+      });
+
+      document.getElementById("addBalanceBtn").addEventListener("click", () => {
+        if (!requireOwner()) return;
+        const amount = getInputAmount();
+        state.balance += amount;
+        saveState();
+        renderBalance();
+        addLog(`Dev: начислено +${formatStars(amount)} ★ (итого ${formatStars(state.balance)} ★)`);
+      });
+
+      document.getElementById("subBalanceBtn").addEventListener("click", () => {
+        if (!requireOwner()) return;
+        const amount = getInputAmount();
+        state.balance = Math.max(0, state.balance - amount);
+        saveState();
+        renderBalance();
+        addLog(`Dev: списано -${formatStars(amount)} ★ (итого ${formatStars(state.balance)} ★)`);
+      });
+
+      document.getElementById("toggleProdBadgeBtn").addEventListener("click", () => {
+        if (!requireOwner()) return;
+        state.isLiveLabel = !state.isLiveLabel;
+        saveState();
+        renderIdentity();
+        addLog(`Dev: переключена метка режима на ${state.isLiveLabel ? "LIVE" : "DEMO"}`);
+      });
+
+      document.getElementById("clearProfileDataBtn").addEventListener("click", () => {
+        if (!requireOwner()) return;
+        state = { balance: 5000, isLiveLabel: false, logs: [] };
+        saveState();
+        renderIdentity();
+        renderBalance();
+        addLog("Dev: локальное состояние профиля сброшено к 5 000 ★");
+      });
+
+      renderIdentity();
+      renderBalance();
+      renderLogs();
+    })();
+  </script>
+</body>
+</html>
