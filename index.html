@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>MOLLY GIFTS</title>
+  <title>MOLLY GAME</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg: #070709;
-      --surface: #111116;
-      --surface-elevated: #181820;
-      --surface-press: #22222e;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.16);
+      --bg: #07070b;
+      --surface: rgba(22, 22, 30, 0.72);
+      --surface-elevated: rgba(28, 28, 38, 0.82);
+      --surface-press: rgba(36, 36, 48, 0.9);
+      --border: rgba(255, 255, 255, 0.10);
+      --border-strong: rgba(255, 255, 255, 0.18);
       --text: #f5f5f7;
       --text-muted: #93939e;
       --pink: #e4007c;
@@ -40,6 +40,12 @@
       margin: 0;
       padding: 0;
       background-color: var(--bg);
+      background-image:
+        radial-gradient(ellipse 90% 55% at 50% -10%, rgba(228, 0, 124, 0.22) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 40% at 100% 20%, rgba(80, 40, 160, 0.18) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 35% at 0% 80%, rgba(255, 42, 133, 0.10) 0%, transparent 45%),
+        linear-gradient(180deg, #0a0a10 0%, #07070b 100%);
+      background-attachment: fixed;
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
       min-height: 100vh;
@@ -385,12 +391,15 @@
 
     /* Hero Banner Card */
     .hero-card {
-      background: radial-gradient(120% 100% at 95% 0%, rgba(255, 42, 133, 0.26) 0%, rgba(17, 17, 22, 0.96) 58%), var(--surface);
-      border: 1px solid rgba(255, 42, 133, 0.24);
+      background: radial-gradient(120% 100% at 95% 0%, rgba(255, 42, 133, 0.28) 0%, rgba(17, 17, 24, 0.55) 58%), rgba(18, 18, 26, 0.5);
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
+      border: 1px solid rgba(255, 42, 133, 0.28);
       border-radius: var(--radius-xl);
       padding: 20px;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .hero-chip {
@@ -469,8 +478,10 @@
     }
 
     .mode-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: rgba(18, 18, 26, 0.55);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: var(--radius-xl);
       padding: 16px;
       display: flex;
@@ -479,6 +490,9 @@
       min-height: 138px;
       cursor: pointer;
       transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      position: relative;
     }
 
     .mode-card:active {
@@ -581,6 +595,73 @@
       border-color: var(--pink-bright);
       background: var(--pink-soft);
       color: var(--pink-bright);
+    }
+
+
+    .modes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .mode-card.illustrated {
+      min-height: 168px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background-size: cover;
+      background-position: center;
+      isolation: isolate;
+    }
+
+    .mode-card.illustrated::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.05) 20%, rgba(8,8,14,0.82) 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .mode-card.illustrated .mode-top,
+    .mode-card.illustrated .mode-name,
+    .mode-card.illustrated .mode-hint,
+    .mode-card.illustrated > div {
+      position: relative;
+      z-index: 1;
+    }
+
+    .mode-card.illustrated .mode-body {
+      padding: 12px 14px 14px;
+      margin-top: auto;
+    }
+
+    .mode-card.illustrated .mode-icon {
+      display: none;
+    }
+
+    .mode-card.illustrated .mode-name {
+      margin: 0 0 3px;
+      font-size: 17px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.65);
+    }
+
+    .mode-card.illustrated .mode-hint {
+      color: rgba(255,255,255,0.78);
+      text-shadow: 0 1px 6px rgba(0,0,0,0.55);
+    }
+
+    .mode-card.illustrated .mode-tag {
+      margin: 10px 10px 0 auto;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #fff;
+    }
+
+    .mode-card.illustrated.wide {
+      grid-column: span 2;
+      min-height: 140px;
+      background-position: center 30%;
     }
 
     /* ================= CASES & FREE 24H CASE ================= */
@@ -1239,13 +1320,16 @@
 
     /* Controls Card */
     .control-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: rgba(18, 18, 26, 0.58);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: var(--radius-xl);
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.05);
     }
 
     .bet-row {
@@ -2483,7 +2567,7 @@
       <span style="font-size:11px;font-weight:800;color:#ff85ba;letter-spacing:0.08em;">GIFTS</span>
     </div>
     <div class="splash-pct" id="splashPct">0%</div>
-    <div class="splash-brand">MOLLY GIFTS</div>
+    <div class="splash-brand">MOLLY GAME</div>
     <div class="splash-status" id="splashStatus">Запуск портала подарков...</div>
     <div class="splash-progress-wrap">
       <div class="splash-progress-bar" id="splashProgressBar"></div>
@@ -2510,8 +2594,8 @@
           </svg>
         </div>
         <div>
-          <div class="brand-title">MOLLY GIFTS</div>
-          <div class="brand-sub"><span class="live-dot"></span> Demo • Stars &amp; Gifts</div>
+          <div class="brand-title">MOLLY GAME</div>
+          <div class="brand-sub"><span class="live-dot"></span> Demo • Stars &amp; Games</div>
         </div>
       </div>
 
@@ -2539,56 +2623,51 @@
       </div>
 
       <section class="modes-grid">
-        <div class="mode-card featured" data-nav="crash">
+        <div class="mode-card illustrated featured" data-nav="crash" style="background-image:url('molly_game_assets/mode_crash_sm.jpg');">
           <div class="mode-top">
-            <div class="mode-icon">🚀</div>
             <span class="mode-tag pink">Hot</span>
           </div>
-          <div>
+          <div class="mode-body">
             <div class="mode-name">Crash</div>
             <div class="mode-hint">Старт с x0, рост множителя до взрыва</div>
           </div>
         </div>
 
-        <div class="mode-card" data-nav="mines">
+        <div class="mode-card illustrated" data-nav="mines" style="background-image:url('molly_game_assets/mode_mines_sm.jpg');">
           <div class="mode-top">
-            <div class="mode-icon">💣</div>
             <span class="mode-tag pink">Mines</span>
           </div>
-          <div>
+          <div class="mode-body">
             <div class="mode-name" id="modeMinesName">Мины</div>
             <div class="mode-hint" id="modeMinesHint">Открывай ячейки без мин и расти множитель</div>
           </div>
         </div>
 
-        <div class="mode-card" data-nav="cases">
+        <div class="mode-card illustrated" data-nav="cases" style="background-image:url('molly_game_assets/mode_cases_sm.jpg');">
           <div class="mode-top">
-            <div class="mode-icon">🎁</div>
             <span class="mode-tag pink">Gifts</span>
           </div>
-          <div>
+          <div class="mode-body">
             <div class="mode-name" id="modeCasesName">Кейсы</div>
             <div class="mode-hint" id="modeCasesHint">Подарки Telegram и бесплатный кейс 24ч</div>
           </div>
         </div>
 
-        <div class="mode-card" data-nav="upgrade">
+        <div class="mode-card illustrated" data-nav="upgrade" style="background-image:url('molly_game_assets/mode_upgrade_sm.jpg');">
           <div class="mode-top">
-            <div class="mode-icon">⚡</div>
             <span class="mode-tag pink">Upgrade</span>
           </div>
-          <div>
+          <div class="mode-body">
             <div class="mode-name" id="modeUpgradeName">Апгрейд</div>
             <div class="mode-hint" id="modeUpgradeHint">Шанс задаёт заполненность колеса</div>
           </div>
         </div>
 
-        <div class="mode-card" data-nav="arena" style="grid-column:span 2;min-height:118px;">
+        <div class="mode-card illustrated wide" data-nav="arena" style="background-image:url('molly_game_assets/mode_arena_sm.jpg');">
           <div class="mode-top">
-            <div class="mode-icon">🎯</div>
             <span class="mode-tag pink">Arena</span>
           </div>
-          <div>
+          <div class="mode-body">
             <div class="mode-name" id="modeArenaName">Арена</div>
             <div class="mode-hint" id="modeArenaHint">Доли поля по ставкам и полёт шарика</div>
           </div>
@@ -3175,7 +3254,7 @@
   <div class="modal-backdrop" id="welcomeDemoModal">
     <div class="modal-rounded">
       <div class="demo-pill">Демо-режим • Личный профиль</div>
-      <h2 class="modal-title">Добро пожаловать в MOLLY GIFTS</h2>
+      <h2 class="modal-title">Добро пожаловать в MOLLY GAME</h2>
       <p class="modal-text">
         Это <b>демо-режим</b> — у каждого аккаунта свой отдельный баланс, инвентарь и история ставок. Вы можете пополнить демо-счёт звёздами ★, чтобы протестировать игры, кейсы и апгрейд.
       </p>
@@ -3245,7 +3324,7 @@
         Сейчас приложение работает в <b>демо-режиме</b>. Вывод реальных Telegram Stars и подарков пока недоступен — модуль вывода находится в активной разработке.
       </p>
       <a class="dev-channel-link" href="https://t.me/devMikhail" target="_blank" rel="noopener noreferrer">
-        <span>📢 Канал разработки MOLLY GIFTS</span>
+        <span>📢 Канал разработки MOLLY GAME</span>
         <span style="color:var(--pink-bright);">Открыть →</span>
       </a>
       <button type="button" class="action-btn" id="closeWithdrawModalBtn">Понятно</button>
@@ -3261,7 +3340,7 @@
         В рабочей версии кнопка переводит на банк-профиль: после отправки подарка он появится в разделе «Мои Подарки» и его можно будет поставить, например, в Апгрейд. Сейчас в <b>демо-режиме</b> функция в разработке.
       </p>
       <a class="dev-channel-link" href="https://t.me/devMikhail" target="_blank" rel="noopener noreferrer">
-        <span>📢 Канал разработки MOLLY GIFTS</span>
+        <span>📢 Канал разработки MOLLY GAME</span>
         <span style="color:var(--pink-bright);">Открыть →</span>
       </a>
       <button type="button" class="action-btn" id="closeAddGiftModalBtn">Понятно</button>
@@ -3625,7 +3704,7 @@
         if (brandSub) {
           brandSub.innerHTML = appIsLive
             ? '<span class="live-dot" style="background:var(--green);"></span> LIVE • Stars &amp; Gifts'
-            : '<span class="live-dot"></span> Demo • Stars &amp; Gifts';
+            : '<span class="live-dot"></span> Demo • Stars &amp; Games';
         }
         const resetBtn = document.getElementById("resetDemoBtn");
         if (resetBtn) resetBtn.style.display = appIsLive ? "none" : "";
@@ -4170,7 +4249,7 @@
 
     function getReferralLink() {
       const refCode = tgUser && tgUser.id ? `ref_${tgUser.id}` : "ref_demo_molly";
-      return `https://t.me/share/url?url=${encodeURIComponent("https://t.me/devMikhail?start=" + refCode)}&text=${encodeURIComponent("Заходи в MOLLY GIFTS за звёздами и подарками!")}`;
+      return `https://t.me/share/url?url=${encodeURIComponent("https://t.me/devMikhail?start=" + refCode)}&text=${encodeURIComponent("Заходи в MOLLY GAME — звёзды, кейсы и игры!")}`;
     }
 
     document.getElementById("inviteFriendBtn").addEventListener("click", () => {
