@@ -15,30 +15,30 @@
 
     :root {
       --bg: #070709;
-      --surface: #111017;
-      --surface-2: #181622;
-      --border: rgba(255, 42, 133, 0.24);
+      --surface: #111116;
+      --surface-2: #181820;
+      --border: rgba(255, 42, 133, 0.25);
       --border-soft: rgba(255, 255, 255, 0.08);
       --pink: #ff2a85;
       --pink-deep: #e4007c;
       --pink-soft: rgba(255, 42, 133, 0.16);
-      --gold: #ffd166;
-      --green: #2ee59d;
-      --red: #ff4d6d;
+      --gold: #ffd60a;
+      --green: #30d158;
+      --red: #ff3b30;
       --text: #ffffff;
       --muted: #9e96ad;
-      --r-xl: 20px;
-      --r-lg: 16px;
-      --r-md: 12px;
+      --r-xl: 22px;
+      --r-lg: 18px;
+      --r-md: 14px;
       --r-sm: 10px;
     }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-      background: radial-gradient(circle at 50% -8%, rgba(228, 0, 124, 0.22), transparent 52%), var(--bg);
+      background: radial-gradient(circle at 50% -10%, rgba(228, 0, 124, 0.24), transparent 55%), var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: 92px;
+      padding-bottom: 96px;
       overflow-x: hidden;
     }
 
@@ -48,7 +48,7 @@
       transition: none !important;
     }
 
-    /* SPLASH SCREEN (WITHOUT BEAR) */
+    /* SPLASH SCREEN */
     #splash {
       position: fixed;
       inset: 0;
@@ -103,8 +103,8 @@
       position: sticky;
       top: 0;
       z-index: 40;
-      background: rgba(7, 7, 9, 0.84);
-      backdrop-filter: blur(16px);
+      background: rgba(7, 7, 9, 0.85);
+      backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border-soft);
       padding: 11px 14px;
       display: flex;
@@ -127,9 +127,9 @@
       font-weight: 800;
       padding: 2px 7px;
       border-radius: 999px;
-      background: rgba(46, 229, 157, 0.14);
+      background: rgba(48, 209, 88, 0.15);
       color: var(--green);
-      border: 1px solid rgba(46, 229, 157, 0.35);
+      border: 1px solid rgba(48, 209, 88, 0.35);
     }
     .header-right {
       display: flex;
@@ -162,7 +162,7 @@
 
     /* LAYOUT */
     .wrap {
-      max-width: 660px;
+      max-width: 680px;
       margin: 0 auto;
       padding: 14px;
     }
@@ -180,33 +180,65 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .card-title { font-size: 15px; font-weight: 800; }
     .muted { color: var(--muted); font-size: 12px; }
 
-    /* GAME SWITCHER */
-    .games-bar {
+    /* MAIN HUB ICON GRID */
+    .hub-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
     }
-    .game-tab {
+    .hub-tile {
+      background: linear-gradient(160deg, rgba(24, 24, 32, 0.96), rgba(17, 17, 22, 0.96));
+      border: 1px solid var(--border-soft);
+      border-radius: var(--r-lg);
+      padding: 14px;
+      text-align: left;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    }
+    .hub-tile:active { transform: scale(0.98); }
+    .hub-tile.active {
+      border-color: var(--pink);
+      background: linear-gradient(160deg, rgba(255, 42, 133, 0.2), rgba(24, 24, 32, 0.98));
+    }
+    .hub-icon-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .hub-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
       background: var(--surface-2);
       border: 1px solid var(--border-soft);
-      color: var(--muted);
-      border-radius: var(--r-md);
-      padding: 9px 4px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-      text-align: center;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
     }
-    .game-tab.active {
+    .hub-tag {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+    }
+    .hub-tile.active .hub-tag {
       background: var(--pink-soft);
-      border-color: var(--pink);
       color: #fff;
     }
+    .hub-name { font-size: 14px; font-weight: 800; }
+    .hub-desc { font-size: 11px; color: var(--muted); line-height: 1.35; }
 
     .mode-panel { display: none; flex-direction: column; gap: 12px; margin-top: 12px; }
     .mode-panel.active { display: flex; }
@@ -280,10 +312,10 @@
       font-size: 13px;
       line-height: 1.45;
     }
-    .status-box.win { border-color: rgba(46, 229, 157, 0.45); color: #b9ffe3; }
-    .status-box.lose { border-color: rgba(255, 77, 109, 0.45); color: #ffc2ce; }
+    .status-box.win { border-color: rgba(48, 209, 88, 0.45); color: #b9ffe3; }
+    .status-box.lose { border-color: rgba(255, 59, 48, 0.45); color: #ffc2ce; }
 
-    /* CRASH & MINES & UPGRADE & ARENA */
+    /* GAME WIDGETS */
     .crash-stage {
       background: var(--surface-2);
       border: 1px solid var(--border);
@@ -301,7 +333,6 @@
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
-      margin-top: 8px;
     }
     .hist-pill {
       font-size: 11px;
@@ -329,8 +360,8 @@
       display: grid;
       place-items: center;
     }
-    .mine-cell.safe { background: rgba(46, 229, 157, 0.16); border-color: var(--green); }
-    .mine-cell.bomb { background: rgba(255, 77, 109, 0.22); border-color: var(--red); }
+    .mine-cell.safe { background: rgba(48, 209, 88, 0.16); border-color: var(--green); }
+    .mine-cell.bomb { background: rgba(255, 59, 48, 0.22); border-color: var(--red); }
 
     .gifts-list {
       display: grid;
@@ -368,7 +399,7 @@
     .lb-sub { font-size: 11px; color: var(--muted); }
     .lb-val { font-size: 13px; font-weight: 900; color: var(--gold); }
 
-    /* IOS FLOATING DOCK */
+    /* IOS FLOATING OVAL DOCK */
     .dock-wrap {
       position: fixed;
       left: 0; right: 0; bottom: 10px;
@@ -381,20 +412,21 @@
     .dock {
       pointer-events: auto;
       width: 100%;
-      max-width: 480px;
-      background: rgba(20, 18, 28, 0.78);
-      backdrop-filter: blur(20px);
+      max-width: 520px;
+      background: rgba(24, 24, 32, 0.82);
+      backdrop-filter: blur(22px);
       border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 26px;
+      border-radius: 999px;
       padding: 6px;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 4px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
     }
     .dock-btn {
       background: transparent;
       border: none;
-      border-radius: 20px;
+      border-radius: 999px;
       color: var(--muted);
       font-size: 11px;
       font-weight: 800;
@@ -404,10 +436,13 @@
       flex-direction: column;
       align-items: center;
       gap: 2px;
+      transition: background 0.15s ease, color 0.15s ease;
     }
+    .dock-btn .dock-ico { font-size: 16px; line-height: 1.1; }
     .dock-btn.active {
       background: var(--pink-soft);
       color: #fff;
+      box-shadow: inset 0 0 0 1px rgba(255, 42, 133, 0.45);
     }
 
     /* MODAL */
@@ -458,20 +493,66 @@
   </header>
 
   <main class="wrap">
-    <!-- SCREEN 1: GAMES -->
-    <section class="screen active" id="screen-games">
+    <!-- SCREEN 1: MAIN HUB WITH GAME ICONS + ACTIVE GAME -->
+    <section class="screen active" id="screen-hub">
       <div class="card">
         <div class="card-head">
-          <span class="card-title">Игровые режимы</span>
-          <span class="muted" id="ui-mode-hint">Кейсы с подарками Telegram</span>
+          <span class="card-title">Режимы игры</span>
+          <span class="muted">Выберите режим</span>
         </div>
 
-        <div class="games-bar" id="games-bar">
-          <button class="game-tab active" data-mode="cases">🎁 Кейсы</button>
-          <button class="game-tab" data-mode="crash">🚀 Crash</button>
-          <button class="game-tab" data-mode="mines">💣 Мины</button>
-          <button class="game-tab" data-mode="upgrade">⚡ Апгрейд</button>
-          <button class="game-tab" data-mode="arena">⚔️ Арена</button>
+        <div class="hub-grid" id="hub-grid">
+          <button class="hub-tile active" data-mode="cases">
+            <div class="hub-icon-row">
+              <span class="hub-icon">🎁</span>
+              <span class="hub-tag">24ч + ★</span>
+            </div>
+            <div class="hub-name">Кейсы</div>
+            <div class="hub-desc">Подарки Telegram и бесплатный кейс раз в сутки</div>
+          </button>
+
+          <button class="hub-tile" data-mode="crash">
+            <div class="hub-icon-row">
+              <span class="hub-icon">🚀</span>
+              <span class="hub-tag">x1.5+</span>
+            </div>
+            <div class="hub-name">Crash</div>
+            <div class="hub-desc">Рост множителя, история раундов и автовывод</div>
+          </button>
+
+          <button class="hub-tile" data-mode="mines">
+            <div class="hub-icon-row">
+              <span class="hub-icon">💣</span>
+              <span class="hub-tag">5×5</span>
+            </div>
+            <div class="hub-name">Мины</div>
+            <div class="hub-desc">Открывайте безопасные клетки и забирайте выигрыш</div>
+          </button>
+
+          <button class="hub-tile" data-mode="upgrade">
+            <div class="hub-icon-row">
+              <span class="hub-icon">⚡</span>
+              <span class="hub-tag">5–85%</span>
+            </div>
+            <div class="hub-name">Апгрейд</div>
+            <div class="hub-desc">Гибкий шанс успеха и свой множитель</div>
+          </button>
+
+          <button class="hub-tile" data-mode="arena" style="grid-column: span 2;">
+            <div class="hub-icon-row">
+              <span class="hub-icon">⚔️</span>
+              <span class="hub-tag">x1.9</span>
+            </div>
+            <div class="hub-name">Арена</div>
+            <div class="hub-desc">Быстрый бой на звёзды против соперника</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title" id="ui-active-game-title">Кейсы</span>
+          <span class="muted" id="ui-mode-hint">Подарки Telegram и бесплатный кейс раз в сутки</span>
         </div>
 
         <!-- CASES -->
@@ -578,7 +659,21 @@
       </div>
     </section>
 
-    <!-- SCREEN 2: TOP -->
+    <!-- SCREEN 2: TASKS -->
+    <section class="screen" id="screen-tasks">
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Задания</span>
+          <span class="muted">Бонусы ★</span>
+        </div>
+        <div class="status-box" style="margin-bottom:10px;">
+          Загляните в Кейсы — там доступен бесплатный кейс раз в 24 часа, а также открывайте кейсы с подарками Telegram.
+        </div>
+        <button class="btn-sec" id="btn-go-free-case">Перейти к бесплатному кейсу</button>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: TOP -->
     <section class="screen" id="screen-top">
       <div class="card">
         <div class="card-head">
@@ -589,7 +684,7 @@
       </div>
     </section>
 
-    <!-- SCREEN 3: PROFILE & DEV -->
+    <!-- SCREEN 4: PROFILE & DEV -->
     <section class="screen" id="screen-profile">
       <div class="card">
         <div class="card-head">
@@ -633,12 +728,25 @@
     </section>
   </main>
 
-  <!-- IOS DOCK -->
+  <!-- IOS FLOATING OVAL DOCK -->
   <div class="dock-wrap">
-    <nav class="dock">
-      <button class="dock-btn active" data-screen="screen-games">🎮<span>Игры</span></button>
-      <button class="dock-btn" data-screen="screen-top">🏆<span>Топ</span></button>
-      <button class="dock-btn" data-screen="screen-profile">👤<span>Профиль / Dev</span></button>
+    <nav class="dock" aria-label="Нижняя навигация">
+      <button class="dock-btn active" data-screen="screen-hub">
+        <span class="dock-ico">🏠</span>
+        <span>Хаб</span>
+      </button>
+      <button class="dock-btn" data-screen="screen-tasks">
+        <span class="dock-ico">🎯</span>
+        <span>Задания</span>
+      </button>
+      <button class="dock-btn" data-screen="screen-top">
+        <span class="dock-ico">🏆</span>
+        <span>Топ</span>
+      </button>
+      <button class="dock-btn" data-screen="screen-profile">
+        <span class="dock-ico">👤</span>
+        <span>Профиль</span>
+      </button>
     </nav>
   </div>
 
@@ -659,14 +767,15 @@
     <div class="modal-box">
       <div class="card-title" style="margin-bottom:8px;">Добавление подарков в разработке</div>
       <p class="muted" style="line-height:1.5;">
-        Прямой перевод подарков из Telegram пока находится в разработке. Используйте gifts из пула кейсов или баланс ★.
+        Прямой перевод подарков из Telegram пока находится в разработке. Используйте подарки из пула кейсов или баланс ★.
       </p>
       <button class="btn-main" id="btn-close-gift">Понятно</button>
     </div>
   </div>
+
   <script>
     const APP_CFG = {
-      API_URL: "", // Например: "https://molly-game-api.your-name.workers.dev"
+      API_URL: "",
       DEV_IDS: ["7366498440"],
       DEV_USERNAMES: ["lycheemolly"],
     };
@@ -721,13 +830,13 @@
 
     function readStore() {
       try {
-        return JSON.parse(localStorage.getItem("molly_store_v2") || '{"users":{}}');
+        return JSON.parse(localStorage.getItem("molly_store_v3") || '{"users":{}}');
       } catch {
         return { users: {} };
       }
     }
     function writeStore(s) {
-      localStorage.setItem("molly_store_v2", JSON.stringify(s));
+      localStorage.setItem("molly_store_v3", JSON.stringify(s));
     }
 
     async function callApi(path, method = "GET", payload = null) {
@@ -1069,42 +1178,57 @@
       }
     }
 
-    // NAVIGATION
+    function openScreen(screenId) {
+      document.querySelectorAll(".dock-btn").forEach((x) => {
+        x.classList.toggle("active", x.dataset.screen === screenId);
+      });
+      document.querySelectorAll(".screen").forEach((s) => {
+        s.classList.toggle("active", s.id === screenId);
+      });
+      if (screenId === "screen-top") {
+        callApi("/api/leaderboard").then((r) => {
+          if (r.leaderboard) {
+            app.leaderboard = r.leaderboard;
+            renderUI();
+          }
+        }).catch(() => {});
+      }
+    }
+
+    function selectGameMode(mode) {
+      app.mode = mode;
+      document.querySelectorAll(".hub-tile").forEach((t) => {
+        t.classList.toggle("active", t.dataset.mode === mode);
+      });
+      document.querySelectorAll(".mode-panel").forEach((p) => {
+        p.classList.toggle("active", p.id === `panel-${mode}`);
+      });
+      const meta = {
+        cases: ["Кейсы", "Подарки Telegram и бесплатный кейс раз в сутки"],
+        crash: ["Crash", "Рост множителя, история раундов и автовывод"],
+        mines: ["Мины", "Открывайте безопасные клетки и забирайте выигрыш"],
+        upgrade: ["Апгрейд", "Гибкий шанс успеха и свой множитель"],
+        arena: ["Арена", "Быстрый бой на звёзды против соперника"],
+      };
+      const [title, hint] = meta[mode] || ["Режим", ""];
+      el("ui-active-game-title").textContent = title;
+      el("ui-mode-hint").textContent = hint;
+    }
+
     document.querySelectorAll(".dock-btn").forEach((b) => {
-      b.addEventListener("click", () => {
-        document.querySelectorAll(".dock-btn").forEach((x) => x.classList.remove("active"));
-        document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
-        b.classList.add("active");
-        el(b.dataset.screen).classList.add("active");
-        if (b.dataset.screen === "screen-top") {
-          callApi("/api/leaderboard").then((r) => {
-            if (r.leaderboard) {
-              app.leaderboard = r.leaderboard;
-              renderUI();
-            }
-          }).catch(() => {});
-        }
+      b.addEventListener("click", () => openScreen(b.dataset.screen));
+    });
+
+    document.querySelectorAll(".hub-tile").forEach((tile) => {
+      tile.addEventListener("click", () => {
+        selectGameMode(tile.dataset.mode);
+        el("ui-active-game-title").scrollIntoView({ behavior: "smooth", block: "nearest" });
       });
     });
 
-    // GAME MODE TABS
-    const modeHints = {
-      cases: "Кейсы с подарками Telegram",
-      crash: "Рост множителя и автовывод",
-      mines: "Поле 5×5 с минами",
-      upgrade: "Выбор шанса и множителя",
-      arena: "Быстрый бой на Арене",
-    };
-
-    document.querySelectorAll(".game-tab").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".game-tab").forEach((x) => x.classList.remove("active"));
-        document.querySelectorAll(".mode-panel").forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        app.mode = btn.dataset.mode;
-        el(`panel-${app.mode}`).classList.add("active");
-        el("ui-mode-hint").textContent = modeHints[app.mode] || "";
-      });
+    el("btn-go-free-case").addEventListener("click", () => {
+      openScreen("screen-hub");
+      selectGameMode("cases");
     });
 
     document.querySelectorAll("[data-set-bet]").forEach((c) => {
@@ -1145,13 +1269,11 @@
       runSimpleMode("arena", { bet: Number(el("arena-bet").value) })
     );
 
-    // MODALS
     el("btn-topup").addEventListener("click", () => el("modal-topup").classList.add("open"));
     el("btn-close-topup").addEventListener("click", () => el("modal-topup").classList.remove("open"));
     el("btn-add-gift-modal").addEventListener("click", () => el("modal-gift").classList.add("open"));
     el("btn-close-gift").addEventListener("click", () => el("modal-gift").classList.remove("open"));
 
-    // DEV GRANT
     async function grantStars(targetOverride = null, amountOverride = null) {
       const target = (targetOverride !== null ? targetOverride : el("dev-target").value).trim() || "self";
       const amount = Number(amountOverride !== null ? amountOverride : el("dev-amount").value);
@@ -1192,7 +1314,6 @@
       el("btn-perf").textContent = `Режим ECO: ${on ? "вкл" : "выкл"}`;
     });
 
-    // BOOT
     (async function boot() {
       renderMinesBoard();
       setSplash(35, "Подключаем профиль...");
