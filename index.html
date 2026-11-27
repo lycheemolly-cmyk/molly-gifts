@@ -6,684 +6,759 @@
   <title>MOLLY GAME</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     :root {
-      --bg: #09070d;
-      --bg-card: rgba(24, 17, 34, 0.86);
-      --bg-card-2: rgba(36, 25, 50, 0.92);
+      --bg: #070709;
+      --surface: #111017;
+      --surface-2: #181622;
       --border: rgba(255, 42, 133, 0.24);
+      --border-soft: rgba(255, 255, 255, 0.08);
       --pink: #ff2a85;
-      --pink-2: #e4007c;
+      --pink-deep: #e4007c;
+      --pink-soft: rgba(255, 42, 133, 0.16);
       --gold: #ffd166;
       --green: #2ee59d;
       --red: #ff4d6d;
       --text: #ffffff;
-      --muted: #a99db8;
+      --muted: #9e96ad;
+      --r-xl: 20px;
+      --r-lg: 16px;
+      --r-md: 12px;
+      --r-sm: 10px;
     }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-      background: radial-gradient(circle at 50% -10%, rgba(255, 42, 133, 0.24), transparent 55%), var(--bg);
+      background: radial-gradient(circle at 50% -8%, rgba(228, 0, 124, 0.22), transparent 52%), var(--bg);
       color: var(--text);
       min-height: 100vh;
+      padding-bottom: 92px;
       overflow-x: hidden;
-      padding-bottom: 84px;
     }
 
-    /* SPLASH SCREEN WITH ANIMATED BEAR */
-    #splash-screen {
+    body.perf-mode * {
+      backdrop-filter: none !important;
+      animation: none !important;
+      transition: none !important;
+    }
+
+    /* SPLASH SCREEN (WITHOUT BEAR) */
+    #splash {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: radial-gradient(circle at 50% 35%, rgba(228, 0, 124, 0.32), #07050b 72%);
+      background: radial-gradient(circle at 50% 35%, rgba(228, 0, 124, 0.28), #070709 70%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 18px;
-      transition: opacity 0.45s ease, visibility 0.45s ease;
+      gap: 14px;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
     }
-    #splash-screen.hidden {
+    #splash.hide {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
-
-    .bear-stage {
-      position: relative;
-      width: 136px;
-      height: 136px;
-      display: grid;
-      place-items: center;
-    }
-
-    .bear-aura {
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255, 42, 133, 0.45), transparent 70%);
-      animation: auraPulse 2s ease-in-out infinite;
-    }
-
-    .bear-avatar {
-      position: relative;
-      font-size: 74px;
-      line-height: 1;
-      filter: drop-shadow(0 10px 24px rgba(255, 42, 133, 0.45));
-      animation: bearBounce 1.5s ease-in-out infinite;
-      transform-origin: bottom center;
-    }
-
-    .bear-star {
-      position: absolute;
-      font-size: 18px;
-      color: var(--gold);
-      animation: starOrbit 2.4s linear infinite;
-    }
-    .bear-star.s1 { top: 8px; right: 10px; animation-delay: 0s; }
-    .bear-star.s2 { bottom: 14px; left: 8px; animation-delay: -0.8s; }
-    .bear-star.s3 { top: 14px; left: 14px; animation-delay: -1.6s; }
-
-    @keyframes bearBounce {
-      0%, 100% { transform: translateY(0) rotate(-3deg) scale(1); }
-      50% { transform: translateY(-10px) rotate(3deg) scale(1.04); }
-    }
-    @keyframes auraPulse {
-      0%, 100% { transform: scale(0.92); opacity: 0.65; }
-      50% { transform: scale(1.12); opacity: 1; }
-    }
-    @keyframes starOrbit {
-      0%, 100% { transform: scale(0.8) rotate(0deg); opacity: 0.5; }
-      50% { transform: scale(1.25) rotate(25deg); opacity: 1; }
-    }
-
-    .splash-title {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
+    .splash-logo {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 1.8px;
       text-transform: uppercase;
     }
-    .splash-title span { color: var(--pink); }
-
-    .splash-bar-wrap {
+    .splash-logo span { color: var(--pink); }
+    .splash-pct {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--pink);
+      font-variant-numeric: tabular-nums;
+    }
+    .splash-track {
       width: 220px;
-      height: 8px;
+      height: 6px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.1);
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.12);
     }
-    .splash-bar-fill {
+    .splash-fill {
       height: 100%;
-      width: 15%;
-      background: linear-gradient(90deg, var(--pink-2), var(--pink), var(--gold));
+      width: 12%;
       border-radius: 999px;
-      transition: width 0.25s ease;
+      background: linear-gradient(90deg, var(--pink-deep), var(--pink));
+      transition: width 0.22s ease;
     }
-    .splash-status {
+    .splash-note {
       font-size: 12px;
       color: var(--muted);
     }
 
-    /* TOP BAR */
+    /* HEADER */
     .topbar {
       position: sticky;
       top: 0;
       z-index: 40;
+      background: rgba(7, 7, 9, 0.84);
       backdrop-filter: blur(16px);
-      background: rgba(11, 8, 17, 0.82);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-soft);
+      padding: 11px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
     }
-
-    .brand {
+    .brand-wrap {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 800;
-      font-size: 16px;
+    }
+    .brand-title {
+      font-size: 15px;
+      font-weight: 900;
       letter-spacing: 0.6px;
     }
-    .brand-badge {
+    .live-pill {
       font-size: 10px;
-      padding: 2px 6px;
+      font-weight: 800;
+      padding: 2px 7px;
       border-radius: 999px;
-      background: rgba(46, 229, 157, 0.16);
+      background: rgba(46, 229, 157, 0.14);
       color: var(--green);
       border: 1px solid rgba(46, 229, 157, 0.35);
-      text-transform: uppercase;
     }
-
-    .wallet-box {
+    .header-right {
       display: flex;
       align-items: center;
       gap: 8px;
     }
-
-    .balance-pill {
-      background: var(--bg-card-2);
+    .bal-chip {
+      background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: 999px;
       padding: 6px 12px;
-      font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 800;
       display: flex;
       align-items: center;
       gap: 5px;
+      font-variant-numeric: tabular-nums;
     }
-    .balance-pill .star { color: var(--gold); }
-
-    .btn-topup {
-      background: linear-gradient(135deg, var(--pink-2), var(--pink));
+    .bal-chip .star { color: var(--gold); }
+    .topup-btn {
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink));
       color: #fff;
       border: none;
       border-radius: 999px;
-      padding: 7px 12px;
-      font-weight: 700;
+      padding: 7px 13px;
       font-size: 12px;
+      font-weight: 800;
       cursor: pointer;
     }
 
-    /* MAIN CONTAINER */
-    .container {
-      max-width: 640px;
+    /* LAYOUT */
+    .wrap {
+      max-width: 660px;
       margin: 0 auto;
       padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
     }
-
-    .page { display: none; flex-direction: column; gap: 14px; }
-    .page.active { display: flex; }
+    .screen { display: none; flex-direction: column; gap: 14px; }
+    .screen.active { display: flex; }
 
     .card {
-      background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--r-xl);
       padding: 14px;
     }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .card-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
     }
+    .card-title { font-size: 15px; font-weight: 800; }
+    .muted { color: var(--muted); font-size: 12px; }
 
-    /* MODE SELECTOR */
-    .mode-tabs {
+    /* GAME SWITCHER */
+    .games-bar {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 6px;
     }
-    .mode-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .game-tab {
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
       color: var(--muted);
-      border-radius: 12px;
+      border-radius: var(--r-md);
       padding: 9px 4px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       text-align: center;
     }
-    .mode-btn.active {
-      background: rgba(255, 42, 133, 0.2);
+    .game-tab.active {
+      background: var(--pink-soft);
       border-color: var(--pink);
       color: #fff;
     }
 
-    /* CONTROLS */
-    .bet-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      flex-wrap: wrap;
+    .mode-panel { display: none; flex-direction: column; gap: 12px; margin-top: 12px; }
+    .mode-panel.active { display: flex; }
+
+    /* INPUTS & BUTTONS */
+    .field-lbl {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px;
     }
-    input, select {
-      background: rgba(10, 8, 15, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+    input[type="number"], input[type="text"], select {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
       color: #fff;
-      border-radius: 12px;
+      border-radius: var(--r-md);
       padding: 10px 12px;
       font-size: 14px;
       outline: none;
-      width: 100%;
     }
     input:focus, select:focus { border-color: var(--pink); }
 
-    .quick-row {
+    .chips {
       display: flex;
       gap: 6px;
-      margin-top: 8px;
       flex-wrap: wrap;
+      margin-top: 8px;
     }
     .chip {
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
       color: #fff;
-      border-radius: 10px;
+      border-radius: var(--r-sm);
       padding: 6px 10px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
     }
+    .chip.active { border-color: var(--pink); background: var(--pink-soft); }
 
-    .btn-primary {
+    .btn-main {
       width: 100%;
-      margin-top: 12px;
-      padding: 12px 16px;
-      border-radius: 14px;
       border: none;
-      font-weight: 800;
-      font-size: 14px;
+      border-radius: var(--r-lg);
+      padding: 12px 16px;
+      background: linear-gradient(135deg, var(--pink-deep), var(--pink));
       color: #fff;
-      background: linear-gradient(135deg, var(--pink-2), var(--pink));
+      font-size: 14px;
+      font-weight: 800;
       cursor: pointer;
     }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-main:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .result-box {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .btn-sec {
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 9px 12px;
+      background: var(--surface-2);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .status-box {
+      padding: 11px 12px;
+      border-radius: var(--r-md);
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
       font-size: 13px;
       line-height: 1.45;
     }
-    .result-box.win { border-color: rgba(46, 229, 157, 0.45); background: rgba(46, 229, 157, 0.08); }
-    .result-box.lose { border-color: rgba(255, 77, 109, 0.45); background: rgba(255, 77, 109, 0.08); }
+    .status-box.win { border-color: rgba(46, 229, 157, 0.45); color: #b9ffe3; }
+    .status-box.lose { border-color: rgba(255, 77, 109, 0.45); color: #ffc2ce; }
 
-    /* TELEGRAM GIFTS GRID */
-    .gifts-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+    /* CRASH & MINES & UPGRADE & ARENA */
+    .crash-stage {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 16px;
+      text-align: center;
     }
-    .gift-card {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      border-radius: 14px;
-      padding: 10px;
+    .crash-mult {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--pink);
+      font-variant-numeric: tabular-nums;
+    }
+    .crash-hist {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
     }
-    .gift-emoji {
-      font-size: 28px;
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
+    .hist-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
+    }
+
+    .mines-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+    .mine-cell {
+      aspect-ratio: 1 / 1;
+      border-radius: var(--r-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
       display: grid;
       place-items: center;
-      background: rgba(255, 255, 255, 0.06);
-      flex-shrink: 0;
     }
-    .gift-name { font-size: 13px; font-weight: 700; }
-    .gift-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .rarity-mythic { border-color: rgba(255, 42, 133, 0.6); }
-    .rarity-legendary { border-color: rgba(255, 209, 102, 0.6); }
-    .rarity-epic { border-color: rgba(168, 85, 247, 0.55); }
+    .mine-cell.safe { background: rgba(46, 229, 157, 0.16); border-color: var(--green); }
+    .mine-cell.bomb { background: rgba(255, 77, 109, 0.22); border-color: var(--red); }
+
+    .gifts-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .gift-tile {
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--r-md);
+      padding: 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .gift-ico { font-size: 24px; }
+    .gift-t { font-size: 12px; font-weight: 800; }
+    .gift-s { font-size: 11px; color: var(--muted); }
 
     /* LEADERBOARD */
-    .lb-list { display: flex; flex-direction: column; gap: 8px; }
-    .lb-item {
+    .lb-wrap { display: flex; flex-direction: column; gap: 8px; }
+    .lb-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: var(--r-md);
+      background: var(--surface-2);
+      border: 1px solid var(--border-soft);
     }
-    .lb-item.me {
-      border-color: var(--pink);
-      background: rgba(255, 42, 133, 0.14);
-    }
+    .lb-row.me { border-color: var(--pink); background: var(--pink-soft); }
     .lb-left { display: flex; align-items: center; gap: 10px; }
-    .lb-rank { width: 28px; font-weight: 800; font-size: 14px; text-align: center; color: var(--gold); }
-    .lb-name { font-size: 13px; font-weight: 700; }
+    .lb-pos { width: 28px; font-weight: 900; color: var(--gold); text-align: center; }
+    .lb-name { font-size: 13px; font-weight: 800; }
     .lb-sub { font-size: 11px; color: var(--muted); }
-    .lb-bal { font-weight: 800; font-size: 14px; color: var(--gold); }
+    .lb-val { font-size: 13px; font-weight: 900; color: var(--gold); }
 
-    /* DEV PANEL */
-    .dev-badge {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(255, 209, 102, 0.16);
-      color: var(--gold);
-      border: 1px solid rgba(255, 209, 102, 0.35);
-    }
-    .field-label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 5px; }
-
-    /* BOTTOM TABBAR */
-    .tabbar {
+    /* IOS FLOATING DOCK */
+    .dock-wrap {
       position: fixed;
-      left: 0; right: 0; bottom: 0;
-      z-index: 50;
-      background: rgba(11, 8, 17, 0.92);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      left: 0; right: 0; bottom: 10px;
+      z-index: 60;
+      display: flex;
+      justify-content: center;
+      padding: 0 12px calc(4px + env(safe-area-inset-bottom));
+      pointer-events: none;
+    }
+    .dock {
+      pointer-events: auto;
+      width: 100%;
+      max-width: 480px;
+      background: rgba(20, 18, 28, 0.78);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 26px;
+      padding: 6px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+      gap: 4px;
     }
-    .tab-btn {
-      background: none;
+    .dock-btn {
+      background: transparent;
       border: none;
+      border-radius: 20px;
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      padding: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 7px 4px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
     }
-    .tab-btn.active { color: var(--pink); }
+    .dock-btn.active {
+      background: var(--pink-soft);
+      color: #fff;
+    }
 
     /* MODAL */
-    .modal-backdrop {
+    .modal-bg {
       position: fixed;
       inset: 0;
       z-index: 200;
       background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: blur(6px);
       display: none;
       align-items: center;
       justify-content: center;
       padding: 16px;
     }
-    .modal-backdrop.open { display: flex; }
-    .modal-card {
+    .modal-bg.open { display: flex; }
+    .modal-box {
       width: 100%;
-      max-width: 400px;
-      background: #171022;
+      max-width: 390px;
+      background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 24px;
       padding: 18px;
     }
-    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
-    .modal-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
   </style>
 </head>
 <body>
 
-  <!-- SPLASH SCREEN WITH BEAR ANIMATION -->
-  <div id="splash-screen">
-    <div class="bear-stage">
-      <div class="bear-aura"></div>
-      <div class="bear-star s1">✦</div>
-      <div class="bear-star s2">★</div>
-      <div class="bear-star s3">✦</div>
-      <div class="bear-avatar">🧸</div>
-    </div>
-    <div class="splash-title">MOLLY <span>GAME</span></div>
-    <div class="splash-bar-wrap">
-      <div class="splash-bar-fill" id="splash-fill"></div>
-    </div>
-    <div class="splash-status" id="splash-status">Загружаем профиль и подарки...</div>
+  <!-- SPLASH SCREEN -->
+  <div id="splash">
+    <div class="splash-logo">MOLLY <span>GAME</span></div>
+    <div class="splash-pct" id="splash-pct">12%</div>
+    <div class="splash-track"><div class="splash-fill" id="splash-fill"></div></div>
+    <div class="splash-note" id="splash-note">Запуск мини-приложения...</div>
   </div>
 
-  <!-- TOP BAR -->
+  <!-- HEADER -->
   <header class="topbar">
-    <div class="brand">
-      <span>🧸 MOLLY GAME</span>
-      <span class="brand-badge">LIVE</span>
+    <div class="brand-wrap">
+      <span class="brand-title">MOLLY GAME</span>
+      <span class="live-pill">LIVE</span>
     </div>
-    <div class="wallet-box">
-      <div class="balance-pill">
+    <div class="header-right">
+      <div class="bal-chip">
         <span class="star">★</span>
-        <span id="header-balance">0</span>
+        <span id="ui-balance">0</span>
       </div>
-      <button class="btn-topup" id="btn-open-deposit">+ Пополнить</button>
+      <button class="topup-btn" id="btn-topup">+ Пополнить</button>
     </div>
   </header>
 
-  <main class="container">
-    <!-- PAGE 1: GAMES -->
-    <section class="page active" id="page-games">
+  <main class="wrap">
+    <!-- SCREEN 1: GAMES -->
+    <section class="screen active" id="screen-games">
       <div class="card">
-        <div class="card-title">
-          <span>Режим игры</span>
-          <span style="font-size:12px;color:var(--muted)" id="active-mode-label">Кейсы с подарками TG</span>
+        <div class="card-head">
+          <span class="card-title">Игровые режимы</span>
+          <span class="muted" id="ui-mode-hint">Кейсы с подарками Telegram</span>
         </div>
 
-        <div class="mode-tabs" id="mode-tabs">
-          <button class="mode-btn active" data-mode="case">🎁 Кейсы</button>
-          <button class="mode-btn" data-mode="crash">🚀 Crash</button>
-          <button class="mode-btn" data-mode="mines">💣 Mines</button>
-          <button class="mode-btn" data-mode="upgrade">⚡ Upgrade</button>
-          <button class="mode-btn" data-mode="arena">⚔️ Arena</button>
+        <div class="games-bar" id="games-bar">
+          <button class="game-tab active" data-mode="cases">🎁 Кейсы</button>
+          <button class="game-tab" data-mode="crash">🚀 Crash</button>
+          <button class="game-tab" data-mode="mines">💣 Мины</button>
+          <button class="game-tab" data-mode="upgrade">⚡ Апгрейд</button>
+          <button class="game-tab" data-mode="arena">⚔️ Арена</button>
         </div>
 
-        <label class="field-label" for="bet-input">Ставка (★)</label>
-        <input type="number" id="bet-input" min="1" step="1" value="100" />
-
-        <div class="quick-row">
-          <button class="chip" data-bet="50">50 ★</button>
-          <button class="chip" data-bet="100">100 ★</button>
-          <button class="chip" data-bet="500">500 ★</button>
-          <button class="chip" data-bet="1000">1000 ★</button>
-          <button class="chip" id="btn-half-bet">1/2</button>
-          <button class="chip" id="btn-max-bet">MAX</button>
+        <!-- CASES -->
+        <div class="mode-panel active" id="panel-cases">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+            <span class="muted">Бесплатный кейс раз в 24ч</span>
+            <button class="btn-sec" id="btn-free-case">🎁 Бесплатный кейс (24ч)</button>
+          </div>
+          <div>
+            <label class="field-lbl" for="case-bet">Стоимость открытия (★)</label>
+            <input type="number" id="case-bet" min="10" step="10" value="100" />
+            <div class="chips">
+              <button class="chip" data-set-bet="case-bet" data-val="50">50 ★</button>
+              <button class="chip" data-set-bet="case-bet" data-val="100">100 ★</button>
+              <button class="chip" data-set-bet="case-bet" data-val="250">250 ★</button>
+              <button class="chip" data-set-bet="case-bet" data-val="500">500 ★</button>
+            </div>
+          </div>
+          <button class="btn-main" id="btn-open-case">Открыть кейс</button>
         </div>
 
-        <!-- EXTRA PARAMS FOR CRASH / MINES / UPGRADE -->
-        <div id="extra-controls" style="margin-top:10px;"></div>
-
-        <button class="btn-primary" id="btn-play">Запустить live-раунд</button>
-
-        <div class="result-box" id="game-result">
-          Выберите режим и ставку. Раунды рассчитываются на сервере, а баланс и топ обновляются автоматически.
+        <!-- CRASH -->
+        <div class="mode-panel" id="panel-crash">
+          <div class="crash-stage">
+            <div class="crash-mult" id="crash-mult">1.00x</div>
+            <div class="muted" id="crash-sub">Укажите ставку и автовывод</div>
+          </div>
+          <div class="crash-hist" id="crash-hist">
+            <span class="hist-pill">1.84x</span>
+            <span class="hist-pill">3.12x</span>
+            <span class="hist-pill">1.25x</span>
+            <span class="hist-pill">5.40x</span>
+          </div>
+          <div>
+            <label class="field-lbl" for="crash-bet">Ставка (★)</label>
+            <input type="number" id="crash-bet" min="1" value="100" />
+          </div>
+          <div>
+            <label class="field-lbl" for="crash-target">Автовывод (x)</label>
+            <input type="number" id="crash-target" min="1.1" max="20" step="0.1" value="1.5" />
+            <div class="chips">
+              <button class="chip" data-set-target="1.5">x1.5</button>
+              <button class="chip" data-set-target="2.0">x2.0</button>
+              <button class="chip" data-set-target="5.0">x5.0</button>
+            </div>
+          </div>
+          <button class="btn-main" id="btn-run-crash">Запустить Crash</button>
         </div>
+
+        <!-- MINES -->
+        <div class="mode-panel" id="panel-mines">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="field-lbl" for="mines-bet">Ставка (★)</label>
+              <input type="number" id="mines-bet" min="1" value="100" />
+            </div>
+            <div>
+              <label class="field-lbl" for="mines-count">Количество мин (1–20)</label>
+              <input type="number" id="mines-count" min="1" max="20" value="5" />
+            </div>
+          </div>
+          <div class="mines-grid" id="mines-grid"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="btn-sec" id="btn-mines-new">Новый раунд</button>
+            <button class="btn-main" style="margin-top:0" id="btn-mines-cashout">Забрать выигрыш</button>
+          </div>
+        </div>
+
+        <!-- UPGRADE -->
+        <div class="mode-panel" id="panel-upgrade">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+            <span class="muted">Выберите шанс и подарок/ставку</span>
+            <button class="btn-sec" id="btn-add-gift-modal">+ Добавить свой подарок</button>
+          </div>
+          <div>
+            <label class="field-lbl" for="upgrade-bet">Ставка (★)</label>
+            <input type="number" id="upgrade-bet" min="1" value="100" />
+          </div>
+          <div>
+            <label class="field-lbl" for="upgrade-chance">Шанс успеха: <strong id="upgrade-chance-val">50%</strong></label>
+            <input type="range" id="upgrade-chance" min="5" max="85" value="50" style="width:100%;accent-color:var(--pink);" />
+          </div>
+          <button class="btn-main" id="btn-run-upgrade">Крутить Апгрейд</button>
+        </div>
+
+        <!-- ARENA -->
+        <div class="mode-panel" id="panel-arena">
+          <div>
+            <label class="field-lbl" for="arena-bet">Ставка на Арену (★)</label>
+            <input type="number" id="arena-bet" min="1" value="150" />
+          </div>
+          <button class="btn-main" id="btn-run-arena">Войти в бой на Арене</button>
+        </div>
+
+        <div class="status-box" id="game-status">Готово к игре. Выберите режим и сделайте ставку.</div>
       </div>
 
       <div class="card">
-        <div class="card-title">
-          <span>Подарки Telegram в кейсах</span>
-          <span style="font-size:12px;color:var(--gold)">Редкие дропы</span>
+        <div class="card-head">
+          <span class="card-title">Подарки Telegram</span>
+          <span class="muted">Пул кейсов</span>
         </div>
-        <div class="gifts-grid" id="gifts-grid"></div>
+        <div class="gifts-list" id="gifts-list"></div>
       </div>
     </section>
 
-    <!-- PAGE 2: LEADERBOARD -->
-    <section class="page" id="page-top">
+    <!-- SCREEN 2: TOP -->
+    <section class="screen" id="screen-top">
       <div class="card">
-        <div class="card-title">
-          <span>Топ игроков по балансу</span>
-          <button class="chip" id="btn-refresh-top">Обновить</button>
+        <div class="card-head">
+          <span class="card-title">Топ игроков по балансу</span>
+          <button class="btn-sec" id="btn-refresh-lb">Обновить</button>
         </div>
-        <div class="lb-list" id="leaderboard-list"></div>
+        <div class="lb-wrap" id="lb-list"></div>
       </div>
     </section>
 
-    <!-- PAGE 3: PROFILE & DEV PANEL -->
-    <section class="page" id="page-profile">
+    <!-- SCREEN 3: PROFILE & DEV -->
+    <section class="screen" id="screen-profile">
       <div class="card">
-        <div class="card-title">
-          <span id="profile-name">Игрок</span>
-          <span id="profile-rank" style="font-size:12px;color:var(--gold)">Место: #—</span>
+        <div class="card-head">
+          <span class="card-title" id="prof-name">Профиль</span>
+          <span class="muted" id="prof-rank">Ранг: #—</span>
         </div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.6;">
-          <div>Telegram ID: <strong id="profile-id" style="color:#fff;">—</strong></div>
-          <div>Username: <strong id="profile-username" style="color:#fff;">—</strong></div>
-          <div>Баланс: <strong id="profile-balance" style="color:var(--gold);">0 ★</strong></div>
-          <div>Выбито подарков TG: <strong id="profile-gifts-count" style="color:#fff;">0</strong></div>
+        <div class="muted" style="line-height:1.65;">
+          <div>ID: <strong style="color:#fff" id="prof-id">—</strong></div>
+          <div>Username: <strong style="color:#fff" id="prof-user">—</strong></div>
+          <div>Баланс: <strong style="color:var(--gold)" id="prof-bal">0 ★</strong></div>
+          <div>Подарков в инвентаре: <strong style="color:#fff" id="prof-gifts">0</strong></div>
+        </div>
+        <div class="chips" style="margin-top:10px;">
+          <button class="chip" id="btn-perf">Режим ECO: выкл</button>
         </div>
       </div>
 
-      <div class="card" id="dev-panel">
-        <div class="card-title">
-          <span>Панель разработчика</span>
-          <span class="dev-badge" id="dev-status-badge">DEV</span>
+      <div class="card" id="dev-card">
+        <div class="card-head">
+          <span class="card-title">Панель разработчика</span>
+          <span class="live-pill" id="dev-role-badge">DEV</span>
         </div>
 
-        <label class="field-label" for="dev-target">Кому начислить (оставьте «self» для себя, либо укажите @username или Telegram ID)</label>
-        <input type="text" id="dev-target" value="self" placeholder="self или @username или 123456789" />
+        <label class="field-lbl" for="dev-target">Кому начислить («self» — себе, или @username / Telegram ID игрока)</label>
+        <input type="text" id="dev-target" value="self" placeholder="self или @username или 7366498440" />
 
-        <label class="field-label" for="dev-amount">Сумма начисления (★)</label>
-        <input type="number" id="dev-amount" min="1" step="1" value="1000" />
+        <label class="field-lbl" for="dev-amount" style="margin-top:8px;">Сумма звёзд (★)</label>
+        <input type="number" id="dev-amount" min="1" value="1000" />
 
-        <div class="quick-row">
-          <button class="chip" data-grant-self="500">+500 себе</button>
-          <button class="chip" data-grant-self="5000">+5 000 себе</button>
-          <button class="chip" data-grant-self="50000">+50 000 себе</button>
+        <div class="chips">
+          <button class="chip" data-quick-self="1000">+1 000 себе</button>
+          <button class="chip" data-quick-self="10000">+10 000 себе</button>
+          <button class="chip" data-quick-self="100000">+100 000 себе</button>
         </div>
 
-        <label class="field-label" for="dev-note">Комментарий / причина (опционально)</label>
-        <input type="text" id="dev-note" placeholder="Например: ручное зачисление пополнения" />
-
-        <button class="btn-primary" id="btn-dev-grant">Начислить валюту</button>
-        <div class="result-box" id="dev-feedback" style="margin-top:10px;">
-          Вы можете начислить валюту себе или другому игроку, который пополнил баланс.
+        <button class="btn-main" id="btn-dev-send">Начислить звёзды</button>
+        <div class="status-box" id="dev-log" style="margin-top:10px;">
+          Укажите «self» для себя или @username / ID игрока для ручного зачисления баланса.
         </div>
       </div>
     </section>
   </main>
 
-  <!-- BOTTOM NAV -->
-  <nav class="tabbar">
-    <button class="tab-btn active" data-page="page-games">🎮<span>Игры</span></button>
-    <button class="tab-btn" data-page="page-top">🏆<span>Топ</span></button>
-    <button class="tab-btn" data-page="page-profile">🛠️<span>Профиль / Dev</span></button>
-  </nav>
+  <!-- IOS DOCK -->
+  <div class="dock-wrap">
+    <nav class="dock">
+      <button class="dock-btn active" data-screen="screen-games">🎮<span>Игры</span></button>
+      <button class="dock-btn" data-screen="screen-top">🏆<span>Топ</span></button>
+      <button class="dock-btn" data-screen="screen-profile">👤<span>Профиль / Dev</span></button>
+    </nav>
+  </div>
 
-  <!-- DEPOSIT IN DEVELOPMENT MODAL -->
-  <div class="modal-backdrop" id="deposit-modal">
-    <div class="modal-card">
-      <div class="modal-title">🚧 Пополнение в разработке</div>
-      <p class="modal-text">
-        Автоматическое пополнение баланса пока недоступно — проект находится в активной разработке.
-        По вопросам зачисления средств свяжитесь с администратором: валюта начисляется вручную через панель разработчика.
+  <!-- MODAL: DEPOSIT IN DEV -->
+  <div class="modal-bg" id="modal-topup">
+    <div class="modal-box">
+      <div class="card-title" style="margin-bottom:8px;">Пополнение в разработке</div>
+      <p class="muted" style="line-height:1.5;">
+        Автоматическое пополнение баланса пока недоступно — проект в разработке.
+        По вопросам зачисления звёзд обратитесь к администратору для ручного начисления.
       </p>
-      <button class="btn-primary" id="btn-close-deposit">Понятно</button>
+      <button class="btn-main" id="btn-close-topup">Закрыть</button>
     </div>
   </div>
 
-  <script>
-    // ================= CONFIG =================
-    const CONFIG = {
-      // Укажите URL вашего развернутого Cloudflare Worker, например:
-      // "https://molly-game-api.your-subdomain.workers.dev"
-      API_BASE_URL: "",
-      // Добавьте сюда свой числовой Telegram ID
-      ADMIN_TELEGRAM_IDS: [123456789],
-      // Опционально: секретный заголовок, если задан ADMIN_SECRET в Worker
-      ADMIN_SECRET: "",
+  <!-- MODAL: ADD GIFT IN DEV -->
+  <div class="modal-bg" id="modal-gift">
+    <div class="modal-box">
+      <div class="card-title" style="margin-bottom:8px;">Добавление подарков в разработке</div>
+      <p class="muted" style="line-height:1.5;">
+        Прямой перевод подарков из Telegram пока находится в разработке. Используйте gifts из пула кейсов или баланс ★.
+      </p>
+      <button class="btn-main" id="btn-close-gift">Понятно</button>
+    </div>
+  </div><script>
+    const APP_CFG = {
+      API_URL: "", // Например: "https://molly-game-api.your-name.workers.dev"
+      DEV_IDS: ["7366498440"],
+      DEV_USERNAMES: ["lycheemolly"],
     };
 
-    const FALLBACK_GIFTS = [
-      { id: "gift_plush_pepe", name: "Plush Pepe", rarity: "mythic", value: 2500, emoji: "🐸" },
-      { id: "gift_durov_cap", name: "Durov's Cap", rarity: "legendary", value: 1200, emoji: "🧢" },
-      { id: "gift_heart_locket", name: "Heart Locket", rarity: "epic", value: 650, emoji: "💖" },
-      { id: "gift_astral_shard", name: "Astral Shard", rarity: "epic", value: 500, emoji: "💎" },
-      { id: "gift_vintage_cigar", name: "Vintage Cigar", rarity: "rare", value: 320, emoji: "🚬" },
-      { id: "gift_loot_bag", name: "Loot Bag", rarity: "rare", value: 240, emoji: "🎒" },
-      { id: "gift_cake", name: "Homemade Cake", rarity: "common", value: 90, emoji: "🎂" },
-      { id: "gift_rose", name: "Eternal Rose", rarity: "common", value: "60", emoji: "🌹" },
+    const GIFTS_CATALOG = [
+      { id: "pepe", name: "Plush Pepe", rarity: "Mythic", value: 2500, emoji: "🐸" },
+      { id: "cap", name: "Durov's Cap", rarity: "Legendary", value: 1200, emoji: "🧢" },
+      { id: "locket", name: "Heart Locket", rarity: "Epic", value: 650, emoji: "💖" },
+      { id: "shard", name: "Astral Shard", rarity: "Epic", value: 500, emoji: "💎" },
+      { id: "cigar", name: "Vintage Cigar", rarity: "Rare", value: 320, emoji: "🚬" },
+      { id: "rose", name: "Eternal Rose", rarity: "Common", value: 90, emoji: "🌹" },
     ];
 
-    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-    if (tg) {
-      tg.ready();
-      tg.expand();
+    const tgApp = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tgApp) {
+      tgApp.ready();
+      tgApp.expand();
     }
 
-    const state = {
-      mode: "case",
+    const tgUser = tgApp?.initDataUnsafe?.user || null;
+
+    const app = {
+      mode: "cases",
       user: {
-        id: String(tg?.initDataUnsafe?.user?.id || "local_user"),
-        username: (tg?.initDataUnsafe?.user?.username || "").toLowerCase(),
-        firstName: tg?.initDataUnsafe?.user?.first_name || "Player",
-        photoUrl: tg?.initDataUnsafe?.user?.photo_url || "",
+        id: String(tgUser?.id || "7366498440"),
+        username: String(tgUser?.username || "lycheemolly").replace(/^@/, "").toLowerCase(),
+        firstName: tgUser?.first_name || "Mikhail",
         balance: 0,
         gifts: [],
+        lastFreeCase: 0,
       },
-      isAdmin: false,
+      isDev: false,
       leaderboard: [],
-      gifts: FALLBACK_GIFTS,
+      minesState: { active: false, mines: 5, bet: 100, safeCount: 0, opened: new Set() },
       busy: false,
     };
 
-    const $ = (id) => document.getElementById(id);
+    const el = (id) => document.getElementById(id);
+    const fmt = (n) => Number(n || 0).toLocaleString("ru-RU");
 
     function setSplash(pct, text) {
-      $("splash-fill").style.width = `${Math.max(5, Math.min(100, pct))}%`;
-      if (text) $("splash-status").textContent = text;
+      el("splash-pct").textContent = `${pct}%`;
+      el("splash-fill").style.width = `${pct}%`;
+      if (text) el("splash-note").textContent = text;
     }
 
-    function hideSplash() {
-      $("splash-screen").classList.add("hidden");
+    function checkDevAccess(u) {
+      const idMatch = APP_CFG.DEV_IDS.includes(String(u.id));
+      const userMatch = u.username && APP_CFG.DEV_USERNAMES.includes(String(u.username).toLowerCase());
+      return Boolean(idMatch || userMatch);
     }
 
-    function formatNum(n) {
-      return Number(n || 0).toLocaleString("ru-RU");
-    }
-
-    // Локальное хранилище только как резерв, когда API_BASE_URL ещё не указан
-    function loadLocalDb() {
+    function readStore() {
       try {
-        return JSON.parse(localStorage.getItem("molly_live_db_v1") || '{"users":{}}');
+        return JSON.parse(localStorage.getItem("molly_store_v2") || '{"users":{}}');
       } catch {
         return { users: {} };
       }
     }
-    function saveLocalDb(db) {
-      localStorage.setItem("molly_live_db_v1", JSON.stringify(db));
+    function writeStore(s) {
+      localStorage.setItem("molly_store_v2", JSON.stringify(s));
     }
 
-    async function apiCall(path, method = "GET", body = null) {
-      if (!CONFIG.API_BASE_URL) {
-        return localFallbackApi(path, method, body);
+    async function callApi(path, method = "GET", payload = null) {
+      if (!APP_CFG.API_URL) {
+        return localApi(path, method, payload);
       }
       const headers = { "Content-Type": "application/json" };
-      if (tg?.initData) headers["X-Telegram-Init-Data"] = tg.initData;
-      if (CONFIG.ADMIN_SECRET) headers["X-Admin-Secret"] = CONFIG.ADMIN_SECRET;
+      if (tgApp?.initData) headers["X-Telegram-Init-Data"] = tgApp.initData;
 
-      const res = await fetch(`${CONFIG.API_BASE_URL.replace(/\/$/, "")}${path}`, {
+      const r = await fetch(`${APP_CFG.API_URL.replace(/\/$/, "")}${path}`, {
         method,
         headers,
-        body: body ? JSON.stringify(body) : undefined,
+        body: payload ? JSON.stringify(payload) : undefined,
       });
-      const data = await res.json();
-      if (!res.ok || data.ok === false) {
-        throw new Error(data.message || data.error || `HTTP ${res.status}`);
-      }
+      const data = await r.json();
+      if (!r.ok || data.ok === false) throw new Error(data.message || data.error || "API Error");
       return data;
     }
 
-    function localFallbackApi(path, method, body) {
-      const db = loadLocalDb();
-      const actorId = String(state.user.id);
-      if (!db.users[actorId]) {
-        db.users[actorId] = {
-          id: actorId,
-          username: state.user.username || "",
-          firstName: state.user.firstName || "Player",
-          balance: 0,
-          gifts: [],
-        };
+    function localApi(path, method, payload) {
+      const store = readStore();
+      const meId = String(app.user.id);
+      if (!store.users[meId]) {
+        store.users[meId] = { ...app.user };
       }
+      const me = store.users[meId];
 
-      const buildLb = () =>
-        Object.values(db.users)
+      const makeLb = () =>
+        Object.values(store.users)
           .sort((a, b) => Number(b.balance || 0) - Number(a.balance || 0))
-          .map((u, i) => ({
-            rank: i + 1,
+          .map((u, idx) => ({
+            rank: idx + 1,
             id: u.id,
             username: u.username ? `@${u.username}` : `ID ${u.id}`,
             firstName: u.firstName || "Player",
@@ -691,368 +766,447 @@
             giftsCount: (u.gifts || []).length,
           }));
 
-      const adminCheck = CONFIG.ADMIN_TELEGRAM_IDS.map(String).includes(actorId) || actorId === "local_user";
-
       if (path === "/api/session") {
-        saveLocalDb(db);
-        return {
-          ok: true,
-          user: db.users[actorId],
-          isAdmin: adminCheck,
-          leaderboard: buildLb(),
-          gifts: FALLBACK_GIFTS,
-        };
+        writeStore(store);
+        return { ok: true, user: me, isDev: checkDevAccess(me), leaderboard: makeLb() };
       }
-
       if (path === "/api/leaderboard") {
-        return { ok: true, leaderboard: buildLb() };
+        return { ok: true, leaderboard: makeLb() };
       }
-
       if (path === "/api/admin/grant") {
-        if (!adminCheck) throw new Error("Нет прав администратора");
-        const amount = Number(body.amount || 0);
-        if (!Number.isFinite(amount) || amount <= 0) throw new Error("Некорректная сумма");
+        if (!checkDevAccess(me)) throw new Error("Доступ запрещён");
+        const amt = Number(payload.amount || 0);
+        if (!Number.isFinite(amt) || amt <= 0) throw new Error("Некорректная сумма");
 
-        const targetKey = String(body.target || "self").trim().replace(/^@/, "").toLowerCase();
-        let targetUser = null;
-
-        if (!targetKey || targetKey === "self" || targetKey === actorId) {
-          targetUser = db.users[actorId];
+        const rawTarget = String(payload.target || "self").trim().replace(/^@/, "").toLowerCase();
+        let target = null;
+        if (!rawTarget || rawTarget === "self" || rawTarget === meId) {
+          target = me;
         } else {
-          targetUser =
-            Object.values(db.users).find((u) => String(u.id) === targetKey) ||
-            Object.values(db.users).find((u) => (u.username || "").toLowerCase() === targetKey) ||
+          target =
+            Object.values(store.users).find((u) => String(u.id) === rawTarget) ||
+            Object.values(store.users).find((u) => String(u.username || "").toLowerCase() === rawTarget) ||
             null;
-
-          if (!targetUser) {
-            targetUser = {
-              id: targetKey,
-              username: /^\d+$/.test(targetKey) ? "" : targetKey,
-              firstName: /^\d+$/.test(targetKey) ? `User ${targetKey}` : `@${targetKey}`,
+          if (!target) {
+            target = {
+              id: rawTarget,
+              username: /^\d+$/.test(rawTarget) ? "" : rawTarget,
+              firstName: /^\d+$/.test(rawTarget) ? `Player ${rawTarget}` : `@${rawTarget}`,
               balance: 0,
               gifts: [],
             };
-            db.users[targetUser.id] = targetUser;
+            store.users[target.id] = target;
           }
         }
-
-        targetUser.balance = Number(targetUser.balance || 0) + amount;
-        saveLocalDb(db);
-        return {
-          ok: true,
-          targetUser,
-          actorUser: db.users[actorId],
-          leaderboard: buildLb(),
-        };
+        target.balance = Number(target.balance || 0) + amt;
+        writeStore(store);
+        return { ok: true, targetUser: target, actorUser: me, leaderboard: makeLb() };
       }
-
       if (path === "/api/game/play") {
-        const u = db.users[actorId];
-        const bet = Number(body.bet || 0);
-        if (bet <= 0 || u.balance < bet) throw new Error("Недостаточно средств на балансе");
-        u.balance -= bet;
+        const bet = Number(payload.bet || 0);
+        if (payload.mode !== "free_case") {
+          if (!Number.isFinite(bet) || bet <= 0) throw new Error("Введите ставку");
+          if (me.balance < bet) throw new Error("Недостаточно ★ на балансе");
+          me.balance -= bet;
+        }
 
         let won = false;
         let payout = 0;
         let gift = null;
         let detail = {};
 
-        if (body.mode === "case") {
-          gift = FALLBACK_GIFTS[Math.floor(Math.random() * FALLBACK_GIFTS.length)];
+        if (payload.mode === "free_case") {
+          const dayMs = 24 * 60 * 60 * 1000;
+          if (Date.now() - Number(me.lastFreeCase || 0) < dayMs) {
+            throw new Error("Бесплатный кейс доступен раз в 24 часа");
+          }
+          me.lastFreeCase = Date.now();
+          payout = 50;
+          me.balance += payout;
           won = true;
-          payout = Number(gift.value);
-          u.gifts = u.gifts || [];
-          u.gifts.unshift(gift);
+          detail = { free: true };
+        } else if (payload.mode === "cases") {
+          gift = GIFTS_CATALOG[Math.floor(Math.random() * GIFTS_CATALOG.length)];
+          payout = gift.value;
+          me.balance += payout;
+          me.gifts = me.gifts || [];
+          me.gifts.unshift(gift);
+          won = true;
           detail = { gift };
-        } else if (body.mode === "crash") {
-          const targetMult = Math.max(1.1, Number(body.targetMultiplier || 1.5));
-          const crashPoint = Number((0.96 / (1 - Math.random() * 0.94)).toFixed(2));
-          won = crashPoint >= targetMult;
-          payout = won ? Math.round(bet * targetMult) : 0;
-          detail = { crashPoint, targetCashout: targetMult };
-        } else if (body.mode === "mines") {
-          const safePicks = Math.max(1, Number(body.safePicks || 3));
-          const minesCount = Math.max(1, Math.min(20, Number(body.minesCount || 5)));
-          const mult = Number((0.96 / Math.pow((25 - minesCount) / 25, safePicks)).toFixed(2));
-          won = Math.random() < Math.min(0.85, 0.94 / mult);
+        } else if (payload.mode === "crash") {
+          const target = Math.max(1.1, Number(payload.target || 1.5));
+          const crashAt = Number((0.96 / (1 - Math.random() * 0.94)).toFixed(2));
+          won = crashAt >= target;
+          payout = won ? Math.round(bet * target) : 0;
+          if (payout > 0) me.balance += payout;
+          detail = { crashAt, target };
+        } else if (payload.mode === "mines_finish") {
+          const minesCount = Math.max(1, Math.min(20, Number(payload.minesCount || 5)));
+          const safeClicks = Math.max(1, Number(payload.safeClicks || 1));
+          const mult = Number((0.96 / Math.pow((25 - minesCount) / 25, safeClicks)).toFixed(2));
+          won = payload.busted ? false : true;
           payout = won ? Math.round(bet * mult) : 0;
-          detail = { multiplier: mult };
-        } else if (body.mode === "upgrade") {
-          const mult = Math.max(1.2, Number(body.targetMultiplier || 2));
-          won = Math.random() < Math.min(0.85, 0.94 / mult);
+          if (payout > 0) me.balance += payout;
+          detail = { mult, busted: Boolean(payload.busted) };
+        } else if (payload.mode === "upgrade") {
+          const chance = Math.max(5, Math.min(85, Number(payload.chance || 50)));
+          const mult = Number((85 / chance).toFixed(2));
+          won = Math.random() * 100 < chance;
           payout = won ? Math.round(bet * mult) : 0;
-          detail = { targetMultiplier: mult };
-        } else if (body.mode === "arena") {
+          if (payout > 0) me.balance += payout;
+          detail = { chance, mult };
+        } else if (payload.mode === "arena") {
           won = Math.random() < 0.48;
           payout = won ? Math.round(bet * 1.9) : 0;
-          detail = { opponent: "Live Rival", multiplier: 1.9 };
+          if (payout > 0) me.balance += payout;
+          detail = { mult: 1.9 };
         }
 
-        if (payout > 0) u.balance += payout;
-        saveLocalDb(db);
+        writeStore(store);
         return {
           ok: true,
-          mode: body.mode,
-          bet,
           won,
           payout,
-          balance: u.balance,
-          gifts: u.gifts || [],
+          balance: me.balance,
+          gifts: me.gifts || [],
           detail,
-          leaderboard: buildLb(),
+          leaderboard: makeLb(),
         };
       }
-
-      throw new Error("Неизвестный эндпоинт");
+      throw new Error("Route not found");
     }
 
-    function renderAll() {
-      $("header-balance").textContent = formatNum(state.user.balance);
-      $("profile-balance").textContent = `${formatNum(state.user.balance)} ★`;
-      $("profile-name").textContent = state.user.firstName || "Игрок";
-      $("profile-id").textContent = state.user.id;
-      $("profile-username").textContent = state.user.username ? `@${state.user.username}` : "—";
-      $("profile-gifts-count").textContent = String((state.user.gifts || []).length);
+    function renderUI() {
+      el("ui-balance").textContent = fmt(app.user.balance);
+      el("prof-name").textContent = app.user.firstName || "Игрок";
+      el("prof-id").textContent = app.user.id;
+      el("prof-user").textContent = app.user.username ? `@${app.user.username}` : "—";
+      el("prof-bal").textContent = `${fmt(app.user.balance)} ★`;
+      el("prof-gifts").textContent = String((app.user.gifts || []).length);
 
-      const myRankIdx = state.leaderboard.findIndex((x) => String(x.id) === String(state.user.id));
-      $("profile-rank").textContent = myRankIdx >= 0 ? `Место: #${myRankIdx + 1}` : "Место: #—";
+      const idx = app.leaderboard.findIndex((x) => String(x.id) === String(app.user.id));
+      el("prof-rank").textContent = idx >= 0 ? `Ранг: #${idx + 1}` : "Ранг: #—";
 
-      // Подарки Telegram
-      $("gifts-grid").innerHTML = (state.gifts || [])
-        .map(
-          (g) => `
-          <div class="gift-card rarity-${g.rarity || "common"}">
-            <div class="gift-emoji">${g.emoji || "🎁"}</div>
+      el("gifts-list").innerHTML = GIFTS_CATALOG.map(
+        (g) => `
+          <div class="gift-tile">
+            <div class="gift-ico">${g.emoji}</div>
             <div>
-              <div class="gift-name">${g.name}</div>
-              <div class="gift-meta">${g.rarity || "gift"} • ~${formatNum(g.value)} ★</div>
+              <div class="gift-t">${g.name}</div>
+              <div class="gift-s">${g.rarity} • ${fmt(g.value)} ★</div>
             </div>
           </div>`
-        )
-        .join("");
+      ).join("");
 
-      // Таблица топа (от высшего баланса к низшему)
-      if (!state.leaderboard.length) {
-        $("leaderboard-list").innerHTML = `<div class="lb-sub">Пока нет игроков в рейтинге.</div>`;
-      } else {
-        $("leaderboard-list").innerHTML = state.leaderboard
-          .map((item) => {
-            const medal = item.rank === 1 ? "🥇" : item.rank === 2 ? "🥈" : item.rank === 3 ? "🥉" : `#${item.rank}`;
-            const isMe = String(item.id) === String(state.user.id);
-            return `
-              <div class="lb-item ${isMe ? "me" : ""}">
-                <div class="lb-left">
-                  <div class="lb-rank">${medal}</div>
-                  <div>
-                    <div class="lb-name">${item.firstName} ${isMe ? "(Вы)" : ""}</div>
-                    <div class="lb-sub">${item.username} • Подарков: ${item.giftsCount || 0}</div>
+      el("lb-list").innerHTML = app.leaderboard.length
+        ? app.leaderboard
+            .map((row) => {
+              const badge = row.rank === 1 ? "🥇" : row.rank === 2 ? "🥈" : row.rank === 3 ? "🥉" : `#${row.rank}`;
+              const isMe = String(row.id) === String(app.user.id);
+              return `
+                <div class="lb-row ${isMe ? "me" : ""}">
+                  <div class="lb-left">
+                    <div class="lb-pos">${badge}</div>
+                    <div>
+                      <div class="lb-name">${row.firstName} ${isMe ? "(Вы)" : ""}</div>
+                      <div class="lb-sub">${row.username} • Подарков: ${row.giftsCount || 0}</div>
+                    </div>
                   </div>
-                </div>
-                <div class="lb-bal">${formatNum(item.balance)} ★</div>
-              </div>`;
-          })
-          .join("");
-      }
+                  <div class="lb-val">${fmt(row.balance)} ★</div>
+                </div>`;
+            })
+            .join("")
+        : `<div class="muted">Пока нет записей в топе.</div>`;
 
-      $("dev-status-badge").textContent = state.isAdmin ? "ADMIN ACTIVE" : "DEV PANEL";
+      el("dev-card").style.display = app.isDev ? "block" : "none";
+      el("dev-role-badge").textContent = app.isDev ? "DEV ACCESS" : "LOCKED";
     }
 
-    function renderExtraControls() {
-      const box = $("extra-controls");
-      const labels = {
-        case: "Кейсы с подарками TG",
-        crash: "Crash (множитель)",
-        mines: "Mines (риск/ячейки)",
-        upgrade: "Upgrade (цель x)",
-        arena: "Arena (дуэль)",
-      };
-      $("active-mode-label").textContent = labels[state.mode] || state.mode;
-
-      if (state.mode === "crash" || state.mode === "upgrade") {
-        box.innerHTML = `
-          <label class="field-label" for="param-mult">Целевой множитель (x)</label>
-          <input type="number" id="param-mult" min="1.1" max="10" step="0.1" value="${state.mode === "crash" ? "1.5" : "2.0"}" />
-        `;
-      } else if (state.mode === "mines") {
-        box.innerHTML = `
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div>
-              <label class="field-label" for="param-mines">Мин (1–20)</label>
-              <input type="number" id="param-mines" min="1" max="20" value="5" />
-            </div>
-            <div>
-              <label class="field-label" for="param-safe">Безопасных ходов</label>
-              <input type="number" id="param-safe" min="1" max="15" value="3" />
-            </div>
-          </div>
-        `;
-      } else {
-        box.innerHTML = "";
-      }
+    function setStatus(text, type = "") {
+      const box = el("game-status");
+      box.className = `status-box ${type}`.trim();
+      box.innerHTML = text;
     }
 
-    async function handlePlay() {
-      if (state.busy) return;
-      const bet = Number($("bet-input").value);
-      if (!Number.isFinite(bet) || bet <= 0) {
-        alert("Введите корректную ставку больше 0");
-        return;
-      }
-
-      const payload = {
-        mode: state.mode,
-        bet,
-        user: state.user,
-      };
-      if ($("param-mult")) payload.targetMultiplier = Number($("param-mult").value);
-      if ($("param-mines")) payload.minesCount = Number($("param-mines").value);
-      if ($("param-safe")) payload.safePicks = Number($("param-safe").value);
-
-      state.busy = true;
-      $("btn-play").disabled = true;
-      $("btn-play").textContent = "Раунд идёт...";
-
-      try {
-        const res = await apiCall("/api/game/play", "POST", payload);
-        state.user.balance = res.balance;
-        if (res.gifts) state.user.gifts = res.gifts;
-        if (res.leaderboard) state.leaderboard = res.leaderboard;
-        renderAll();
-
-        const box = $("game-result");
-        box.className = `result-box ${res.won ? "win" : "lose"}`;
-
-        if (state.mode === "case" && res.detail?.gift) {
-          const g = res.detail.gift;
-          box.innerHTML = `🎁 Выпал подарок Telegram: <strong>${g.emoji} ${g.name}</strong> (${g.rarity}, ценность ~${formatNum(g.value)} ★). Баланс: <strong>${formatNum(res.balance)} ★</strong>`;
-        } else if (res.won) {
-          box.innerHTML = `✅ Победа! Выигрыш: <strong>+${formatNum(res.payout)} ★</strong>. Баланс: <strong>${formatNum(res.balance)} ★</strong>`;
+    function renderMinesBoard() {
+      const grid = el("mines-grid");
+      grid.innerHTML = "";
+      for (let i = 0; i < 25; i++) {
+        const btn = document.createElement("button");
+        btn.className = "mine-cell";
+        if (app.minesState.opened.has(i)) {
+          btn.classList.add("safe");
+          btn.textContent = "💎";
         } else {
-          const crashInfo = res.detail?.crashPoint ? ` (краш на ${res.detail.crashPoint}x)` : "";
-          box.innerHTML = `❌ Раунд не сыграл${crashInfo}. Списано: <strong>${formatNum(bet)} ★</strong>. Баланс: <strong>${formatNum(res.balance)} ★</strong>`;
+          btn.textContent = "•";
         }
-      } catch (err) {
-        alert(err.message || "Ошибка при запуске раунда");
-      } finally {
-        state.busy = false;
-        $("btn-play").disabled = false;
-        $("btn-play").textContent = "Запустить live-раунд";
+        btn.addEventListener("click", () => handleMineClick(i));
+        grid.appendChild(btn);
       }
     }
 
-    async function handleGrant(targetOverride = null, amountOverride = null) {
-      const target = (targetOverride !== null ? targetOverride : $("dev-target").value).trim() || "self";
-      const amount = Number(amountOverride !== null ? amountOverride : $("dev-amount").value);
-      const note = $("dev-note").value.trim();
-
-      if (!Number.isFinite(amount) || amount <= 0) {
-        alert("Укажите сумму больше 0");
+    function startMinesRound() {
+      const bet = Number(el("mines-bet").value);
+      const mines = Math.max(1, Math.min(20, Number(el("mines-count").value || 5)));
+      if (!Number.isFinite(bet) || bet <= 0 || app.user.balance < bet) {
+        setStatus("Недостаточно ★ для старта раунда Мин.", "lose");
         return;
       }
+      app.minesState = { active: true, mines, bet, safeCount: 0, opened: new Set() };
+      renderMinesBoard();
+      setStatus(`Раунд Мин начат (мин: ${mines}, ставка: ${fmt(bet)} ★). Открывайте безопасные ячейки или нажмите «Забрать выигрыш».`);
+    }
 
-      try {
-        const res = await apiCall("/api/admin/grant", "POST", {
-          target,
-          amount,
-          note,
-          actor: state.user,
-        });
-        if (res.actorUser) state.user = { ...state.user, ...res.actorUser };
-        if (res.leaderboard) state.leaderboard = res.leaderboard;
-        renderAll();
+    async function handleMineClick(idx) {
+      if (!app.minesState.active || app.minesState.opened.has(idx) || app.busy) return;
+      const bombChance = app.minesState.mines / (25 - app.minesState.safeCount);
+      const hitMine = Math.random() < bombChance;
 
-        $("dev-feedback").className = "result-box win";
-        $("dev-feedback").innerHTML =
-          `✅ Начислено <strong>+${formatNum(amount)} ★</strong> игроку <strong>${res.targetUser?.firstName || target}</strong> (ID: ${res.targetUser?.id || target}). Новый баланс цели: <strong>${formatNum(res.targetUser?.balance)} ★</strong>.`;
-      } catch (err) {
-        $("dev-feedback").className = "result-box lose";
-        $("dev-feedback").textContent = `Ошибка начисления: ${err.message}`;
+      if (hitMine) {
+        app.minesState.active = false;
+        const cells = el("mines-grid").querySelectorAll(".mine-cell");
+        if (cells[idx]) {
+          cells[idx].classList.add("bomb");
+          cells[idx].textContent = "💣";
+        }
+        app.busy = true;
+        try {
+          const res = await callApi("/api/game/play", "POST", {
+            mode: "mines_finish",
+            bet: app.minesState.bet,
+            minesCount: app.minesState.mines,
+            safeClicks: app.minesState.safeCount,
+            busted: true,
+          });
+          app.user.balance = res.balance;
+          if (res.leaderboard) app.leaderboard = res.leaderboard;
+          renderUI();
+          setStatus(`💥 Попали на мину! Потеряно ${fmt(app.minesState.bet)} ★.`, "lose");
+        } finally {
+          app.busy = false;
+        }
+      } else {
+        app.minesState.opened.add(idx);
+        app.minesState.safeCount += 1;
+        renderMinesBoard();
+        const mult = (0.96 / Math.pow((25 - app.minesState.mines) / 25, app.minesState.safeCount)).toFixed(2);
+        setStatus(`💎 Безопасно! Открыто: ${app.minesState.safeCount}, текущий множитель: <strong>${mult}x</strong>.`);
       }
     }
 
-    // ================= EVENTS =================
-    document.querySelectorAll(".tab-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-        document.querySelectorAll(".page").forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        $(btn.dataset.page).classList.add("active");
-        if (btn.dataset.page === "page-top") {
-          apiCall("/api/leaderboard").then((r) => {
+    async function cashoutMines() {
+      if (!app.minesState.active || app.minesState.safeCount < 1 || app.busy) {
+        setStatus("Сначала откройте хотя бы одну безопасную ячейку.", "lose");
+        return;
+      }
+      app.busy = true;
+      try {
+        const res = await callApi("/api/game/play", "POST", {
+          mode: "mines_finish",
+          bet: app.minesState.bet,
+          minesCount: app.minesState.mines,
+          safeClicks: app.minesState.safeCount,
+          busted: false,
+        });
+        app.minesState.active = false;
+        app.user.balance = res.balance;
+        if (res.leaderboard) app.leaderboard = res.leaderboard;
+        renderUI();
+        setStatus(`✅ Вывели выигрыш: <strong>+${fmt(res.payout)} ★</strong> (${app.minesState.safeCount} шагов).`, "win");
+      } catch (e) {
+        setStatus(e.message, "lose");
+      } finally {
+        app.busy = false;
+      }
+    }
+
+    async function runSimpleMode(mode, extra = {}) {
+      if (app.busy) return;
+      app.busy = true;
+      try {
+        const res = await callApi("/api/game/play", "POST", { mode, ...extra });
+        app.user.balance = res.balance;
+        if (res.gifts) app.user.gifts = res.gifts;
+        if (res.leaderboard) app.leaderboard = res.leaderboard;
+        renderUI();
+
+        if (mode === "free_case") {
+          setStatus(`🎁 Получен бесплатный бонус: <strong>+${fmt(res.payout)} ★</strong>!`, "win");
+        } else if (mode === "cases" && res.detail?.gift) {
+          const g = res.detail.gift;
+          setStatus(`🎁 Выпал подарок <strong>${g.emoji} ${g.name}</strong> (${g.rarity}, +${fmt(res.payout)} ★).`, "win");
+        } else if (mode === "crash") {
+          el("crash-mult").textContent = `${res.detail?.crashAt || "1.00"}x`;
+          const pill = document.createElement("span");
+          pill.className = "hist-pill";
+          pill.textContent = `${res.detail?.crashAt || "1.00"}x`;
+          el("crash-hist").prepend(pill);
+          if (res.won) {
+            setStatus(`🚀 Успели забрать на ${res.detail.target}x! Выигрыш: <strong>+${fmt(res.payout)} ★</strong>.`, "win");
+          } else {
+            setStatus(`💥 Краш на ${res.detail.crashAt}x (цель была ${res.detail.target}x). Списано ${fmt(extra.bet)} ★.`, "lose");
+          }
+        } else if (mode === "upgrade") {
+          setStatus(
+            res.won
+              ? `⚡ Апгрейд успешен (${res.detail.chance}%, ${res.detail.mult}x)! Выигрыш: <strong>+${fmt(res.payout)} ★</strong>.`
+              : `⚡ Апгрейд не прошёл (${res.detail.chance}%). Списано ${fmt(extra.bet)} ★.`,
+            res.won ? "win" : "lose"
+          );
+        } else if (mode === "arena") {
+          setStatus(
+            res.won
+              ? `⚔️ Победа на Арене! Начислено <strong>+${fmt(res.payout)} ★</strong>.`
+              : `⚔️ Поражение на Арене. Списано ${fmt(extra.bet)} ★.`,
+            res.won ? "win" : "lose"
+          );
+        }
+      } catch (e) {
+        setStatus(e.message, "lose");
+      } finally {
+        app.busy = false;
+      }
+    }
+
+    // NAVIGATION
+    document.querySelectorAll(".dock-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll(".dock-btn").forEach((x) => x.classList.remove("active"));
+        document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
+        b.classList.add("active");
+        el(b.dataset.screen).classList.add("active");
+        if (b.dataset.screen === "screen-top") {
+          callApi("/api/leaderboard").then((r) => {
             if (r.leaderboard) {
-              state.leaderboard = r.leaderboard;
-              renderAll();
+              app.leaderboard = r.leaderboard;
+              renderUI();
             }
           }).catch(() => {});
         }
       });
     });
 
-    document.querySelectorAll(".mode-btn").forEach((btn) => {
+    // GAME MODE TABS
+    const modeHints = {
+      cases: "Кейсы с подарками Telegram",
+      crash: "Рост множителя и автовывод",
+      mines: "Поле 5×5 с минами",
+      upgrade: "Выбор шанса и множителя",
+      arena: "Быстрый бой на Арене",
+    };
+
+    document.querySelectorAll(".game-tab").forEach((btn) => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".game-tab").forEach((x) => x.classList.remove("active"));
+        document.querySelectorAll(".mode-panel").forEach((p) => p.classList.remove("active"));
         btn.classList.add("active");
-        state.mode = btn.dataset.mode;
-        renderExtraControls();
+        app.mode = btn.dataset.mode;
+        el(`panel-${app.mode}`).classList.add("active");
+        el("ui-mode-hint").textContent = modeHints[app.mode] || "";
       });
     });
 
-    document.querySelectorAll(".chip[data-bet]").forEach((ch) => {
-      ch.addEventListener("click", () => {
-        $("bet-input").value = ch.dataset.bet;
+    document.querySelectorAll("[data-set-bet]").forEach((c) => {
+      c.addEventListener("click", () => {
+        el(c.dataset.setBet).value = c.dataset.val;
       });
     });
-    $("btn-half-bet").addEventListener("click", () => {
-      $("bet-input").value = Math.max(1, Math.floor(Number(state.user.balance || 0) / 2));
-    });
-    $("btn-max-bet").addEventListener("click", () => {
-      $("bet-input").value = Math.max(1, Math.floor(Number(state.user.balance || 0)));
-    });
 
-    $("btn-play").addEventListener("click", handlePlay);
-
-    $("btn-open-deposit").addEventListener("click", () => $("deposit-modal").classList.add("open"));
-    $("btn-close-deposit").addEventListener("click", () => $("deposit-modal").classList.remove("open"));
-    $("deposit-modal").addEventListener("click", (e) => {
-      if (e.target === $("deposit-modal")) $("deposit-modal").classList.remove("open");
+    document.querySelectorAll("[data-set-target]").forEach((c) => {
+      c.addEventListener("click", () => {
+        el("crash-target").value = c.dataset.setTarget;
+      });
     });
 
-    $("btn-dev-grant").addEventListener("click", () => handleGrant());
-    document.querySelectorAll("[data-grant-self]").forEach((btn) => {
-      btn.addEventListener("click", () => handleGrant("self", Number(btn.dataset.grantSelf)));
+    el("upgrade-chance").addEventListener("input", (e) => {
+      el("upgrade-chance-val").textContent = `${e.target.value}%`;
     });
 
-    $("btn-refresh-top").addEventListener("click", async () => {
+    el("btn-free-case").addEventListener("click", () => runSimpleMode("free_case", { bet: 0 }));
+    el("btn-open-case").addEventListener("click", () =>
+      runSimpleMode("cases", { bet: Number(el("case-bet").value) })
+    );
+    el("btn-run-crash").addEventListener("click", () =>
+      runSimpleMode("crash", {
+        bet: Number(el("crash-bet").value),
+        target: Number(el("crash-target").value),
+      })
+    );
+    el("btn-mines-new").addEventListener("click", startMinesRound);
+    el("btn-mines-cashout").addEventListener("click", cashoutMines);
+    el("btn-run-upgrade").addEventListener("click", () =>
+      runSimpleMode("upgrade", {
+        bet: Number(el("upgrade-bet").value),
+        chance: Number(el("upgrade-chance").value),
+      })
+    );
+    el("btn-run-arena").addEventListener("click", () =>
+      runSimpleMode("arena", { bet: Number(el("arena-bet").value) })
+    );
+
+    // MODALS
+    el("btn-topup").addEventListener("click", () => el("modal-topup").classList.add("open"));
+    el("btn-close-topup").addEventListener("click", () => el("modal-topup").classList.remove("open"));
+    el("btn-add-gift-modal").addEventListener("click", () => el("modal-gift").classList.add("open"));
+    el("btn-close-gift").addEventListener("click", () => el("modal-gift").classList.remove("open"));
+
+    // DEV GRANT
+    async function grantStars(targetOverride = null, amountOverride = null) {
+      const target = (targetOverride !== null ? targetOverride : el("dev-target").value).trim() || "self";
+      const amount = Number(amountOverride !== null ? amountOverride : el("dev-amount").value);
       try {
-        const res = await apiCall("/api/leaderboard");
-        if (res.leaderboard) {
-          state.leaderboard = res.leaderboard;
-          renderAll();
+        const res = await callApi("/api/admin/grant", "POST", { target, amount });
+        if (res.actorUser) app.user = { ...app.user, ...res.actorUser };
+        if (res.leaderboard) app.leaderboard = res.leaderboard;
+        renderUI();
+        el("dev-log").className = "status-box win";
+        el("dev-log").innerHTML =
+          `Начислено <strong>+${fmt(amount)} ★</strong> игроку <strong>${res.targetUser?.firstName || target}</strong> (баланс цели: <strong>${fmt(res.targetUser?.balance)} ★</strong>).`;
+      } catch (e) {
+        el("dev-log").className = "status-box lose";
+        el("dev-log").textContent = `Ошибка: ${e.message}`;
+      }
+    }
+
+    el("btn-dev-send").addEventListener("click", () => grantStars());
+    document.querySelectorAll("[data-quick-self]").forEach((b) => {
+      b.addEventListener("click", () => grantStars("self", Number(b.dataset.quickSelf)));
+    });
+
+    el("btn-refresh-lb").addEventListener("click", async () => {
+      try {
+        const r = await callApi("/api/leaderboard");
+        if (r.leaderboard) {
+          app.leaderboard = r.leaderboard;
+          renderUI();
         }
       } catch (e) {
         alert(e.message);
       }
     });
 
-    // ================= INIT =================
-    (async function init() {
-      renderExtraControls();
+    el("btn-perf").addEventListener("click", () => {
+      document.body.classList.toggle("perf-mode");
+      const on = document.body.classList.contains("perf-mode");
+      el("btn-perf").textContent = `Режим ECO: ${on ? "вкл" : "выкл"}`;
+    });
+
+    // BOOT
+    (async function boot() {
+      renderMinesBoard();
       setSplash(35, "Подключаем профиль...");
-
       try {
-        const session = await apiCall("/api/session", "POST", { user: state.user });
-        setSplash(75, "Загружаем топ игроков и подарки...");
-        if (session.user) state.user = { ...state.user, ...session.user };
-        state.isAdmin = Boolean(session.isAdmin);
-        if (session.leaderboard) state.leaderboard = session.leaderboard;
-        if (session.gifts) state.gifts = session.gifts;
-      } catch (err) {
-        console.warn("Session fallback:", err);
+        const sess = await callApi("/api/session", "POST", { user: app.user });
+        setSplash(75, "Загружаем топ и данные...");
+        if (sess.user) app.user = { ...app.user, ...sess.user };
+        app.isDev = Boolean(sess.isDev);
+        if (sess.leaderboard) app.leaderboard = sess.leaderboard;
+      } catch (e) {
+        console.warn(e);
       }
-
-      renderAll();
-      setSplash(100, "Готово!");
-      setTimeout(hideSplash, 350);
+      renderUI();
+      setSplash(100, "Готово");
+      setTimeout(() => el("splash").classList.add("hide"), 250);
     })();
   </script>
 </body>
