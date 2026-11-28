@@ -2899,6 +2899,82 @@
       background: transparent !important;
     }
 
+
+    /* Hero layout polish */
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 168px;
+      padding: 18px 18px 16px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-end !important;
+      background-size: cover !important;
+      background-position: center right !important;
+      border-radius: 22px !important;
+    }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(100deg, rgba(8,6,14,0.88) 0%, rgba(8,6,14,0.55) 48%, rgba(8,6,14,0.25) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-card > * { position: relative; z-index: 1; }
+    .hero-chip {
+      margin-bottom: 8px !important;
+      font-size: 10px !important;
+      padding: 4px 10px !important;
+      border-radius: 99px !important;
+      background: rgba(0,0,0,0.5) !important;
+      max-width: max-content;
+    }
+    .hero-title {
+      font-size: 26px !important;
+      line-height: 1.15 !important;
+      margin: 0 0 6px !important;
+      font-weight: 900 !important;
+    }
+    .hero-desc {
+      font-size: 13px !important;
+      line-height: 1.35 !important;
+      margin: 0 0 12px !important;
+      max-width: 92%;
+    }
+    .hero-cta {
+      align-self: flex-start !important;
+      padding: 12px 18px !important;
+      border-radius: 14px !important;
+      font-weight: 800 !important;
+      border: none !important;
+      background: linear-gradient(90deg, #ff2a85, #e4007c) !important;
+      color: #fff !important;
+    }
+    .modes-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 10px !important;
+    }
+    .mode-card.illustrated {
+      background-size: cover !important;
+      background-position: center !important;
+      min-height: 120px !important;
+      border-radius: 18px !important;
+      overflow: hidden !important;
+      position: relative !important;
+    }
+    .mode-card.illustrated[data-nav="crash"] {
+      grid-column: 1 / -1 !important;
+      min-height: 140px !important;
+    }
+    .balance-pill {
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+    .star-icon { color: #ffd60a !important; }
+
 </style>
 </head>
 <body>
@@ -2930,14 +3006,14 @@
         </div>
         <div>
           <div class="brand-title">MOLLY GAME</div>
-          <div class="brand-sub"><span class="live-dot">< Stars &amp; Games</div>
+          <div class="brand-sub"><span class="live-dot" style="background:var(--green)"></span> Stars &amp; Games</div>
         </div>
       </div>
 
       <div class="balance-pill">
         <div class="balance-val">
-          <span class="star-icon">★/span>
-          <span id="balanceText">5000/span>
+          <span class="star-icon">★</span>
+          <span id="balanceText">5000</span>
         </div>
         <button class="plus-btn" id="openTopupBtn" aria-label="Пополнить">+</button>
       </div>
@@ -2946,7 +3022,7 @@
     <!-- HUB -->
     <main class="view active" id="view-hub">
       <section class="hero-card">
-        <div class="hero-chip">Режим Crash • Звёзды ★/div>
+        <div class="hero-chip">РЕЖИМ CRASH · ЗВЁЗДЫ ★</div>
         <h1 class="hero-title" id="hubHeroTitle">Успей нажать Стоп</h1>
         <p class="hero-desc" id="hubHeroDesc">Ракета стартует с x0.00. Забирай множитель в звёздах до того, как она взорвётся.</p>
         <button class="hero-cta" data-nav="crash">🚀 Запустить Crash</button>
@@ -2954,7 +3030,7 @@
 
       <div class="section-head">
         <span class="section-title" id="hubModesTitle">Режимы</span>
-        <span class="section-meta" id="hubModesMeta">Единый баланс ★/span>
+        <span class="section-meta" id="hubModesMeta">Единый баланс ★</span>
       </div>
 
       <section class="modes-grid">
@@ -3020,7 +3096,7 @@
       <div class="info-card">
         <div class="section-head">
           <span class="section-title">Активные задания</span>
-          <span class="section-meta" id="tasksDoneCount">0 / 3/span>
+          <span class="section-meta" id="tasksDoneCount">0 / 3</span>
         </div>
         <div id="tasksList" style="display:flex;flex-direction:column;gap:8px;"></div>
       </div>
@@ -3035,7 +3111,7 @@
 
       <div class="info-card">
         <div class="section-head">
-          <span class="section-title">Рейтинг по звёздам ★/span>
+          <span class="section-title">Рейтинг по звёздам ★</span>
           <span class="section-meta">
         </div>
         <div id="leaderboardList" style="display:flex;flex-direction:column;gap:8px;"></div>
@@ -3053,7 +3129,7 @@
         <canvas id="crashCanvas"></canvas>
         <div class="crash-readout">
           <div class="crash-status" id="crashStatus">Приём ставок</div>
-          <div class="crash-mult" id="crashMult">x0.00/div>
+          <div class="crash-mult" id="crashMult">x0.00</div>
           <div class="crash-subnote" id="crashSubnote">Таймер раунда идёт независимо от ставок</div>
         </div>
         <div class="countdown-box visible" id="countdownBox">
@@ -3069,39 +3145,39 @@
           <div class="bet-label">Сумма ставки</div>
           <div class="bet-input-wrap">
             <input type="number" id="betInput" class="bet-input" value="25" min="1" max="10000000" />
-            <span class="star-icon">★/span>
+            <span class="star-icon">★</span>
           </div>
         </div>
 
         <div class="preset-scroll" id="presetScroll">
-          <button class="preset-btn active" data-bet="25">25 ★/button>
-          <button class="preset-btn" data-bet="50">50 ★/button>
-          <button class="preset-btn" data-bet="100">100 ★/button>
-          <button class="preset-btn" data-bet="250">250 ★/button>
-          <button class="preset-btn" data-bet="500">500 ★/button>
-          <button class="preset-btn" data-bet="1000">1000 ★/button>
-          <button class="preset-btn" data-bet="2500">2500 ★/button>
-          <button class="preset-btn" data-bet="5000">5000 ★/button>
-          <button class="preset-btn" data-bet="10000">10000 ★/button>
+          <button class="preset-btn active" data-bet="25">25 ★</button>
+          <button class="preset-btn" data-bet="50">50 ★</button>
+          <button class="preset-btn" data-bet="100">100 ★</button>
+          <button class="preset-btn" data-bet="250">250 ★</button>
+          <button class="preset-btn" data-bet="500">500 ★</button>
+          <button class="preset-btn" data-bet="1000">1000 ★</button>
+          <button class="preset-btn" data-bet="2500">2500 ★</button>
+          <button class="preset-btn" data-bet="5000">5000 ★</button>
+          <button class="preset-btn" data-bet="10000">10000 ★</button>
         </div>
 
         <div class="autocash-row">
           <span class="autocash-label" id="autoCashLabel">Авто</span>
           <div class="autocash-pills" id="autoCashPills">
-            <button type="button" class="auto-btn" data-auto="1.5">x1.5/button>
-            <button type="button" class="auto-btn" data-auto="2">x2/button>
-            <button type="button" class="auto-btn" data-auto="5">x5/button>
-            <button type="button" class="auto-btn" data-auto="10">x10/button>
+            <button type="button" class="auto-btn" data-auto="1.5">x1.5</button>
+            <button type="button" class="auto-btn" data-auto="2">x2</button>
+            <button type="button" class="auto-btn" data-auto="5">x5</button>
+            <button type="button" class="auto-btn" data-auto="10">x10</button>
           </div>
         </div>
 
-        <button class="action-btn" id="crashActionBtn">Поставить ставку • 25 ★/button>
+        <button class="action-btn" id="crashActionBtn">Поставить ставку • 25 ★</button>
       </div>
 
       <div class="players-card">
         <div class="section-head">
           <span class="section-title" style="font-size:13px;">Ставки на раунд</span>
-          <span class="section-meta" id="playersCount">0/span>
+          <span class="section-meta" id="playersCount">0</span>
         </div>
         <div id="playersList" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
@@ -3122,8 +3198,8 @@
         <div class="mines-live-bar">
           <span class="mines-live-left" id="minesStatusText">Выбери ставку и число мин</span>
           <span class="mines-live-right" id="minesLiveReturn">
-            <span class="star-icon">★/span>
-            <span>0/span>
+            <span class="star-icon">★</span>
+            <span>0</span>
             <span style="color:var(--pink-bright);">• 1.00x</span>
           <
         </div>
@@ -3134,27 +3210,27 @@
           <div class="bet-label">Сумма ставки</div>
           <div class="bet-input-wrap">
             <input type="number" id="minesBetInput" class="bet-input" value="25" min="1" max="10000000" />
-            <span class="star-icon">★/span>
+            <span class="star-icon">★</span>
           </div>
         </div>
 
         <div class="preset-scroll" id="minesPresetScroll">
-          <button class="preset-btn active" data-mbet="25">25 ★/button>
-          <button class="preset-btn" data-mbet="50">50 ★/button>
-          <button class="preset-btn" data-mbet="100">100 ★/button>
-          <button class="preset-btn" data-mbet="250">250 ★/button>
-          <button class="preset-btn" data-mbet="500">500 ★/button>
-          <button class="preset-btn" data-mbet="1000">1000 ★/button>
+          <button class="preset-btn active" data-mbet="25">25 ★</button>
+          <button class="preset-btn" data-mbet="50">50 ★</button>
+          <button class="preset-btn" data-mbet="100">100 ★</button>
+          <button class="preset-btn" data-mbet="250">250 ★</button>
+          <button class="preset-btn" data-mbet="500">500 ★</button>
+          <button class="preset-btn" data-mbet="1000">1000 ★</button>
         </div>
 
         <div class="mines-count-row">
           <span class="bet-label">💣 Мин</span>
           <div class="mines-quick-count" id="minesQuickCount">
-            <button class="mine-cnt-btn" data-mcnt="2">2/button>
-            <button class="mine-cnt-btn active" data-mcnt="3">3/button>
-            <button class="mine-cnt-btn" data-mcnt="5">5/button>
-            <button class="mine-cnt-btn" data-mcnt="10">10/button>
-            <button class="mine-cnt-btn" data-mcnt="15">15/button>
+            <button class="mine-cnt-btn" data-mcnt="2">2</button>
+            <button class="mine-cnt-btn active" data-mcnt="3">3</button>
+            <button class="mine-cnt-btn" data-mcnt="5">5</button>
+            <button class="mine-cnt-btn" data-mcnt="10">10</button>
+            <button class="mine-cnt-btn" data-mcnt="15">15</button>
           </div>
         </div>
 
@@ -3188,17 +3264,17 @@
         <button type="button" class="action-btn" id="arenaEnterBtn">Войти на арену</button>
 
         <div class="preset-scroll" id="arenaQuickPresets">
-          <button type="button" class="preset-btn active" data-ab="10">10 ★/button>
-          <button type="button" class="preset-btn" data-ab="50">50 ★/button>
-          <button type="button" class="preset-btn" data-ab="100">100 ★/button>
-          <button type="button" class="preset-btn" data-ab="250">250 ★/button>
+          <button type="button" class="preset-btn active" data-ab="10">10 ★</button>
+          <button type="button" class="preset-btn" data-ab="50">50 ★</button>
+          <button type="button" class="preset-btn" data-ab="100">100 ★</button>
+          <button type="button" class="preset-btn" data-ab="250">250 ★</button>
         </div>
       </div>
 
       <div class="players-card">
         <div class="section-head">
           <span class="section-title" style="font-size:13px;">⚔️ Игроки на арене</span>
-          <span class="section-meta" id="arenaListCount">0/span>
+          <span class="section-meta" id="arenaListCount">0</span>
         </div>
         <div id="arenaPlayersList" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
@@ -3216,7 +3292,7 @@
           <div>
             <div class="free-case-title">Бесплатный кейс</div>
             <div class="free-case-sub">Бонус звёзд сразу на баланс раз в 24 часа</div>
-            <div class="free-timer-badge ready" id="freeCaseTimerBadge">Бесплатно • 1–10 ★/div>
+            <div class="free-timer-badge ready" id="freeCaseTimerBadge">Бесплатно • 1–10 ★</div>
           </div>
           <div id="freeCaseArtSlot"></div>
         </div>
@@ -3242,23 +3318,23 @@
           </div>
 
           <div class="mult-selector" id="caseMultSelector">
-            <button type="button" class="mult-pill active" data-cmult="1">x1/button>
-            <button type="button" class="mult-pill" data-cmult="2">x2/button>
-            <button type="button" class="mult-pill" data-cmult="3">x3/button>
-            <button type="button" class="mult-pill" data-cmult="4">x4/button>
-            <button type="button" class="mult-pill" data-cmult="5">x5/button>
+            <button type="button" class="mult-pill active" data-cmult="1">x1</button>
+            <button type="button" class="mult-pill" data-cmult="2">x2</button>
+            <button type="button" class="mult-pill" data-cmult="3">x3</button>
+            <button type="button" class="mult-pill" data-cmult="4">x4</button>
+            <button type="button" class="mult-pill" data-cmult="5">x5</button>
           </div>
 
           <button type="button" class="open-case-btn" id="caseSpinBtn">
             <span>Открыть за</span>
-            <span id="caseSpinCostText">1500/span>
-            <span>★/span>
+            <span id="caseSpinCostText">1500</span>
+            <span>★</span>
           </button>
         </div>
 
         <div class="section-head">
           <span class="section-title">Призы</span>
-          <span class="section-meta" id="casePrizesCount">0/span>
+          <span class="section-meta" id="casePrizesCount">0</span>
         </div>
         <div class="prizes-grid" id="casePrizesGrid"></div>
       </div>
@@ -3306,16 +3382,16 @@
           <div>
             <div class="upgrade-side-label">ВАШ ПОДАРОК</div>
             <div class="upgrade-side-val">
-              <span class="star-icon">★/span>
-              <span id="upgradeOwnedValue">0/span>
+              <span class="star-icon">★</span>
+              <span id="upgradeOwnedValue">0</span>
             </div>
           </div>
           <div style="color:var(--pink-bright);font-weight:800;">→</div>
           <div style="text-align:right;">
             <div class="upgrade-side-label">ПОТЕНЦИАЛ ЦЕЛИ</div>
             <div class="upgrade-side-val" style="justify-content:flex-end;">
-              <span class="star-icon">★/span>
-              <span id="upgradeTargetValue">0/span>
+              <span class="star-icon">★</span>
+              <span id="upgradeTargetValue">0</span>
             </div>
           </div>
         </div>
@@ -3343,7 +3419,7 @@
       <div class="upgrade-picker-card">
         <div class="section-head">
           <span class="section-title" style="font-size:13px;">Подарки для апгрейда</span>
-          <span class="section-meta" id="upgradeSelectedCount">0/1/span>
+          <span class="section-meta" id="upgradeSelectedCount">0/1</span>
         </div>
         <div class="inv-grid" id="upgradeInventoryGrid"></div>
       </div>
@@ -3365,7 +3441,7 @@
 
         <div class="wager-strip-card">
           <span style="color:var(--text-muted);" id="wagerLeftLabel">Осталось отыграть</span>
-          <span style="font-weight:900;font-variant-numeric:tabular-nums;"><span id="wagerLeftVal">0/span> <span class="star-icon">★/span><
+          <span style="font-weight:900;font-variant-numeric:tabular-nums;"><span id="wagerLeftVal">0</span> <span class="star-icon">★</span><
         </div>
 
         <button type="button" class="translucent-gifts-trigger" id="openMyGiftsModalBtn">
@@ -3390,11 +3466,11 @@
           <div class="vip-summary-rates">
             <div>
               <div style="font-size:11px;color:var(--text-muted);">Рейкбек</div>
-              <div style="font-size:15px;font-weight:900;"><span id="vipSummaryRakeback">3%</span> <span style="color:var(--gold);">0.00 ★/span></div>
+              <div style="font-size:15px;font-weight:900;"><span id="vipSummaryRakeback">3%</span> <span style="color:var(--gold);">0.00 ★</span></div>
             </div>
             <div>
               <div style="font-size:11px;color:var(--text-muted);">Кэшбек</div>
-              <div style="font-size:15px;font-weight:900;"><span id="vipSummaryCashback">3%</span> <span style="color:var(--gold);">0 ★/span></div>
+              <div style="font-size:15px;font-weight:900;"><span id="vipSummaryCashback">3%</span> <span style="color:var(--gold);">0 ★</span></div>
             </div>
           </div>
           <div style="font-size:11px;color:var(--text-muted);" id="vipSummaryNextHint">Далее: Игрок • 1 000 ★ оборота</div>
@@ -3404,12 +3480,12 @@
           <div>
             <div class="profile-wallet-label">Баланс профиля</div>
             <div class="profile-wallet-amount">
-              <span class="star-icon">★/span>
-              <span id="profileBalanceText">5000/span>
+              <span class="star-icon">★</span>
+              <span id="profileBalanceText">5000</span>
             </div>
           </div>
           <div class="profile-wallet-actions">
-            <button type="button" class="profile-topup-btn" id="profileTopupBtn">+ ★/button>
+            <button type="button" class="profile-topup-btn" id="profileTopupBtn">+ ★</button>
             <button type="button" class="withdraw-btn" id="openWithdrawModalBtn">Вывод</button>
           </div>
         </div>
@@ -3419,19 +3495,19 @@
 
       <div class="profile-stats-grid">
         <div class="profile-stat-box">
-          <div class="profile-stat-num" id="statTotalActions">0/div>
+          <div class="profile-stat-num" id="statTotalActions">0</div>
           <div class="profile-stat-lbl">Всего действий</div>
         </div>
         <div class="profile-stat-box">
-          <div class="profile-stat-num" id="statDepositsCount">0/div>
+          <div class="profile-stat-num" id="statDepositsCount">0</div>
           <div class="profile-stat-lbl">Поступления</div>
         </div>
         <div class="profile-stat-box">
-          <div class="profile-stat-num" id="statSpendingsCount">0/div>
+          <div class="profile-stat-num" id="statSpendingsCount">0</div>
           <div class="profile-stat-lbl">Списания</div>
         </div>
         <div class="profile-stat-box">
-          <div class="profile-stat-num" id="statWithdrawsCount">0/div>
+          <div class="profile-stat-num" id="statWithdrawsCount">0</div>
           <div class="profile-stat-lbl">Выводы</div>
         </div>
       </div>
@@ -3450,7 +3526,7 @@
           <div id="profileHistoryRows" style="display:flex;flex-direction:column;gap:8px;"></div>
           <div class="pager-row">
             <button type="button" class="back-btn" id="histPrevBtn">‹</button>
-            <span id="histPageLabel">1 / 1/span>
+            <span id="histPageLabel">1 / 1</span>
             <button type="button" class="back-btn" id="histNextBtn">›</button>
           </div>
         </div>
@@ -3466,11 +3542,11 @@
           <div class="vip-two-cols">
             <div class="profile-stat-box" style="background:var(--surface-elevated);">
               <div style="font-size:11px;color:var(--text-muted);">Приглашено</div>
-              <div class="profile-stat-num" id="refInvitedCount">0/div>
+              <div class="profile-stat-num" id="refInvitedCount">0</div>
             </div>
             <div class="profile-stat-box" style="background:var(--surface-elevated);">
               <div style="font-size:11px;color:var(--text-muted);">Всего заработано</div>
-              <div class="profile-stat-num" style="color:var(--gold);" id="refEarnedStars">0 ★/div>
+              <div class="profile-stat-num" style="color:var(--gold);" id="refEarnedStars">0 ★</div>
             </div>
           </div>
           <div class="modal-text" style="background:var(--surface-elevated);border:1px solid var(--border);border-radius:14px;padding:11px 12px;">
@@ -3494,7 +3570,7 @@
           <div id="devOwnerPanelSlot"></div>
           <div class="list-item">
             <span>Банк подарков</span>
-            <span style="color:var(--pink-bright);font-weight:800;" id="bankGiftsCount">0/span>
+            <span style="color:var(--pink-bright);font-weight:800;" id="bankGiftsCount">0</span>
           </div>
           <div id="bankGiftsList" style="display:flex;flex-direction:column;gap:6px;"></div>
           <div class="section-head" style="margin-top:4px;">
@@ -3522,7 +3598,7 @@
           <div id="vipDetailFace" style="width:52px;height:52px;border-radius:18px;background:rgba(255,255,255,0.08);display:grid;place-items:center;font-size:28px;">🙂</div>
         </div>
         <div class="section-meta" style="color:var(--text);">
-          Оборот за всё время: <b id="vipTurnoverVal">0/b> ★ • До уровня «Игрок»: <b id="vipNextLeftVal">1 000/b> ★/div>
+          Оборот за всё время: <b id="vipTurnoverVal">0/b> ★ • До уровня «Игрок»: <b id="vipNextLeftVal">1 000/b> ★</div>
         <div class="demo-pill">В режиме VIP-статус зафиксирован как базовый (активно в рабочей версии)</div>
       </div>
 
@@ -3542,10 +3618,10 @@
       <div class="vip-action-card">
         <div class="section-head">
           <span class="section-title">Рейкбек</span>
-          <span class="section-meta">Отыгрыш x3/span>
+          <span class="section-meta">Отыгрыш x3</span>
         </div>
-        <div style="font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;" id="vipRakebackBalance">0.00 ★/div>
-        <button type="button" class="action-btn" id="vipClaimRakebackBtn" disabled>Забрать можно от 1 ★/button>
+        <div style="font-size:26px;font-weight:900;font-variant-numeric:tabular-nums;" id="vipRakebackBalance">0.00 ★</div>
+        <button type="button" class="action-btn" id="vipClaimRakebackBtn" disabled>Забрать можно от 1 ★</button>
       </div>
 
       <div class="vip-action-card">
@@ -3554,7 +3630,7 @@
           <span class="section-meta">Накопление</span>
         </div>
         <div style="font-size:13px;color:var(--text-muted);">До следующего кэшбека: <b style="color:#fff;" id="vipCashbackTimer">3 д 3 ч</b></div>
-        <div style="font-size:16px;font-weight:800;color:var(--gold);" id="vipCashbackBalance">0 ★/div>
+        <div style="font-size:16px;font-weight:800;color:var(--gold);" id="vipCashbackBalance">0 ★</div>
       </div>
 
       <div class="vip-action-card">
@@ -3685,7 +3761,7 @@
   <div class="modal-backdrop" id="topupModal">
     <div class="modal-rounded">
       <div class="section-head">
-        <span class="modal-title">Пополнение баланса ★/span>
+        <span class="modal-title">Пополнение баланса ★</span>
         <button class="back-btn" id="closeTopupBtn">Закрыть</button>
       </div>
 
@@ -3696,21 +3772,21 @@
 
       <div id="topupStarsPanel" style="display:flex;flex-direction:column;gap:10px;">
         <div class="topup-grid" id="starsQuickGrid">
-          <button type="button" class="topup-option active" data-sval="50">50 ★/button>
-          <button type="button" class="topup-option" data-sval="100">100 ★/button>
-          <button type="button" class="topup-option" data-sval="500">500 ★/button>
-          <button type="button" class="topup-option" data-sval="1000">1000 ★/button>
+          <button type="button" class="topup-option active" data-sval="50">50 ★</button>
+          <button type="button" class="topup-option" data-sval="100">100 ★</button>
+          <button type="button" class="topup-option" data-sval="500">500 ★</button>
+          <button type="button" class="topup-option" data-sval="1000">1000 ★</button>
         </div>
 
         <div class="bet-row">
           <div class="bet-label">Своя сумма (от 50 ★)</div>
           <div class="bet-input-wrap">
             <input type="number" id="customTopupInput" class="bet-input" value="50" min="50" max="100000" step="1" />
-            <span class="star-icon">★/span>
+            <span class="star-icon">★</span>
           </div>
         </div>
 
-        <button type="button" class="action-btn" id="confirmStarsTopupBtn">Пополнить на 50 ★/button>
+        <button type="button" class="action-btn" id="confirmStarsTopupBtn">Пополнить на 50 ★</button>
         <div class="section-meta" id="topupLimitHint">Пополнение от 50 ★. Пополнение Stars скоро. Сейчас доступно только разработчику.</div>
       </div>
 
@@ -3734,14 +3810,14 @@
         <div class="bet-label">Ставка на арену</div>
         <div class="bet-input-wrap">
           <input type="number" id="arenaModalBetInput" class="bet-input" value="50" min="1" />
-          <span class="star-icon">★/span>
+          <span class="star-icon">★</span>
         </div>
       </div>
       <div class="topup-grid">
-        <button type="button" class="topup-option" data-amb="10">10 ★/button>
-        <button type="button" class="topup-option" data-amb="50">50 ★/button>
-        <button type="button" class="topup-option" data-amb="100">100 ★/button>
-        <button type="button" class="topup-option" data-amb="250">250 ★/button>
+        <button type="button" class="topup-option" data-amb="10">10 ★</button>
+        <button type="button" class="topup-option" data-amb="50">50 ★</button>
+        <button type="button" class="topup-option" data-amb="100">100 ★</button>
+        <button type="button" class="topup-option" data-amb="250">250 ★</button>
       </div>
       <button type="button" class="action-btn" id="confirmArenaBetBtn">Сделать ставку</button>
     </div>
@@ -4033,7 +4109,7 @@
       try {
         const brandSub = document.querySelector(".brand-sub");
         if (brandSub) {
-          brandSub.innerHTML = '<span class="live-dot" style="background:var(--green);"></span> Stars &amp; Games';
+          brandSub.innerHTML = '<span class="live-dot" style="background:var(--green)"></span> Stars &amp; Games';
         }
         const resetBtn = document.getElementById("resetDemoBtn");
         if (resetBtn) resetBtn.style.display = appIsLive ? "none" : "";
@@ -4211,7 +4287,7 @@
               ${renderGiftSvg(g, 34)}
               <span>${g.name}</span>
             </div>
-            <span style="color:var(--pink-bright);font-weight:800;">В банке • ${g.value} ★/span>
+            <span style="color:var(--pink-bright);font-weight:800;">В банке • ${g.value} ★</span>
           </div>
         `;
       }).join("");
@@ -4246,7 +4322,7 @@
           devQuickPanelSlotEl.innerHTML =
             '<div class="dev-panel-box" style="margin-top:12px;">' +
               '<div class="section-head">' +
-                '<span style="font-size:13px;font-weight:900;color:var(--gold);">⚡ Панель разработчика<' +
+                '<span style="font-size:13px;font-weight:900;color:var(--gold);">⚡ Панель разработчика' +
                 '<span class="mode-tag pink">' + (appIsLive ? "LIVE" : "LIVE") + "</span>" +
               "</div>" +
               '<div class="section-meta" style="margin-bottom:6px;">Панель только для вас.</div>' +
@@ -4260,15 +4336,15 @@
                 '<div class="bet-label">Сумма ★ игроку</div>' +
                 '<div class="bet-input-wrap">' +
                   '<input type="number" id="devTargetAmountInput" class="bet-input" value="1000" min="1" step="1" />' +
-                  '<span class="star-icon">★/span>' +
+                  '<span class="star-icon">★</span>' +
                 '</div>' +
               '</div>' +
               '<button type="button" class="action-btn" style="padding:11px;font-size:13px;width:100%;margin-top:6px;" id="devCreditOtherBtn">Начислить игроку</button>' +
               '<div class="bet-row" style="background:rgba(12,12,18,0.85);margin-top:8px;">' +
-                '<div class="bet-label">Установить баланс ★/div>' +
+                '<div class="bet-label">Установить баланс ★</div>' +
                 '<div class="bet-input-wrap">' +
                   '<input type="number" id="devBalanceInput" class="bet-input" value="' + state.balance + '" min="0" max="1000000000" step="1" />' +
-                  '<span class="star-icon">★/span>' +
+                  '<span class="star-icon">★</span>' +
                 "</div>" +
               "</div>" +
               '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">' +
@@ -4408,7 +4484,7 @@
               ${renderGiftSvg(g, 36)}
               <span>${g.name}</span>
             </div>
-            <span style="color:var(--gold);font-weight:800;">${g.value} ★/span>
+            <span style="color:var(--gold);font-weight:800;">${g.value} ★</span>
           </div>
         `;
       }).join("");
@@ -4474,7 +4550,7 @@
           <div class="history-item">
             <div class="history-top">
               <span>${d.title}</span>
-              <span style="color:var(--green);">+${d.amount.toLocaleString("ru-RU")} ★/span>
+              <span style="color:var(--green);">+${d.amount.toLocaleString("ru-RU")} ★</span>
             </div>
             <div class="history-sub">
               <span>Зачислено на баланс</span>
@@ -4545,7 +4621,7 @@
             <span style="font-size:22px;">${v.face}</span>
             <div>
               <div style="font-size:14px;font-weight:800;">${v.name}</div>
-              <div style="font-size:11px;color:var(--text-muted);">Оборот от ${v.minTurnover.toLocaleString("ru-RU")} ★/div>
+              <div style="font-size:11px;color:var(--text-muted);">Оборот от ${v.minTurnover.toLocaleString("ru-RU")} ★</div>
             </div>
           </div>
           <div style="text-align:right;font-size:12px;font-weight:800;">
@@ -4783,7 +4859,7 @@
           <div class="list-item">
             <div>
               <div style="font-weight:700;">${t.title}</div>
-              <div style="font-size:11px;color:var(--gold);font-weight:800;">+${t.reward} ★/div>
+              <div style="font-size:11px;color:var(--gold);font-weight:800;">+${t.reward} ★</div>
             </div>
             <button type="button" class="mini-pink-btn" data-claim-task="${t.id}" ${isDone ? "disabled style='opacity:0.45;'" : ""}>
               ${isDone ? "Получено" : "Забрать"}
@@ -4834,7 +4910,7 @@
       leaderboardListEl.innerHTML = rows.map((r, idx) => `
         <div class="list-item" style="${r.me ? "border-color:rgba(255,42,133,0.4);" : ""}">
           <span><b>#${idx + 1}</b> ${r.name}${r.me ? " (вы)" : ""}</span>
-          <span style="color:var(--gold);font-weight:800;">${cleanNumber(r.score, 0).toLocaleString("ru-RU")} ★/span>
+          <span style="color:var(--gold);font-weight:800;">${cleanNumber(r.score, 0).toLocaleString("ru-RU")} ★</span>
         </div>
       `).join("") + (
         rows.length <= 1
@@ -4922,7 +4998,7 @@
             ${renderGiftSvg(g, 36)}
             <div>
               <div style="font-size:13px;font-weight:700;">${g.name}</div>
-              <div style="font-size:11px;color:var(--gold);font-weight:800;">Конвертация: +${g.value} ★/div>
+              <div style="font-size:11px;color:var(--gold);font-weight:800;">Конвертация: +${g.value} ★</div>
             </div>
           </div>
           <button type="button" class="mini-pink-btn" data-deposit-gift="${g.id}">Внести</button>
@@ -5115,7 +5191,7 @@
             <div class="inv-item ${isSel ? "selected" : ""}" data-uid="${item.uid}">
               ${renderGiftSvg(g, 38)}
               <div class="prize-name">${g.name}</div>
-              <div class="prize-cost">${g.value} ★/div>
+              <div class="prize-cost">${g.value} ★</div>
             </div>
           `;
         }).join("");
@@ -5280,7 +5356,7 @@
         <div class="reel-card ${i === winnerIndex ? "winner" : ""}">
           ${renderGiftSvg(it, 52)}
           <div class="reel-card-label">${it.name}</div>
-          <div class="reel-card-val">${it.value} ★/div>
+          <div class="reel-card-val">${it.value} ★</div>
         </div>
       `).join("");
     }
@@ -5292,7 +5368,7 @@
           ${renderCaseArtSvg(c.artKind, 76)}
           <div class="case-tile-foot">
             <span>${c.title}</span>
-            <span class="case-price">${c.price} <span class="star-icon">★/span><
+            <span class="case-price">${c.price} <span class="star-icon">★</span><
           </div>
         </div>
       `).join("");
@@ -5336,8 +5412,8 @@
 
         casePrizesGrid.innerHTML = `
           <div class="prize-card" style="grid-column:span 3;">
-            <span class="star-icon" style="font-size:24px;">★/span>
-            <div class="prize-name">Звёзды • 1–10 ★/div>
+            <span class="star-icon" style="font-size:24px;">★</span>
+            <div class="prize-name">Звёзды • 1–10 ★</div>
             <div class="section-meta">Начисляются сразу на баланс раз в 24 часа</div>
           </div>
         `;
@@ -5358,7 +5434,7 @@
           <div class="prize-card">
             ${renderGiftSvg(p, 46)}
             <div class="prize-name">${p.name}</div>
-            <div class="prize-cost">${p.value} <span class="star-icon">★/span></div>
+            <div class="prize-cost">${p.value} <span class="star-icon">★</span></div>
           </div>
         `).join("");
       }
@@ -5631,16 +5707,16 @@
 
       if (minesActive) {
         minesStatusText.textContent = `Открыто ${openedSafe.size} • Мин: ${activeMines}`;
-        minesLiveReturn.innerHTML = `<span class="star-icon">★/span><span>${currentReturn.toLocaleString("ru-RU")}</span><span style="color:var(--green);">• ${mult.toFixed(2)}x<`;
+        minesLiveReturn.innerHTML = `<span class="star-icon">★</span><span>${currentReturn.toLocaleString("ru-RU")}</span><span style="color:var(--green);">• ${mult.toFixed(2)}x<`;
       } else if (minesOutcome === "lost") {
         minesStatusText.textContent = `Попал на мину • ставка сгорела`;
-        minesLiveReturn.innerHTML = `<span style="color:var(--red);">-${baseBet.toLocaleString("ru-RU")} ★/span><span style="color:var(--text-muted);">• ${mult.toFixed(2)}x<`;
+        minesLiveReturn.innerHTML = `<span style="color:var(--red);">-${baseBet.toLocaleString("ru-RU")} ★</span><span style="color:var(--text-muted);">• ${mult.toFixed(2)}x<`;
       } else if (minesOutcome === "won") {
         minesStatusText.textContent = `Выигрыш забран (${mult.toFixed(2)}x)`;
-        minesLiveReturn.innerHTML = `<span style="color:var(--green);">+${currentReturn.toLocaleString("ru-RU")} ★/span><span style="color:var(--green);">• ${mult.toFixed(2)}x<`;
+        minesLiveReturn.innerHTML = `<span style="color:var(--green);">+${currentReturn.toLocaleString("ru-RU")} ★</span><span style="color:var(--green);">• ${mult.toFixed(2)}x<`;
       } else {
         minesStatusText.textContent = `Мин на поле: ${activeMines} из 25`;
-        minesLiveReturn.innerHTML = `<span class="star-icon">★/span><span>${baseBet.toLocaleString("ru-RU")}</span><span style="color:var(--pink-bright);">• 1.00x<`;
+        minesLiveReturn.innerHTML = `<span class="star-icon">★</span><span>${baseBet.toLocaleString("ru-RU")}</span><span style="color:var(--pink-bright);">• 1.00x<`;
       }
 
       minesActionBtn.classList.remove("stop", "queued");
@@ -5862,7 +5938,7 @@
                 <div style="font-size:11px;color:var(--text-muted);">${pct}% поля</div>
               </div>
             </div>
-            <span style="color:var(--gold);font-weight:800;">${p.bet.toLocaleString("ru-RU")} ★/span>
+            <span style="color:var(--gold);font-weight:800;">${p.bet.toLocaleString("ru-RU")} ★</span>
           </div>
         `;
       }).join("");
